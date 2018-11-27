@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+readonly BASE_DIR=$(cd "$(dirname "$0")"; pwd)
+
+${BASE_DIR}/docker-compose run --rm --no-deps php "$@"

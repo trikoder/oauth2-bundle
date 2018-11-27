@@ -1,0 +1,124 @@
+<?php
+
+namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
+
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+
+final class Configuration implements ConfigurationInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigTreeBuilder()
+    {
+        $treeBuilder = new TreeBuilder();
+        $rootNode = $treeBuilder->root('trikoder_oauth2');
+
+        $rootNode->append($this->createAuthorizationServerNode());
+        $rootNode->append($this->createResourceServerNode());
+        $rootNode->append($this->createScopesNode());
+        $rootNode->append($this->createPersistenceNode());
+
+        return $treeBuilder;
+    }
+
+    private function createAuthorizationServerNode(): NodeDefinition
+    {
+        $treeBuilder = new TreeBuilder();
+        $node = $treeBuilder->root('authorization_server');
+
+        $node
+            ->isRequired()
+            ->children()
+                ->scalarNode('private_key')
+                    ->info("Full path to the private key file.\nHow to generate a private key: https://oauth2.thephpleague.com/installation/#generating-public-and-private-keys")
+                    ->example('/var/oauth/private.key')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('encryption_key')
+                    ->info("The string used as an encryption key.\nHow to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password")
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('access_token_ttl')
+                    ->info("How long the issued access token should be valid for.\nThe value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters")
+                    ->cannotBeEmpty()
+                    ->defaultValue('PT1H')
+                ->end()
+                ->scalarNode('refresh_token_ttl')
+                    ->info("How long the issued refresh token should be valid for.\nThe value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters")
+                    ->cannotBeEmpty()
+                    ->defaultValue('P1M')
+                ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    private function createResourceServerNode(): NodeDefinition
+    {
+        $treeBuilder = new TreeBuilder();
+        $node = $treeBuilder->root('resource_server');
+
+        $node
+            ->isRequired()
+            ->children()
+                ->scalarNode('public_key')
+                    ->info("Full path to the public key file\nHow to generate a public key: https://oauth2.thephpleague.com/installation/#generating-public-and-private-keys")
+                    ->example('/var/oauth/public.key')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    private function createScopesNode(): NodeDefinition
+    {
+        $treeBuilder = new TreeBuilder();
+        $node = $treeBuilder->root('scopes');
+
+        $node
+            ->info("Scopes that you wish to utilize in your application.\nThis should be a simple array of strings.")
+            ->scalarPrototype()
+            ->treatNullLike([])
+        ;
+
+        return $node;
+    }
+
+    private function createPersistenceNode(): NodeDefinition
+    {
+        $treeBuilder = new TreeBuilder();
+        $node = $treeBuilder->root('persistence');
+
+        $node
+            ->info("Configures different persistence methods that can be used by the bundle for saving client and token data.\nOnly one persistence method can be configured at a time.")
+            ->isRequired()
+            ->children()
+                // Doctrine persistence
+                ->arrayNode('doctrine')
+                    ->children()
+                        ->scalarNode('entity_manager')
+                            ->info('Name of the entity manager that you wish to use for managing clients and tokens.')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                            ->defaultValue('default')
+                        ->end()
+                    ->end()
+                ->end()
+                // In-memory persistence
+                ->scalarNode('in_memory')
+                ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+}

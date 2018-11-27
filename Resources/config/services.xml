@@ -1,0 +1,79 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <!-- The league interfaces -->
+        <service id="League\OAuth2\Server\AuthorizationServer" alias="league.oauth2.server.authorization_server" />
+        <service id="League\OAuth2\Server\ResourceServer" alias="league.oauth2.server.resource_server" />
+
+        <!-- The league repositories -->
+        <service id="trikoder.oauth2.league.repository.client_repository" class="Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+        </service>
+        <service id="trikoder.oauth2.league.repository.access_token_repository" class="Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <argument type="service" id="trikoder.oauth2.converter.scope_converter" />
+        </service>
+        <service id="trikoder.oauth2.league.repository.refresh_token_repository" class="Trikoder\Bundle\OAuth2Bundle\League\Repository\RefreshTokenRepository">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
+        </service>
+        <service id="trikoder.oauth2.league.repository.scope_repository" class="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <argument type="service" id="trikoder.oauth2.converter.scope_converter" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+        </service>
+        <service id="trikoder.oauth2.league.repository.user_repository" class="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+        </service>
+
+        <!-- Security layer -->
+        <service id="trikoder.oauth2.security.authentication.provider.oauth2_provider" class="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider">
+            <argument key="$userProvider" />
+            <argument key="$resourceServer" type="service" id="League\OAuth2\Server\ResourceServer" />
+        </service>
+        <service id="trikoder.oauth2.security.entry_point.oauth2_entry_point" class="Trikoder\Bundle\OAuth2Bundle\Security\EntryPoint\OAuth2EntryPoint" />
+        <service id="trikoder.oauth2.security.firewall.oauth2_listener" class="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener">
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="security.authentication.manager" />
+            <argument type="service" id="sensio_framework_extra.psr7.http_message_factory" />
+        </service>
+
+        <!-- The league authorization server -->
+        <service id="league.oauth2.server.authorization_server" class="League\OAuth2\Server\AuthorizationServer">
+            <argument key="$clientRepository" type="service" id="trikoder.oauth2.league.repository.client_repository" />
+            <argument key="$accessTokenRepository" type="service" id="trikoder.oauth2.league.repository.access_token_repository" />
+            <argument key="$scopeRepository" type="service" id="trikoder.oauth2.league.repository.scope_repository" />
+            <argument key="$privateKey" />
+            <argument key="$encryptionKey" />
+        </service>
+
+        <!-- The league resource server -->
+        <service id="league.oauth2.server.resource_server" class="League\OAuth2\Server\ResourceServer">
+            <argument key="$accessTokenRepository" type="service" id="trikoder.oauth2.league.repository.access_token_repository" />
+            <argument key="$publicKey" />
+        </service>
+
+        <!-- The league authorization server grants -->
+        <service id="league.oauth2.server.grant.client_credentials_grant" class="League\OAuth2\Server\Grant\ClientCredentialsGrant" />
+        <service id="league.oauth2.server.grant.password_grant" class="League\OAuth2\Server\Grant\PasswordGrant">
+            <argument type="service" id="trikoder.oauth2.league.repository.user_repository" />
+            <argument type="service" id="trikoder.oauth2.league.repository.refresh_token_repository" />
+        </service>
+        <service id="league.oauth2.server.grant.refresh_token_grant" class="League\OAuth2\Server\Grant\RefreshTokenGrant">
+            <argument type="service" id="trikoder.oauth2.league.repository.refresh_token_repository" />
+        </service>
+
+        <!-- Token controller -->
+        <service id="trikoder.oauth2.controller.token_controller" class="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">
+            <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <!-- Utility services -->
+        <service id="trikoder.oauth2.converter.scope_converter" class="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
+    </services>
+</container>

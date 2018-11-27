@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="vendor/autoload.php"
+         failOnRisky="true"
+         failOnWarning="true"
+>
+    <php>
+        <env name="KERNEL_CLASS" value="Trikoder\Bundle\OAuth2Bundle\Tests\TestKernel" />
+        <env name="SHELL_VERBOSITY" value="-1" />
+        <!-- See why it's a good idea: https://github.com/symfony/recipes/pull/442 -->
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="999999" />
+    </php>
+
+    <testsuites>
+        <testsuite name="acceptance">
+            <directory>./Tests/Acceptance</directory>
+        </testsuite>
+        <testsuite name="integration">
+            <directory>./Tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>.</directory>
+            <exclude>
+                <directory>./Resources</directory>
+                <directory>./Tests</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+    </listeners>
+</phpunit>

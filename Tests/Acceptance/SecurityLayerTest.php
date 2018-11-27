@@ -1,0 +1,136 @@
+<?php
+
+namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
+
+use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
+use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
+
+final class SecurityLayerTest extends AbstractAcceptanceTest
+{
+    public function testAuthenticatedGuestRequest()
+    {
+        $accessToken = $this->client
+            ->getContainer()
+            ->get(AccessTokenManagerInterface::class)
+            ->find(FixtureFactory::FIXTURE_ACCESS_TOKEN_PUBLIC);
+
+        $this->client->request('GET', '/security-test', [], [], [
+            'HTTP_AUTHORIZATION' => sprintf('Bearer %s', TestHelper::generateJwtToken($accessToken)),
+        ]);
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('Hello, guest', $response->getContent());
+    }
+
+    public function testAuthenticatedGuestScopedRequest()
+    {
+        $accessToken = $this->client
+            ->getContainer()
+            ->get(AccessTokenManagerInterface::class)
+            ->find(FixtureFactory::FIXTURE_ACCESS_TOKEN_WITH_SCOPES);
+
+        $this->client->request('GET', '/security-test-scopes', [], [], [
+            'HTTP_AUTHORIZATION' => sprintf('Bearer %s', TestHelper::generateJwtToken($accessToken)),
+        ]);
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('Only certain scopes should be able to access this action.', $response->getContent());
+    }
+
+    public function testAuthenticatedUserRequest()
+    {
+        $accessToken = $this->client
+            ->getContainer()
+            ->get(AccessTokenManagerInterface::class)
+            ->find(FixtureFactory::FIXTURE_ACCESS_TOKEN_USER_BOUND);
+
+        $this->client->request('GET', '/security-test', [], [], [
+            'HTTP_AUTHORIZATION' => sprintf('Bearer %s', TestHelper::generateJwtToken($accessToken)),
+        ]);
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('Hello, user', $response->getContent());
+    }
+
+    public function testAuthenticatedUserRolesRequest()
+    {
+        $accessToken = $this->client
+            ->getContainer()
+            ->get(AccessTokenManagerInterface::class)
+            ->find(FixtureFactory::FIXTURE_ACCESS_TOKEN_USER_BOUND_WITH_SCOPES);
+
+        $this->client->request('GET', '/security-test-roles', [], [], [
+            'HTTP_AUTHORIZATION' => sprintf('Bearer %s', TestHelper::generateJwtToken($accessToken)),
+        ]);
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('These are the roles I have currently assigned: ROLE_OAUTH2_FANCY, ROLE_USER', $response->getContent());
+    }
+
+    public function testExpiredRequest()
+    {
+        $accessToken = $this->client
+            ->getContainer()
+            ->get(AccessTokenManagerInterface::class)
+            ->find(FixtureFactory::FIXTURE_ACCESS_TOKEN_EXPIRED);
+
+        $this->client->request('GET', '/security-test', [], [], [
+            'HTTP_AUTHORIZATION' => sprintf('Bearer %s', TestHelper::generateJwtToken($accessToken)),
+        ]);
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(401, $response->getStatusCode());
+    }
+
+    public function testRevokedRequest()
+    {
+        $accessToken = $this->client
+            ->getContainer()
+            ->get(AccessTokenManagerInterface::class)
+            ->find(FixtureFactory::FIXTURE_ACCESS_TOKEN_REVOKED);
+
+        $this->client->request('GET', '/security-test', [], [], [
+            'HTTP_AUTHORIZATION' => sprintf('Bearer %s', TestHelper::generateJwtToken($accessToken)),
+        ]);
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(401, $response->getStatusCode());
+    }
+
+    public function testInsufficientScopeRequest()
+    {
+        $accessToken = $this->client
+            ->getContainer()
+            ->get(AccessTokenManagerInterface::class)
+            ->find(FixtureFactory::FIXTURE_ACCESS_TOKEN_PUBLIC);
+
+        $this->client->request('GET', '/security-test-scopes', [], [], [
+            'HTTP_AUTHORIZATION' => sprintf('Bearer %s', TestHelper::generateJwtToken($accessToken)),
+        ]);
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testInvalidRequest()
+    {
+        $this->client->request('GET', '/security-test');
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(401, $response->getStatusCode());
+        $this->assertSame('Bearer', $response->headers->get('WWW-Authenticate'));
+    }
+}

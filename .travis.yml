@@ -1,0 +1,27 @@
+sudo: required
+
+language: bash
+
+services:
+  - docker
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+install:
+  - dev/bin/docker-compose build
+
+before_script:
+  - dev/bin/php composer install --ansi --prefer-dist
+
+script:
+  - dev/bin/php composer test -- --colors=always --coverage-clover=coverage.xml --debug
+  - dev/bin/php composer lint -- --ansi --diff --dry-run --using-cache=no --verbose
+
+after_script:
+  - dev/bin/docker-compose down --volumes
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

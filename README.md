@@ -81,6 +81,11 @@ This package is currently in the active development.
                 entity_manager: default # Required
              
             in_memory: ~
+         
+        # When set to true requests with scopes that are not defined on client or on application throw invalid scope exception. 
+        # When set to false requests with no scope requested implicitly get scope from client or configuration.
+        strict_scopes: true   
+      
     ```
 
 3. Enable the bundle in `config/bundles.php` by adding it to the array:

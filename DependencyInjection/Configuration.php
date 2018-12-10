@@ -21,6 +21,12 @@ final class Configuration implements ConfigurationInterface
         $rootNode->append($this->createScopesNode());
         $rootNode->append($this->createPersistenceNode());
 
+        $rootNode->children()
+            ->booleanNode('strict_scopes')
+            ->info('When set to true requests with scopes that are not defined on client or on application throw invalid scope exception. When set to false requests with no scope requested implicitly get scope from client or configuration.')
+            ->defaultTrue()
+            ->isRequired();
+
         return $treeBuilder;
     }
 

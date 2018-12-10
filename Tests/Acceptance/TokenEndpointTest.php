@@ -16,6 +16,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             'client_id' => 'foo',
             'client_secret' => 'secret',
             'grant_type' => 'client_credentials',
+            'scope' => 'fancy',
         ]);
 
         $response = $this->client->getResponse();
@@ -28,6 +29,26 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $this->assertSame('Bearer', $jsonResponse['token_type']);
         $this->assertSame(3600, $jsonResponse['expires_in']);
         $this->assertNotEmpty($jsonResponse['access_token']);
+    }
+
+    public function testFailedClientCredentialsRequestForMissingScope()
+    {
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'client_credentials',
+        ]);
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('application/json', $response->headers->get('Content-Type'));
+
+        $jsonResponse = json_decode($response->getContent(), true);
+
+        $this->assertSame('invalid_scope', $jsonResponse['error']);
+        $this->assertSame('The requested scope is invalid, unknown, or malformed', $jsonResponse['message']);
+        $this->assertSame('Specify a scope in the request or set a default scope', $jsonResponse['hint']);
     }
 
     public function testSuccessfulPasswordRequest()
@@ -43,6 +64,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             'client_id' => 'foo',
             'client_secret' => 'secret',
             'grant_type' => 'password',
+            'scope' => 'fancy',
             'username' => 'user',
             'password' => 'pass',
         ]);

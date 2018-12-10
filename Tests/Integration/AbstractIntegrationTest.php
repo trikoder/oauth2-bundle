@@ -80,7 +80,7 @@ abstract class AbstractIntegrationTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp($strictScopes = true)
     {
         $this->scopeManager = new ScopeManager();
         $this->clientManager = new ClientManager();
@@ -96,7 +96,7 @@ abstract class AbstractIntegrationTest extends TestCase
         );
 
         $scopeConverter = new ScopeConverter();
-        $scopeRepository = new ScopeRepository($this->scopeManager, $this->clientManager, $scopeConverter, $this->eventDispatcher);
+        $scopeRepository = new ScopeRepository($this->scopeManager, $this->clientManager, $scopeConverter, $this->eventDispatcher, $strictScopes);
         $clientRepository = new ClientRepository($this->clientManager);
         $accessTokenRepository = new AccessTokenRepository($this->accessTokenManager, $this->clientManager, $scopeConverter);
         $refreshTokenRepository = new RefreshTokenRepository($this->refreshTokenManager, $this->accessTokenManager);

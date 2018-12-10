@@ -27,4 +27,9 @@ final class ScopeManager implements ScopeManagerInterface
     {
         $this->scopes[(string) $scope] = $scope;
     }
+
+    public function findAll(): array
+    {
+        return $this->scopes;
+    }
 }

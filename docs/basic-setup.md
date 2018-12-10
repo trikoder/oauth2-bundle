@@ -75,6 +75,11 @@ oauth2_restricted:
         oauth2_scopes: ['foo', 'bar']
 ``` 
 
+## Strict scope mode
+In default bundle operates in `strict_scopes: true` mode. In this mode scopes must be added to the token request and they must match scopes defined on the client or scopes defined in the configuration. If they don't match or no scope is included in the request invalid scope exception is thrown.
+
+When `strict_scopes` is set to `false` requests with no scope included implicitly get scope from client or configuration.
+
 ## Security roles
 
 Once the user gets past the `oauth2` firewall, they will be granted additional roles based on their granted [token scopes](controlling-token-scopes.md). The roles are named in the following format:

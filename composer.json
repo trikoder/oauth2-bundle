@@ -20,7 +20,8 @@
         "symfony/framework-bundle": "~4.0",
         "symfony/psr-http-message-bridge": "1.0.*",
         "symfony/security-bundle": "~4.0",
-        "zendframework/zend-diactoros": "^1.7"
+        "zendframework/zend-diactoros": "^1.7",
+        "ext-json": "*"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "2.13.1",

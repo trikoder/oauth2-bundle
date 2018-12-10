@@ -170,7 +170,7 @@ final class FixtureFactory
     {
         $clients = [];
 
-        $clients[] = new Client(self::FIXTURE_CLIENT_FIRST, 'secret');
+        $clients[] = (new Client(self::FIXTURE_CLIENT_FIRST, 'secret'))->setScopes(new Scope(self::FIXTURE_SCOPE_FIRST));
 
         $clients[] = new Client(self::FIXTURE_CLIENT_SECOND, 'top_secret');
 
@@ -191,6 +191,7 @@ final class FixtureFactory
         $scopes = [];
 
         $scopes[] = new Scope(self::FIXTURE_SCOPE_FIRST);
+        $scopes[] = new Scope(self::FIXTURE_SCOPE_SECOND);
 
         return $scopes;
     }

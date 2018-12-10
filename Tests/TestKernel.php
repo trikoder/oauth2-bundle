@@ -132,6 +132,7 @@ class TestKernel extends Kernel implements CompilerPassInterface
                     'entity_manager' => 'default',
                 ],
             ],
+            'strict_scopes' => true,
         ]);
     }
 

@@ -34,6 +34,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureAuthorizationServer($container, $config['authorization_server']);
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
+        $this->configureScopeRepository($container, $config['strict_scopes']);
     }
 
     /**
@@ -177,5 +178,13 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 new Definition(ScopeModel::class, [$scope]),
             ]);
         }
+    }
+
+    private function configureScopeRepository(ContainerBuilder $container, bool $strictScopes)
+    {
+        $container
+            ->getDefinition('trikoder.oauth2.league.repository.scope_repository')
+            ->replaceArgument('$strictScopes', $strictScopes)
+        ;
     }
 }

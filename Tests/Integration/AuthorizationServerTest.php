@@ -14,6 +14,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     {
         $request = $this->createAuthorizationRequest('foo:secret', [
             'grant_type' => 'client_credentials',
+            'scope' => 'fancy',
         ]);
 
         $response = $this->handleAuthorizationRequest($request);
@@ -28,6 +29,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'foo',
             'client_secret' => 'secret',
             'grant_type' => 'client_credentials',
+            'scope' => 'fancy',
         ]);
 
         $response = $this->handleAuthorizationRequest($request);
@@ -135,6 +137,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     {
         $request = $this->createAuthorizationRequest('foo:secret', [
             'grant_type' => 'client_credentials',
+            'scope' => 'fancy',
         ]);
 
         $response = $this->handleAuthorizationRequest($request);
@@ -178,6 +181,49 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         );
     }
 
+    public function testIncorrectScopeWhenNoneRequestedAndDefinedInClient()
+    {
+        $request = $this->createAuthorizationRequest('foo:secret', [
+            'grant_type' => 'client_credentials',
+        ]);
+
+        $response = $this->handleAuthorizationRequest($request);
+
+        // Response assertions.
+        $this->assertSame('invalid_scope', $response['error']);
+        $this->assertSame('The requested scope is invalid, unknown, or malformed', $response['message']);
+        $this->assertSame('Specify a scope in the request or set a default scope', $response['hint']);
+    }
+
+    public function testIncorrectScopeWhenNoneRequestedAndDefinedInConfiguration()
+    {
+        $request = $this->createAuthorizationRequest('bar:top_secret', [
+            'grant_type' => 'client_credentials',
+        ]);
+
+        $response = $this->handleAuthorizationRequest($request);
+
+        // Response assertions.
+        $this->assertSame('invalid_scope', $response['error']);
+        $this->assertSame('The requested scope is invalid, unknown, or malformed', $response['message']);
+        $this->assertSame('Specify a scope in the request or set a default scope', $response['hint']);
+    }
+
+    public function testInvalidScopeWhenScopeDoesNotExitsOnClient(): void
+    {
+        $request = $this->createAuthorizationRequest('foo:secret', [
+            'grant_type' => 'client_credentials',
+            'scope' => 'rock',
+        ]);
+
+        $response = $this->handleAuthorizationRequest($request);
+
+        // Response assertions.
+        $this->assertSame('invalid_scope', $response['error']);
+        $this->assertSame('The requested scope is invalid, unknown, or malformed', $response['message']);
+        $this->assertSame('Check the `rock` scope', $response['hint']);
+    }
+
     public function testValidPasswordGrant(): void
     {
         $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event) {
@@ -186,6 +232,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         $request = $this->createAuthorizationRequest('foo:secret', [
             'grant_type' => 'password',
+            'scope' => 'fancy',
             'username' => 'user',
             'password' => 'pass',
         ]);

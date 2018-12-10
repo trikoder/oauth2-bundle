@@ -24,6 +24,7 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <argument type="service" id="trikoder.oauth2.converter.scope_converter" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+            <argument key="$strictScopes" />
         </service>
         <service id="trikoder.oauth2.league.repository.user_repository" class="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />

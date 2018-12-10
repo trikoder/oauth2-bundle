@@ -68,4 +68,32 @@ final class AuthorizationServerNonStrictScopesTest extends AbstractIntegrationTe
             $accessToken->getScopes()
         );
     }
+
+    public function testScopeNotChangedWhenIncludedInRequest()
+    {
+        $request = $this->createAuthorizationRequest('bar:top_secret', [
+            'grant_type' => 'client_credentials',
+            'scope' => 'rock',
+        ]);
+
+        $response = $this->handleAuthorizationRequest($request);
+
+        $accessToken = $this->getAccessToken($response['access_token']);
+
+        // Response assertions.
+        $this->assertSame('Bearer', $response['token_type']);
+        $this->assertSame(3600, $response['expires_in']);
+        $this->assertInstanceOf(AccessToken::class, $accessToken);
+
+        // Make sure the access token is issued for the given client ID.
+        $this->assertSame('bar', $accessToken->getClient()->getIdentifier());
+
+        // The access token should have the requested scope.
+        $this->assertEquals(
+            [
+                $this->scopeManager->find(FixtureFactory::FIXTURE_SCOPE_SECOND),
+            ],
+            $accessToken->getScopes()
+        );
+    }
 }

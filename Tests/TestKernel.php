@@ -13,6 +13,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
+use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
 
 class TestKernel extends Kernel implements CompilerPassInterface
 {
@@ -133,6 +134,12 @@ class TestKernel extends Kernel implements CompilerPassInterface
                 ],
             ],
         ]);
+
+        $container
+            ->register(SecurityTestController::class)
+            ->setAutoconfigured(true)
+            ->setAutowired(true)
+        ;
     }
 
     /**
@@ -140,7 +147,7 @@ class TestKernel extends Kernel implements CompilerPassInterface
      */
     public function getCacheDir()
     {
-        return sprintf('%s/.kernel/%s/cache', $this->rootDir, $this->environment);
+        return sprintf('%s/Tests/.kernel/%s/cache', $this->getProjectDir(), $this->getEnvironment());
     }
 
     /**
@@ -148,7 +155,7 @@ class TestKernel extends Kernel implements CompilerPassInterface
      */
     public function getLogDir()
     {
-        return sprintf('%s/.kernel/%s/logs', $this->rootDir, $this->environment);
+        return sprintf('%s/Tests/.kernel/%s/logs', $this->getProjectDir(), $this->getEnvironment());
     }
 
     /**

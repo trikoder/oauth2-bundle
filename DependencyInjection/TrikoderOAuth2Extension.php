@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use League\OAuth2\Server\CryptKey;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
@@ -64,7 +65,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $authorizationServer = $container
             ->getDefinition('league.oauth2.server.authorization_server')
-            ->replaceArgument('$privateKey', $config['private_key'])
+            ->replaceArgument('$privateKey', new CryptKey($config['private_key'], null, false))
             ->replaceArgument('$encryptionKey', $config['encryption_key'])
         ;
 

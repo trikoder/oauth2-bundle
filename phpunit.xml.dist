@@ -11,8 +11,6 @@
     <php>
         <env name="KERNEL_CLASS" value="Trikoder\Bundle\OAuth2Bundle\Tests\TestKernel" />
         <env name="SHELL_VERBOSITY" value="-1" />
-        <!-- See why it's a good idea: https://github.com/symfony/recipes/pull/442 -->
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="999999" />
     </php>
 
     <testsuites>

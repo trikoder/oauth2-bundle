@@ -55,14 +55,14 @@ class TestKernel extends Kernel implements CompilerPassInterface
     {
         $routes->import('@TrikoderOAuth2Bundle/Resources/config/routes.xml');
 
-        $routes->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::helloAction');
+        $routes->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:helloAction');
 
         $routes
-            ->add('/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::scopeAction')
+            ->add('/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:scopeAction')
             ->setDefault('oauth2_scopes', ['fancy']);
 
         $routes
-            ->add('/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::rolesAction')
+            ->add('/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:rolesAction')
             ->setDefault('oauth2_scopes', ['fancy']);
     }
 

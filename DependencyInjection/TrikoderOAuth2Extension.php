@@ -3,6 +3,7 @@
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use DateInterval;
+use League\OAuth2\Server\CryptKey;
 use LogicException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -12,7 +13,6 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use League\OAuth2\Server\CryptKey;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;

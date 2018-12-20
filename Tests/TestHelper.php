@@ -58,7 +58,7 @@ final class TestHelper
         }
 
         return $accessTokenEntity->convertToJWT(
-            new CryptKey(self::PRIVATE_KEY_PATH)
+            new CryptKey(self::PRIVATE_KEY_PATH, null, false)
         );
     }
 

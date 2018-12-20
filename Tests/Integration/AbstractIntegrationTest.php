@@ -5,6 +5,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
@@ -196,7 +197,7 @@ abstract class AbstractIntegrationTest extends TestCase
             $clientRepository,
             $accessTokenRepository,
             $scopeRepository,
-            TestHelper::PRIVATE_KEY_PATH,
+            new CryptKey(TestHelper::PRIVATE_KEY_PATH, null, false),
             TestHelper::ENCRYPTION_KEY
         );
 
@@ -211,7 +212,7 @@ abstract class AbstractIntegrationTest extends TestCase
     {
         return new ResourceServer(
             $accessTokenRepository,
-            TestHelper::PUBLIC_KEY_PATH
+            new CryptKey(TestHelper::PUBLIC_KEY_PATH, null, false)
         );
     }
 }

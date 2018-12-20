@@ -27,10 +27,6 @@ class TestKernel extends Kernel implements CompilerPassInterface
         putenv(sprintf('PUBLIC_KEY_PATH=%s', TestHelper::PUBLIC_KEY_PATH));
         putenv(sprintf('ENCRYPTION_KEY=%s', TestHelper::ENCRYPTION_KEY));
 
-        // The authorization server requires proper file permissions for public/private keys.
-        chmod(TestHelper::PRIVATE_KEY_PATH, 0600);
-        chmod(TestHelper::PUBLIC_KEY_PATH, 0600);
-
         parent::boot();
     }
 

@@ -65,7 +65,11 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $authorizationServer = $container
             ->getDefinition('league.oauth2.server.authorization_server')
-            ->replaceArgument('$privateKey', new CryptKey($config['private_key'], null, false))
+            ->replaceArgument('$privateKey', new Definition(CryptKey::class, [
+                $config['private_key'],
+                null,
+                false,
+            ]))
             ->replaceArgument('$encryptionKey', $config['encryption_key'])
         ;
 

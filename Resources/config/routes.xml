@@ -3,5 +3,5 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="oauth2_token" path="/token" controller="trikoder.oauth2.controller.token_controller::indexAction" methods="GET|POST" />
+    <route id="oauth2_token" path="/token" controller="trikoder.oauth2.controller.token_controller:indexAction" methods="GET|POST" />
 </routes>

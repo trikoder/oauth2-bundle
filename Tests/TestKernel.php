@@ -13,6 +13,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
+use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
 
 class TestKernel extends Kernel implements CompilerPassInterface
 {
@@ -26,10 +27,6 @@ class TestKernel extends Kernel implements CompilerPassInterface
         putenv(sprintf('PRIVATE_KEY_PATH=%s', TestHelper::PRIVATE_KEY_PATH));
         putenv(sprintf('PUBLIC_KEY_PATH=%s', TestHelper::PUBLIC_KEY_PATH));
         putenv(sprintf('ENCRYPTION_KEY=%s', TestHelper::ENCRYPTION_KEY));
-
-        // The authorization server requires proper file permissions for public/private keys.
-        chmod(TestHelper::PRIVATE_KEY_PATH, 0600);
-        chmod(TestHelper::PUBLIC_KEY_PATH, 0600);
 
         parent::boot();
     }
@@ -55,14 +52,14 @@ class TestKernel extends Kernel implements CompilerPassInterface
     {
         $routes->import('@TrikoderOAuth2Bundle/Resources/config/routes.xml');
 
-        $routes->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::helloAction');
+        $routes->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:helloAction');
 
         $routes
-            ->add('/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::scopeAction')
+            ->add('/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:scopeAction')
             ->setDefault('oauth2_scopes', ['fancy']);
 
         $routes
-            ->add('/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::rolesAction')
+            ->add('/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:rolesAction')
             ->setDefault('oauth2_scopes', ['fancy']);
     }
 
@@ -133,6 +130,12 @@ class TestKernel extends Kernel implements CompilerPassInterface
                 ],
             ],
         ]);
+
+        $container
+            ->register(SecurityTestController::class)
+            ->setAutoconfigured(true)
+            ->setAutowired(true)
+        ;
     }
 
     /**
@@ -140,7 +143,7 @@ class TestKernel extends Kernel implements CompilerPassInterface
      */
     public function getCacheDir()
     {
-        return sprintf('%s/.kernel/%s/cache', $this->rootDir, $this->environment);
+        return sprintf('%s/Tests/.kernel/%s/cache', $this->getProjectDir(), $this->getEnvironment());
     }
 
     /**
@@ -148,7 +151,7 @@ class TestKernel extends Kernel implements CompilerPassInterface
      */
     public function getLogDir()
     {
-        return sprintf('%s/.kernel/%s/logs', $this->rootDir, $this->environment);
+        return sprintf('%s/Tests/.kernel/%s/logs', $this->getProjectDir(), $this->getEnvironment());
     }
 
     /**

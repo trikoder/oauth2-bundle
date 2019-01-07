@@ -3,6 +3,7 @@
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use DateInterval;
+use League\OAuth2\Server\CryptKey;
 use LogicException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -51,6 +52,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $container->prependExtensionConfig('doctrine', [
             'dbal' => [
+                'connections' => null,
                 'types' => [
                     'oauth2_grant' => GrantType::class,
                     'oauth2_redirect_uri' => RedirectUriType::class,
@@ -64,7 +66,11 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $authorizationServer = $container
             ->getDefinition('league.oauth2.server.authorization_server')
-            ->replaceArgument('$privateKey', $config['private_key'])
+            ->replaceArgument('$privateKey', new Definition(CryptKey::class, [
+                $config['private_key'],
+                null,
+                false,
+            ]))
             ->replaceArgument('$encryptionKey', $config['encryption_key'])
         ;
 
@@ -160,7 +166,11 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $container
             ->getDefinition('league.oauth2.server.resource_server')
-            ->replaceArgument('$publicKey', $config['public_key'])
+            ->replaceArgument('$publicKey', new Definition(CryptKey::class, [
+                $config['public_key'],
+                null,
+                false,
+            ]))
         ;
     }
 

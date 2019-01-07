@@ -2,6 +2,7 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 
+use DateTime;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
@@ -137,7 +138,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
+        timecop_freeze(new DateTime());
+
         $response = $this->handleAuthorizationRequest($request);
+
+        timecop_return();
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -157,7 +162,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'fancy',
         ]);
 
+        timecop_freeze(new DateTime());
+
         $response = $this->handleAuthorizationRequest($request);
+
+        timecop_return();
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -190,7 +199,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'password' => 'pass',
         ]);
 
+        timecop_freeze(new DateTime());
+
         $response = $this->handleAuthorizationRequest($request);
+
+        timecop_return();
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);
@@ -267,7 +280,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'refresh_token' => TestHelper::generateEncryptedPayload($existingRefreshToken),
         ]);
 
+        timecop_freeze(new DateTime());
+
         $response = $this->handleAuthorizationRequest($request);
+
+        timecop_return();
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);

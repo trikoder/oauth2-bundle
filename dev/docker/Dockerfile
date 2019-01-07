@@ -1,4 +1,4 @@
-FROM php:7.2.12-cli-alpine3.8
+FROM php:7.2.13-cli-alpine3.8
 
 # This is where we're going to store all of our non-project specific binaries
 RUN mkdir -p /app/bin
@@ -14,8 +14,10 @@ RUN apk add --update --no-cache --virtual .build-deps \
         zip \
     && pecl install \
         xdebug-2.6.1 \
+        timecop-beta \
     && docker-php-ext-enable \
         xdebug \
+        timecop \
     && apk del --purge .build-deps
 
 # Utilities needed to run this image
@@ -29,7 +31,7 @@ RUN apk add --update --no-cache \
 RUN curl --show-error https://getcomposer.org/installer | php -- \
         --install-dir=/app/bin \
         --filename=composer \
-        --version=1.7.3
+        --version=1.8.0
 
 # Create the user that's going to run our application
 RUN useradd -ms /bin/sh app

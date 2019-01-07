@@ -29,7 +29,7 @@ RUN apk add --update --no-cache \
 RUN curl --show-error https://getcomposer.org/installer | php -- \
         --install-dir=/app/bin \
         --filename=composer \
-        --version=1.7.3
+        --version=1.8.0
 
 # Create the user that's going to run our application
 RUN useradd -ms /bin/sh app

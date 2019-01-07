@@ -14,8 +14,10 @@ RUN apk add --update --no-cache --virtual .build-deps \
         zip \
     && pecl install \
         xdebug-2.6.1 \
+        timecop-beta \
     && docker-php-ext-enable \
         xdebug \
+        timecop \
     && apk del --purge .build-deps
 
 # Utilities needed to run this image

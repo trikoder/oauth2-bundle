@@ -1,4 +1,4 @@
-FROM php:7.2.12-cli-alpine3.8
+FROM php:7.2.13-cli-alpine3.8
 
 # This is where we're going to store all of our non-project specific binaries
 RUN mkdir -p /app/bin

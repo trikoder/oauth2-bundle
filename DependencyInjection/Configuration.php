@@ -101,6 +101,7 @@ final class Configuration implements ConfigurationInterface
         $node
             ->info("Configures different persistence methods that can be used by the bundle for saving client and token data.\nOnly one persistence method can be configured at a time.")
             ->isRequired()
+            ->performNoDeepMerging()
             ->children()
                 // Doctrine persistence
                 ->arrayNode('doctrine')

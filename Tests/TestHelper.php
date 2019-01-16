@@ -12,6 +12,7 @@ use Trikoder\Bundle\OAuth2Bundle\League\Entity\AccessToken as AccessTokenEntity;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Client as ClientEntity;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Scope as ScopeEntity;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken as AccessTokenModel;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthCode as AuthCodeModel;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken as RefreshTokenModel;
 
 final class TestHelper
@@ -29,6 +30,26 @@ final class TestHelper
             'scopes' => $refreshToken->getAccessToken()->getScopes(),
             'user_id' => $refreshToken->getAccessToken()->getUserIdentifier(),
             'expire_time' => $refreshToken->getExpiry()->getTimestamp(),
+        ]);
+
+        try {
+            return Crypto::encryptWithPassword($payload, self::ENCRYPTION_KEY);
+        } catch (CryptoException $e) {
+            return null;
+        }
+    }
+
+    public static function generateEncryptedAuthCodePayload(AuthCodeModel $authCode): ?string
+    {
+        $payload = json_encode([
+            'client_id' => $authCode->getClient()->getIdentifier(),
+            'redirect_uri' => (string) $authCode->getClient()->getRedirectUris()[0],
+            'auth_code_id' => $authCode->getIdentifier(),
+            'scopes' => $authCode->getScopes(),
+            'user_id' => $authCode->getUserIdentifier(),
+            'expire_time' => $authCode->getExpiryDateTime()->getTimestamp(),
+            'code_challenge' => null,
+            'code_challenge_method' => null,
         ]);
 
         try {

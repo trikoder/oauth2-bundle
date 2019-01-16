@@ -53,6 +53,11 @@ final class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->defaultValue('P1M')
                 ->end()
+                ->scalarNode('auth_code_ttl')
+                    ->info("How long the issued auth code should be valid for.\nThe value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters")
+                    ->cannotBeEmpty()
+                    ->defaultValue('PT10M')
+                ->end()
             ->end()
         ;
 

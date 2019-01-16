@@ -20,7 +20,7 @@ class User extends ArrayObject implements UserInterface
      */
     public function getPassword()
     {
-        return null;
+        return FixtureFactory::FIXTURE_PASSWORD;
     }
 
     /**

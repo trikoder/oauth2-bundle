@@ -17,7 +17,8 @@ final class ResourceServerTest extends AbstractIntegrationTest
             $this->scopeManager,
             $this->clientManager,
             $this->accessTokenManager,
-            $this->refreshTokenManager
+            $this->refreshTokenManager,
+            $this->authCodeManager
         );
     }
 

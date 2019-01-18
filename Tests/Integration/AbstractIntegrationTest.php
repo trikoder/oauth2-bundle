@@ -2,15 +2,18 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 
+use DateInterval;
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
@@ -21,7 +24,9 @@ use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository;
+use Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\RefreshTokenRepository;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository;
@@ -111,13 +116,15 @@ abstract class AbstractIntegrationTest extends TestCase
         $accessTokenRepository = new AccessTokenRepository($this->accessTokenManager, $this->clientManager, $scopeConverter);
         $refreshTokenRepository = new RefreshTokenRepository($this->refreshTokenManager, $this->accessTokenManager);
         $userRepository = new UserRepository($this->clientManager, $this->eventDispatcher);
+        $authCodeRepository = new AuthCodeRepository($this->authCodeManager, $this->clientManager, $scopeConverter);
 
         $this->authorizationServer = $this->createAuthorizationServer(
             $scopeRepository,
             $clientRepository,
             $accessTokenRepository,
             $refreshTokenRepository,
-            $userRepository
+            $userRepository,
+            $authCodeRepository
         );
 
         $this->resourceServer = $this->createResourceServer($accessTokenRepository);
@@ -171,6 +178,15 @@ abstract class AbstractIntegrationTest extends TestCase
         return new ServerRequest([], [], null, null, 'php://temp', $headers);
     }
 
+    protected function createAuthorizeRequest(?string $credentials, array $query = []): ServerRequestInterface
+    {
+        $headers = [
+            'Authorization' => sprintf('Basic %s', base64_encode($credentials)),
+        ];
+
+        return new ServerRequest([], [], null, null, 'php://temp', $headers, [], $query, '');
+    }
+
     protected function handleAuthorizationRequest(ServerRequestInterface $serverRequest): array
     {
         $response = new Response();
@@ -195,12 +211,33 @@ abstract class AbstractIntegrationTest extends TestCase
         return $serverRequest;
     }
 
+    protected function handleAuthorizeRequest(ServerRequestInterface $serverRequest, $approved = true): array
+    {
+        $response = new Response();
+
+        try {
+            $authRequest = $this->authorizationServer->validateAuthorizationRequest($serverRequest);
+            $authRequest->setUser(new User('user'));
+            $authRequest->setAuthorizationApproved($approved);
+
+            $response = $this->authorizationServer->completeAuthorizationRequest($authRequest, $response);
+        } catch (OAuthServerException $e) {
+            $response = $e->generateHttpResponse($response);
+        }
+
+        $data = [];
+        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $data);
+
+        return $data;
+    }
+
     private function createAuthorizationServer(
         ScopeRepositoryInterface $scopeRepository,
         ClientRepositoryInterface $clientRepository,
         AccessTokenRepositoryInterface $accessTokenRepository,
         RefreshTokenRepositoryInterface $refreshTokenRepository,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+        AuthCodeRepositoryInterface $authCodeRepository
     ): AuthorizationServer {
         $authorizationServer = new AuthorizationServer(
             $clientRepository,
@@ -213,6 +250,7 @@ abstract class AbstractIntegrationTest extends TestCase
         $authorizationServer->enableGrantType(new ClientCredentialsGrant());
         $authorizationServer->enableGrantType(new RefreshTokenGrant($refreshTokenRepository));
         $authorizationServer->enableGrantType(new PasswordGrant($userRepository, $refreshTokenRepository));
+        $authorizationServer->enableGrantType(new AuthCodeGrant($authCodeRepository, $refreshTokenRepository, new DateInterval('PT10M')));
 
         return $authorizationServer;
     }

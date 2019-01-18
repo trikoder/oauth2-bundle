@@ -383,4 +383,77 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $this->assertSame('The refresh token is invalid.', $response['message']);
         $this->assertSame('Cannot decrypt the refresh token', $response['hint']);
     }
+
+    public function testSuccessfulCodeRequest(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+            'response_type' => 'code',
+            'client_id' => 'foo',
+        ]);
+
+        $response = $this->handleAuthorizeRequest($request);
+
+        // Response assertions.
+        $this->assertArrayHasKey('code', $response);
+    }
+
+    public function testSuccessfulCodeRequestWithState(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+            'response_type' => 'code',
+            'client_id' => 'foo',
+            'state' => 'quzbaz',
+        ]);
+
+        $response = $this->handleAuthorizeRequest($request);
+
+        // Response assertions.
+        $this->assertArrayHasKey('code', $response);
+        $this->assertSame('quzbaz', $response['state']);
+    }
+
+    public function testSuccessfulCodeRequestWithRedirectUri(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+            'response_type' => 'code',
+            'client_id' => 'foo',
+            'redirect-uri' => 'https://example.org/oauth2/redirect-uri',
+        ]);
+
+        $response = $this->handleAuthorizeRequest($request);
+
+        // Response assertions.
+        $this->assertArrayHasKey('code', $response);
+    }
+
+    public function testCodeRequestWithInvalidScope(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+            'response_type' => 'code',
+            'client_id' => 'foo',
+            'scope' => 'non_existing',
+        ]);
+
+        $response = $this->handleAuthorizeRequest($request);
+
+        // Response assertions.
+        $this->assertSame('invalid_scope', $response['error']);
+        $this->assertSame('The requested scope is invalid, unknown, or malformed', $response['message']);
+        $this->assertSame('Check the `non_existing` scope', $response['hint']);
+    }
+
+    public function testDeniedCodeRequest(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+            'response_type' => 'code',
+            'client_id' => 'foo',
+        ]);
+
+        $response = $this->handleAuthorizeRequest($request, false);
+
+        // Response assertions.
+        $this->assertSame('access_denied', $response['error']);
+        $this->assertSame('The resource owner or authorization server denied the request.', $response['message']);
+        $this->assertSame('The user denied the request', $response['hint']);
+    }
 }

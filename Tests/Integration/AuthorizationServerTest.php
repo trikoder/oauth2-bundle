@@ -272,7 +272,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
     public function testValidRefreshGrant(): void
     {
-        $existingRefreshToken = $this->refreshTokenManager->find(FixtureFactory::FIXUTRE_REFRESH_TOKEN);
+        $existingRefreshToken = $this->refreshTokenManager->find(FixtureFactory::FIXTURE_REFRESH_TOKEN);
         $existingAccessToken = $existingRefreshToken->getAccessToken();
 
         $request = $this->createAuthorizationRequest('foo:secret', [

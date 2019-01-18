@@ -23,7 +23,7 @@ final class FixtureFactory
     public const FIXTURE_ACCESS_TOKEN_WITH_SCOPES = 'e56bb47d864633b2212650474df518ca7636b69ea15d8d6a143388da1889d88d8fef9082ac16074c';
     public const FIXTURE_ACCESS_TOKEN_USER_BOUND_WITH_SCOPES = '4ba73a8fff5de0920b1b07f4f1f0f000d8521dd2c9469a31341ea8a310adc268bcc951f53c970f0e';
 
-    public const FIXUTRE_REFRESH_TOKEN = '251878ac72f428961edb1df98868b8af3d988bc94c0b589d5aeb7eb0ac32c1da61db9a547b5ce4ad';
+    public const FIXTURE_REFRESH_TOKEN = '251878ac72f428961edb1df98868b8af3d988bc94c0b589d5aeb7eb0ac32c1da61db9a547b5ce4ad';
     public const FIXTURE_REFRESH_TOKEN_DIFFERENT_CLIENT = '73b1618470fdccf1c96eda132f8a19d6da43c31e2efd19daeab2c98c0ac36bf95b3ea72fdc8d6752';
     public const FIXTURE_REFRESH_TOKEN_EXPIRED = '3b3db453a137debb7b5f445c971bef18bb4f045d272a66a27054a0713096d2a8377679d204495c88';
     public const FIXTURE_REFRESH_TOKEN_REVOKED = '63641841630c2e4d747e0f9ebe12ee04424e322874b8e68ef69fd58f1899ef70beb09733e23928a6';
@@ -31,7 +31,7 @@ final class FixtureFactory
     public const FIXTURE_CLIENT_FIRST = 'foo';
     public const FIXTURE_CLIENT_SECOND = 'bar';
     public const FIXTURE_CLIENT_INACTIVE = 'baz_inactive';
-    public const FIXTURE_CLIENT_RESTRCITED_GRANTS = 'qux_restricted';
+    public const FIXTURE_CLIENT_RESTRICTED_GRANTS = 'qux_restricted';
 
     public const FIXTURE_SCOPE_FIRST = 'fancy';
     public const FIXTURE_SCOPE_SECOND = 'rock';
@@ -136,7 +136,7 @@ final class FixtureFactory
         $refreshTokens = [];
 
         $refreshTokens[] = new RefreshToken(
-            self::FIXUTRE_REFRESH_TOKEN,
+            self::FIXTURE_REFRESH_TOKEN,
             new DateTime('+1 month'),
             $accessTokenManager->find(self::FIXTURE_ACCESS_TOKEN_USER_BOUND)
         );
@@ -177,7 +177,7 @@ final class FixtureFactory
         $clients[] = (new Client(self::FIXTURE_CLIENT_INACTIVE, 'woah'))
             ->setActive(false);
 
-        $clients[] = (new Client(self::FIXTURE_CLIENT_RESTRCITED_GRANTS, 'wicked'))
+        $clients[] = (new Client(self::FIXTURE_CLIENT_RESTRICTED_GRANTS, 'wicked'))
             ->setGrants(new Grant('password'));
 
         return $clients;

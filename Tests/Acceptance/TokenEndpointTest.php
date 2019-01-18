@@ -73,7 +73,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $refreshToken = $this->client
             ->getContainer()
             ->get(RefreshTokenManagerInterface::class)
-            ->find(FixtureFactory::FIXUTRE_REFRESH_TOKEN);
+            ->find(FixtureFactory::FIXTURE_REFRESH_TOKEN);
 
         timecop_freeze(new DateTime());
 

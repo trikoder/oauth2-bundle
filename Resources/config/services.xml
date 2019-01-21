@@ -46,9 +46,6 @@
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="sensio_framework_extra.psr7.http_message_factory" />
         </service>
-        <service id="trikoder.oauth2.security.authorization.voter.always_approve_auth_request_voter" class="Trikoder\Bundle\OAuth2Bundle\Security\Authorization\Voter\AlwaysApproveAuthRequestVoter">
-            <tag name="security.voter" />
-        </service>
 
         <!-- The league authorization server -->
         <service id="league.oauth2.server.authorization_server" class="League\OAuth2\Server\AuthorizationServer">
@@ -85,6 +82,7 @@
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
             <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface" />
             <argument type="service" id="Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <tag name="controller.service_arguments" />
         </service>
 

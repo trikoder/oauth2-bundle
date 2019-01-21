@@ -19,4 +19,13 @@ final class OAuth2Events
      * You could alter the access token's scope here.
      */
     public const SCOPE_RESOLVE = 'trikoder.oauth2.scope_resolve';
+
+    /**
+     * The AUTHORIZATION_REQUEST_RESOLVE event occurrs right before the system
+     * complete the authorization request.
+     *
+     * You could allow or deny the authorization request, or set the uri where
+     * the user should decide about it.
+     */
+    public const AUTHORIZATION_REQUEST_RESOLVE = 'trikoder.oauth2.authorization_request_resolve';
 }

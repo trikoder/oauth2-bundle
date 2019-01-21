@@ -7,10 +7,13 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
+use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Zend\Diactoros\Response;
 
 final class AuthorizationController
@@ -30,11 +33,17 @@ final class AuthorizationController
      */
     private $tokenStorage;
 
-    public function __construct(AuthorizationServer $server, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage)
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    public function __construct(AuthorizationServer $server, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, EventDispatcherInterface $eventDispatcher)
     {
         $this->server = $server;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function indexAction(ServerRequestInterface $serverRequest): ResponseInterface
@@ -48,7 +57,17 @@ final class AuthorizationController
         try {
             $authRequest = $this->server->validateAuthorizationRequest($serverRequest);
             $authRequest->setUser($this->getUserEntity());
-            $authRequest->setAuthorizationApproved($this->authorizationChecker->isGranted($authRequest));
+
+            $event = $this->eventDispatcher->dispatch(
+                OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE,
+                new AuthorizationRequestResolveEvent($authRequest)
+            );
+
+            if (null === $event->isAuthorizationAllowed()) {
+                return $serverResponse->withStatus(302)->withHeader('Location', $event->getDecisionUri());
+            }
+
+            $authRequest->setAuthorizationApproved($event->isAuthorizationAllowed());
 
             return $this->server->completeAuthorizationRequest($authRequest, $serverResponse);
         } catch (OAuthServerException $e) {

@@ -3,12 +3,21 @@
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTime;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
+use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 
 final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 {
     public function testSuccessfulCodeRequest()
     {
+        $this->client
+            ->getContainer()
+            ->get('event_dispatcher')
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+                $event->setAuthorizationAllowed(true);
+            });
+
         timecop_freeze(new DateTime());
 
         $this->client->request(
@@ -39,6 +48,43 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertArrayHasKey('code', $query);
         $this->assertArrayHasKey('state', $query);
         $this->assertEquals('foobar', $query['state']);
+    }
+
+    public function testCodeRequestRedirectToDecision()
+    {
+        $this->client
+            ->getContainer()
+            ->get('event_dispatcher')
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+                $event->setDecisionUri('/authorize/decision');
+            });
+
+        timecop_freeze(new DateTime());
+
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+                'redirect_uri' => FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI,
+                'scope' => FixtureFactory::FIXTURE_SCOPE_FIRST . ' ' . FixtureFactory::FIXTURE_SCOPE_SECOND,
+            ],
+            [],
+            [
+                'PHP_AUTH_USER' => FixtureFactory::FIXTURE_USER,
+                'PHP_AUTH_PW' => FixtureFactory::FIXTURE_PASSWORD,
+            ]
+        );
+
+        timecop_return();
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(302, $response->getStatusCode());
+        $redirectUri = $response->headers->get('Location');
+        $this->assertEquals('/authorize/decision', $redirectUri);
     }
 
     public function testFailedAuthorizeRequest()

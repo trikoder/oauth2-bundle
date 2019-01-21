@@ -225,6 +225,10 @@ abstract class AbstractIntegrationTest extends TestCase
             $response = $e->generateHttpResponse($response);
         }
 
+        if (!$response->hasHeader('Location')) {
+            return json_decode($response->getBody(), true);
+        }
+
         $data = [];
         parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $data);
 

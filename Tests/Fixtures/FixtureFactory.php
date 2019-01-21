@@ -32,6 +32,8 @@ final class FixtureFactory
     public const FIXTURE_REFRESH_TOKEN_REVOKED = '63641841630c2e4d747e0f9ebe12ee04424e322874b8e68ef69fd58f1899ef70beb09733e23928a6';
 
     public const FIXTURE_AUTH_CODE = '0aa70e8152259988b3c8e9e8cff604019bb986eb226bd126da189829b95a2be631e2506042064e12';
+    public const FIXTURE_AUTH_CODE_DIFFERENT_CLIENT = 'e8fe264053cb346f4437af05c8cc9036931cfec3a0d5b54bdae349304ca4a83fd2f4590afd51e559';
+    public const FIXTURE_AUTH_CODE_EXPIRED = 'a7bdbeb26c9f095d842f5e5b8e313b24318d6b26728d1c543136727bbe9525f7a7930305a09b7401';
 
     public const FIXTURE_CLIENT_FIRST = 'foo';
     public const FIXTURE_CLIENT_SECOND = 'bar';
@@ -186,6 +188,22 @@ final class FixtureFactory
         $authCodes[] = new AuthCode(
             self::FIXTURE_AUTH_CODE,
             new DateTime('+2 minute'),
+            $clientManager->find(self::FIXTURE_CLIENT_FIRST),
+            self::FIXTURE_USER,
+            []
+        );
+
+        $authCodes[] = new AuthCode(
+            self::FIXTURE_AUTH_CODE_DIFFERENT_CLIENT,
+            new DateTime('+2 minute'),
+            $clientManager->find(self::FIXTURE_CLIENT_SECOND),
+            self::FIXTURE_USER,
+            []
+        );
+
+        $authCodes[] = new AuthCode(
+            self::FIXTURE_AUTH_CODE_EXPIRED,
+            new DateTime('-30 minute'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             self::FIXTURE_USER,
             []

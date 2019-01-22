@@ -20,7 +20,8 @@
         "symfony/framework-bundle": "~3.4|~4.0",
         "symfony/psr-http-message-bridge": "^1.0",
         "symfony/security-bundle": "~3.4|~4.0",
-        "zendframework/zend-diactoros": "^1.7"
+        "zendframework/zend-diactoros": "^1.7",
+        "steverhoades/oauth2-openid-connect-server": "^1.0"
     },
     "require-dev": {
         "ext-timecop": "*",
@@ -41,6 +42,7 @@
         "test": "phpunit"
     },
     "suggest": {
-        "nelmio/cors-bundle": "For handling CORS requests"
+        "nelmio/cors-bundle": "For handling CORS requests",
+        "steverhoades/oauth2-openid-connect-server": "For OpenID Connect Provider capabilities"
     }
 }

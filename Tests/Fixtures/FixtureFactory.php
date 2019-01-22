@@ -34,6 +34,7 @@ final class FixtureFactory
     public const FIXTURE_AUTH_CODE = '0aa70e8152259988b3c8e9e8cff604019bb986eb226bd126da189829b95a2be631e2506042064e12';
     public const FIXTURE_AUTH_CODE_DIFFERENT_CLIENT = 'e8fe264053cb346f4437af05c8cc9036931cfec3a0d5b54bdae349304ca4a83fd2f4590afd51e559';
     public const FIXTURE_AUTH_CODE_EXPIRED = 'a7bdbeb26c9f095d842f5e5b8e313b24318d6b26728d1c543136727bbe9525f7a7930305a09b7401';
+    public const FIXTURE_AUTH_CODE_OPENID = '86adfc23d7b07ba70b9a501c03ff9fafb967efb2b4b14099feced03a14430c3c00a69b3282f769a8';
 
     public const FIXTURE_CLIENT_FIRST = 'foo';
     public const FIXTURE_CLIENT_SECOND = 'bar';
@@ -44,6 +45,7 @@ final class FixtureFactory
 
     public const FIXTURE_SCOPE_FIRST = 'fancy';
     public const FIXTURE_SCOPE_SECOND = 'rock';
+    public const FIXTURE_SCOPE_OPENID = 'openid';
 
     public const FIXTURE_USER = 'user';
     public const FIXTURE_PASSWORD = 'pass';
@@ -209,6 +211,14 @@ final class FixtureFactory
             []
         );
 
+        $authCodes[] = new AuthCode(
+            self::FIXTURE_AUTH_CODE_OPENID,
+            new DateTime('+2 minute'),
+            $clientManager->find(self::FIXTURE_CLIENT_FIRST),
+            self::FIXTURE_USER,
+            [new Scope(self::FIXTURE_SCOPE_OPENID)]
+        );
+
         return $authCodes;
     }
 
@@ -241,6 +251,7 @@ final class FixtureFactory
         $scopes = [];
 
         $scopes[] = new Scope(self::FIXTURE_SCOPE_FIRST);
+        $scopes[] = new Scope(self::FIXTURE_SCOPE_OPENID);
 
         return $scopes;
     }

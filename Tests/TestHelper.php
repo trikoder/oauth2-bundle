@@ -46,7 +46,7 @@ final class TestHelper
             'client_id' => $authCode->getClient()->getIdentifier(),
             'redirect_uri' => (string) $authCode->getClient()->getRedirectUris()[0],
             'auth_code_id' => $authCode->getIdentifier(),
-            'scopes' => (new ScopeConverter())->toDomainArray($authCode->getScopes()),
+            'scopes' => (new ScopeConverter())->toLeagueArray($authCode->getScopes()),
             'user_id' => $authCode->getUserIdentifier(),
             'expire_time' => $authCode->getExpiryDateTime()->getTimestamp(),
             'code_challenge' => null,

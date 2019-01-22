@@ -28,4 +28,12 @@ final class OAuth2Events
      * the user should decide about it.
      */
     public const AUTHORIZATION_REQUEST_RESOLVE = 'trikoder.oauth2.authorization_request_resolve';
+
+    /**
+     * The AUTHORIZATION_CLAIMS_RESOLVE event occurrs when the user requests
+     * an id token from the OpenID Connect Provider
+     *
+     * You should set the user claims here if applicable.
+     */
+    public const AUTHORIZATION_CLAIMS_RESOLVE = 'trikoder.oauth2.claims_resolve';
 }

@@ -20,6 +20,7 @@ final class Configuration implements ConfigurationInterface
         $rootNode->append($this->createResourceServerNode());
         $rootNode->append($this->createScopesNode());
         $rootNode->append($this->createPersistenceNode());
+        $rootNode->append($this->createOpenIDConnectNode());
 
         return $treeBuilder;
     }
@@ -122,6 +123,25 @@ final class Configuration implements ConfigurationInterface
                 // In-memory persistence
                 ->scalarNode('in_memory')
                 ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    private function createOpenIDConnectNode(): NodeDefinition
+    {
+        $treeBuilder = $this->getWrappedTreeBuilder('openid_connect');
+        $node = $treeBuilder->getRootNode();
+
+        $node
+            ->info('Adds OpenID Connect Provider capabilities.')
+            ->treatFalseLike(['enabled' => false])
+            ->treatTrueLike(['enabled' => true])
+            ->treatNullLike(['enabled' => false])
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->booleanNode('enabled')->defaultNull()->end()
             ->end()
         ;
 

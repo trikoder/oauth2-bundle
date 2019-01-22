@@ -28,9 +28,7 @@
         "friendsofphp/php-cs-fixer": "2.13.1",
         "phpunit/phpunit": "7.4.*",
         "symfony/browser-kit": "~3.4|~4.0",
-        "symfony/phpunit-bridge": "~4.0",
-        "symfony/twig-bundle": "~3.4|~4.0",
-        "symfony/form": "~3.4|~4.0"
+        "symfony/phpunit-bridge": "~4.0"
     },
     "autoload": {
         "psr-4": { "Trikoder\\Bundle\\OAuth2Bundle\\": "" },
@@ -43,8 +41,6 @@
         "test": "phpunit"
     },
     "suggest": {
-        "nelmio/cors-bundle": "For handling CORS requests",
-        "symfony/form": "For the default decision interface",
-        "symfony/twig-bundle": "For the default decision interface"
+        "nelmio/cors-bundle": "For handling CORS requests"
     }
 }

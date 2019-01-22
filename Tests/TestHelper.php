@@ -14,6 +14,7 @@ use Trikoder\Bundle\OAuth2Bundle\League\Entity\Scope as ScopeEntity;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken as AccessTokenModel;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthCode as AuthCodeModel;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken as RefreshTokenModel;
+use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 
 final class TestHelper
 {
@@ -45,7 +46,7 @@ final class TestHelper
             'client_id' => $authCode->getClient()->getIdentifier(),
             'redirect_uri' => (string) $authCode->getClient()->getRedirectUris()[0],
             'auth_code_id' => $authCode->getIdentifier(),
-            'scopes' => $authCode->getScopes(),
+            'scopes' => self::getScopesEntities($authCode->getScopes()),
             'user_id' => $authCode->getUserIdentifier(),
             'expire_time' => $authCode->getExpiryDateTime()->getTimestamp(),
             'code_challenge' => null,
@@ -57,6 +58,24 @@ final class TestHelper
         } catch (CryptoException $e) {
             return null;
         }
+    }
+
+    /**
+     * @param ScopeModel[] $scopes
+     *
+     * @return ScopeEntity[]
+     */
+    private static function getScopesEntities(array $scopes): array
+    {
+        return array_map(
+            function (ScopeModel $scope) {
+                $entity = new ScopeEntity();
+                $entity->setIdentifier((string) $scope);
+
+                return $entity;
+            },
+            $scopes
+        );
     }
 
     public static function generateJwtToken(AccessTokenModel $accessToken): string

@@ -217,7 +217,9 @@ abstract class AbstractIntegrationTest extends TestCase
 
         try {
             $authRequest = $this->authorizationServer->validateAuthorizationRequest($serverRequest);
-            $authRequest->setUser(new User('user'));
+            $user = new User();
+            $user->setIdentifier('user');
+            $authRequest->setUser($user);
             $authRequest->setAuthorizationApproved($approved);
 
             $response = $this->authorizationServer->completeAuthorizationRequest($authRequest, $response);

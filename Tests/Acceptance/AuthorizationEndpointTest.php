@@ -15,7 +15,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
             ->getContainer()
             ->get('event_dispatcher')
             ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
-                $event->setAuthorizationAllowed(true);
+                $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
         timecop_freeze(new DateTime());

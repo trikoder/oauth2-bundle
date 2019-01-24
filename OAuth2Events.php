@@ -24,7 +24,7 @@ final class OAuth2Events
      * The AUTHORIZATION_REQUEST_RESOLVE event occurrs right before the system
      * complete the authorization request.
      *
-     * You could allow or deny the authorization request, or set the uri where
+     * You could approve or deny the authorization request, or set the uri where
      * the user should decide about it.
      */
     public const AUTHORIZATION_REQUEST_RESOLVE = 'trikoder.oauth2.authorization_request_resolve';

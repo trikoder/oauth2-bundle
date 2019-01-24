@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\Exception\LogicException;
 
 final class AuthorizationRequestResolveEvent extends Event
 {
-    public const AUTHORIZATION_ALLOWED = true;
+    public const AUTHORIZATION_APPROVED = true;
     public const AUTHORIZATION_DENIED = false;
     public const AUTHORIZATION_PENDING = null;
 
@@ -18,14 +18,14 @@ final class AuthorizationRequestResolveEvent extends Event
     private $authorizationRequest;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $decisionUri;
 
     /**
-     * @var bool
+     * @var ?bool
      */
-    private $authorizationAllowed;
+    private $authorizationResolution;
 
     public function __construct(AuthorizationRequest $authorizationRequest)
     {
@@ -33,25 +33,22 @@ final class AuthorizationRequestResolveEvent extends Event
     }
 
     /**
-     * @return bool
+     * @return ?bool
      */
-    public function isAuthorizationAllowed(): ?bool
+    public function getAuhorizationResolution(): ?bool
     {
-        return $this->authorizationAllowed;
+        return $this->authorizationResolution;
     }
 
-    /**
-     * @param bool $authorizationAllowed
-     */
-    public function setAuthorizationAllowed(?bool $authorizationAllowed)
+    public function resolveAuthorization(bool $authorizationResolution)
     {
-        $this->authorizationAllowed = $authorizationAllowed;
+        $this->authorizationResolution = $authorizationResolution;
     }
 
     public function getDecisionUri(): string
     {
         if (null === $this->decisionUri) {
-            throw new LogicException('There is no decision URI. If the authorization request is not allowed nor denied, a decision URI should be provided');
+            throw new LogicException('There is no decision URI. If the authorization request is not approved nor denied, a decision URI should be provided');
         }
 
         return $this->decisionUri;

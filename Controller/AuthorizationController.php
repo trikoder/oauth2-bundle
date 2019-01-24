@@ -63,11 +63,13 @@ final class AuthorizationController
                 new AuthorizationRequestResolveEvent($authRequest)
             );
 
-            if (null === $event->isAuthorizationAllowed()) {
+            if (AuthorizationRequestResolveEvent::AUTHORIZATION_PENDING === $event->getAuhorizationResolution()) {
                 return $serverResponse->withStatus(302)->withHeader('Location', $event->getDecisionUri());
             }
 
-            $authRequest->setAuthorizationApproved($event->isAuthorizationAllowed());
+            if (AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED === $event->getAuhorizationResolution()) {
+                $authRequest->setAuthorizationApproved(true);
+            }
 
             return $this->server->completeAuthorizationRequest($authRequest, $serverResponse);
         } catch (OAuthServerException $e) {

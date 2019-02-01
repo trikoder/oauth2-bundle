@@ -83,11 +83,11 @@ Once the user gets past the `oauth2` firewall, they will be granted additional r
 ROLE_OAUTH2_<scope>
 ```
 
-Here's one of the example uses cases featuring the [@Security](https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/security.html) annotation:
+Here's one of the example uses cases featuring the [@IsGranted](https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/security.html#isgranted) annotation:
 
 ```php
 /**
- * @Security("has_role('ROLE_OAUTH2_EDIT')")
+ * @IsGranted("ROLE_OAUTH2_EDIT")
  */
 public function indexAction()
 {

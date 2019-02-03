@@ -45,9 +45,6 @@ final class ScopeResolveEvent extends Event
         return $this->scopes;
     }
 
-    /**
-     * @param Scope[] $scopes
-     */
     public function setScopes(Scope ...$scopes): self
     {
         $this->scopes = (array) $scopes;

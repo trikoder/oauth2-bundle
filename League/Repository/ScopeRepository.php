@@ -3,13 +3,16 @@
 namespace Trikoder\Bundle\OAuth2Bundle\League\Repository;
 
 use League\OAuth2\Server\Entities\ClientEntityInterface;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
 use Trikoder\Bundle\OAuth2Bundle\Event\ScopeResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\Client as ClientModel;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant as GrantModel;
+use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
 final class ScopeRepository implements ScopeRepositoryInterface
@@ -71,10 +74,12 @@ final class ScopeRepository implements ScopeRepositoryInterface
     ) {
         $client = $this->clientManager->find($clientEntity->getIdentifier());
 
+        $scopes = $this->setupScopes($client, $this->scopeConverter->toDomainArray($scopes));
+
         $event = $this->eventDispatcher->dispatch(
             OAuth2Events::SCOPE_RESOLVE,
             new ScopeResolveEvent(
-                $this->scopeConverter->toDomainArray($scopes),
+                $scopes,
                 new GrantModel($grantType),
                 $client,
                 $userIdentifier
@@ -82,5 +87,33 @@ final class ScopeRepository implements ScopeRepositoryInterface
         );
 
         return $this->scopeConverter->toLeagueArray($event->getScopes());
+    }
+
+    /**
+     * @return ScopeModel[]
+     */
+    private function setupScopes(ClientModel $client, array $requestedScopes): array
+    {
+        $clientScopes = $client->getScopes();
+
+        if (empty($clientScopes)) {
+            return $requestedScopes;
+        }
+
+        if (empty($requestedScopes)) {
+            return $clientScopes;
+        }
+
+        $finalizedScopes = [];
+
+        foreach ($requestedScopes as $requestedScope) {
+            if (!\in_array($requestedScope, $clientScopes, true)) {
+                throw OAuthServerException::invalidScope((string) $requestedScope);
+            }
+
+            $finalizedScopes[] = $requestedScope;
+        }
+
+        return $finalizedScopes;
     }
 }

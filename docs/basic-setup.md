@@ -60,8 +60,6 @@ $ bin/console trikoder:oauth2:update-client --grant-type client_credentials --gr
 $ bin/console trikoder:oauth2:update-client --scope create --scope read foo
 ```
 
-> **NOTE:** You will have to setup an [event listener](controlling-token-scopes.md#listener) which will assign the client scopes to the issued access token.
-
 ### Delete a client
 For now, clients deletion have to be managed manually using SQL queries.
 

@@ -63,9 +63,6 @@ class Client
         return $this->redirectUris;
     }
 
-    /**
-     * @param RedirectUri[] $redirectUris
-     */
     public function setRedirectUris(RedirectUri ...$redirectUris): self
     {
         $this->redirectUris = (array) $redirectUris;
@@ -81,9 +78,6 @@ class Client
         return $this->grants;
     }
 
-    /**
-     * @param Grant[] $grants
-     */
     public function setGrants(Grant ...$grants): self
     {
         $this->grants = (array) $grants;
@@ -99,9 +93,6 @@ class Client
         return $this->scopes;
     }
 
-    /**
-     * @param Scope[] $scopes
-     */
     public function setScopes(Scope ...$scopes): self
     {
         $this->scopes = (array) $scopes;

@@ -11,12 +11,18 @@ addons:
       - docker-ce
 
 env:
-  - SYMFONY_VERSION=3.4.0
-  - SYMFONY_VERSION=4.1.0
-  - SYMFONY_VERSION=4.2.0
+  # PHP 7.2
+  - PHP_VERSION=7.2 SYMFONY_VERSION=3.4.0
+  - PHP_VERSION=7.2 SYMFONY_VERSION=4.1.0
+  - PHP_VERSION=7.2 SYMFONY_VERSION=4.2.0
+
+  # PHP 7.3
+  - PHP_VERSION=7.3 SYMFONY_VERSION=3.4.0
+  - PHP_VERSION=7.3 SYMFONY_VERSION=4.1.0
+  - PHP_VERSION=7.3 SYMFONY_VERSION=4.2.0
 
 install:
-  - dev/bin/docker-compose build
+  - dev/bin/docker-compose build --build-arg PHP_VERSION=${PHP_VERSION} php
 
 before_script:
   - dev/bin/php composer require symfony/symfony:~${SYMFONY_VERSION} --ansi --no-update

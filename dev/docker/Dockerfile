@@ -1,4 +1,7 @@
-FROM php:7.2.13-cli-alpine3.8
+ARG PHP_VERSION=7.3
+
+FROM php:${PHP_VERSION}-cli-alpine3.8
+LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"
 
 # This is where we're going to store all of our non-project specific binaries
 RUN mkdir -p /app/bin
@@ -8,12 +11,13 @@ ENV PATH /app/bin:$PATH
 RUN apk add --update --no-cache --virtual .build-deps \
         ${PHPIZE_DEPS} \
         libxml2-dev \
+        libzip-dev \
         zlib-dev \
     && docker-php-ext-install -j $(getconf _NPROCESSORS_ONLN) \
         xml \
         zip \
     && pecl install \
-        xdebug-2.6.1 \
+        xdebug-2.7.0RC1 \
         timecop-beta \
     && docker-php-ext-enable \
         xdebug \
@@ -23,6 +27,7 @@ RUN apk add --update --no-cache --virtual .build-deps \
 # Utilities needed to run this image
 RUN apk add --update --no-cache \
         git \
+        libzip \
         unzip \
         su-exec \
         shadow

@@ -41,6 +41,9 @@ RUN curl --show-error https://getcomposer.org/installer | php -- \
 # Create the user that's going to run our application
 RUN useradd -ms /bin/sh app
 
+# Enable parallel package installation for Composer
+RUN su-exec app composer global require hirak/prestissimo
+
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint
 
 VOLUME /app/src

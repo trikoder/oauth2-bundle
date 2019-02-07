@@ -35,6 +35,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureAuthorizationServer($container, $config['authorization_server']);
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
+        $this->configureOpenIDConnect($container, $config['openid_connect']);
     }
 
     /**
@@ -204,6 +205,16 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             $scopeManager->addMethodCall('save', [
                 new Definition(ScopeModel::class, [$scope]),
             ]);
+        }
+    }
+
+    private function configureOpenIDConnect(ContainerBuilder $container, array $openid_connect): void
+    {
+        if (isset($openid_connect['enabled']) && $openid_connect['enabled']) {
+            $container
+                ->getDefinition('league.oauth2.server.authorization_server')
+                ->setArgument(5, new Reference('openid_connect_server.id_token_response'))
+            ;
         }
     }
 }

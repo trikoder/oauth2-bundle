@@ -91,6 +91,24 @@
             <tag name="controller.service_arguments" />
         </service>
 
+        <!-- User info controller -->
+        <service id="trikoder.oauth2.controller.user_info_controller" class="Trikoder\Bundle\OAuth2Bundle\Controller\UserInfoController">
+            <argument type="service" id="League\OAuth2\Server\ResourceServer" />
+            <argument type="service" id="trikoder.oauth2.openid_connect.repository.identity_provider" />
+            <argument type="service" id="openid_connect_server.claim_extractor" />
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <!-- OpenID Connect Provider -->
+        <service id="trikoder.oauth2.openid_connect.repository.identity_provider" class="Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\Repository\IdentityProvider">
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+        </service>
+        <service id="openid_connect_server.claim_extractor" class="OpenIDConnectServer\ClaimExtractor" />
+        <service id="openid_connect_server.id_token_response" class="OpenIDConnectServer\IdTokenResponse">
+            <argument type="service" id="trikoder.oauth2.openid_connect.repository.identity_provider" />
+            <argument type="service" id="openid_connect_server.claim_extractor" />
+        </service>
+
         <!-- Utility services -->
         <service id="trikoder.oauth2.converter.scope_converter" class="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
     </services>

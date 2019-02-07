@@ -5,6 +5,8 @@ namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 use DateInterval;
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -19,6 +21,9 @@ use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use League\OAuth2\Server\ResourceServer;
+use OpenIDConnectServer\ClaimExtractor;
+use OpenIDConnectServer\IdTokenResponse;
+use OpenIDConnectServer\Repositories\IdentityProviderInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -43,6 +48,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
+use Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\Repository\IdentityProvider;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 use Zend\Diactoros\Response;
@@ -117,6 +123,7 @@ abstract class AbstractIntegrationTest extends TestCase
         $refreshTokenRepository = new RefreshTokenRepository($this->refreshTokenManager, $this->accessTokenManager);
         $userRepository = new UserRepository($this->clientManager, $this->eventDispatcher);
         $authCodeRepository = new AuthCodeRepository($this->authCodeManager, $this->clientManager, $scopeConverter);
+        $identityRepository = new IdentityProvider($this->eventDispatcher);
 
         $this->authorizationServer = $this->createAuthorizationServer(
             $scopeRepository,
@@ -124,7 +131,8 @@ abstract class AbstractIntegrationTest extends TestCase
             $accessTokenRepository,
             $refreshTokenRepository,
             $userRepository,
-            $authCodeRepository
+            $authCodeRepository,
+            $identityRepository
         );
 
         $this->resourceServer = $this->createResourceServer($accessTokenRepository);
@@ -158,6 +166,11 @@ abstract class AbstractIntegrationTest extends TestCase
         return $this->refreshTokenManager->find(
             $payload['refresh_token_id']
         );
+    }
+
+    protected function getIdToken(string $jwtToken): Token
+    {
+        return (new Parser())->parse($jwtToken);
     }
 
     protected function createAuthorizationRequest(?string $credentials, array $body = []): ServerRequestInterface
@@ -243,14 +256,16 @@ abstract class AbstractIntegrationTest extends TestCase
         AccessTokenRepositoryInterface $accessTokenRepository,
         RefreshTokenRepositoryInterface $refreshTokenRepository,
         UserRepositoryInterface $userRepository,
-        AuthCodeRepositoryInterface $authCodeRepository
+        AuthCodeRepositoryInterface $authCodeRepository,
+        IdentityProviderInterface $identityRepository
     ): AuthorizationServer {
         $authorizationServer = new AuthorizationServer(
             $clientRepository,
             $accessTokenRepository,
             $scopeRepository,
             new CryptKey(TestHelper::PRIVATE_KEY_PATH, null, false),
-            TestHelper::ENCRYPTION_KEY
+            TestHelper::ENCRYPTION_KEY,
+            new IdTokenResponse($identityRepository, new ClaimExtractor())
         );
 
         $authorizationServer->enableGrantType(new ClientCredentialsGrant());

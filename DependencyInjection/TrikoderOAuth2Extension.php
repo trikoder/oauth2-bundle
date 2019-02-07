@@ -35,7 +35,6 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureAuthorizationServer($container, $config['authorization_server']);
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
-        $this->configureAuthorizationEndpoint($container, $config['authorization_endpoint']);
     }
 
     /**
@@ -206,13 +205,5 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 new Definition(ScopeModel::class, [$scope]),
             ]);
         }
-    }
-
-    private function configureAuthorizationEndpoint(ContainerBuilder $container, array $config): void
-    {
-        $container
-            ->getDefinition('trikoder.oauth2.event_listener.check_required_authorization_listener')
-            ->replaceArgument('$requiredAttributes', $config['required_attributes'])
-        ;
     }
 }

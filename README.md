@@ -100,9 +100,18 @@ This package is currently in the active development.
     ```yaml
     oauth2:
         resource: '@TrikoderOAuth2Bundle/Resources/config/routes.xml'
-   ```
+    ```
 
 You can verify that everything is working by issuing a `GET` request to the `/token` endpoint.
+
+**❮ NOTE ❯** It is recommended to control the access to the authorization endpoint
+so that only logged in users can approve authorization requests.
+You should review your `security.yml` file. Here is a sample configuration:
+
+    ```yaml
+    access_control:
+        - { path: ^/authorize, roles: IS_AUTHENTICATED_REMEMBERED }
+    ```
 
 ## Configuration
 

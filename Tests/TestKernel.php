@@ -8,7 +8,6 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
@@ -90,11 +89,6 @@ class TestKernel extends Kernel implements CompilerPassInterface
 
         $container->loadFromExtension('security', [
             'firewalls' => [
-                'auth' => [
-                    'pattern' => '^/authorize',
-                    'stateless' => true,
-                    'http_basic' => true,
-                ],
                 'test' => [
                     'pattern' => '^/security-test',
                     'stateless' => true,
@@ -106,15 +100,11 @@ class TestKernel extends Kernel implements CompilerPassInterface
                     'memory' => [
                         'users' => [
                             FixtureFactory::FIXTURE_USER => [
-                                'password' => FixtureFactory::FIXTURE_PASSWORD,
                                 'roles' => ['ROLE_USER'],
                             ],
                         ],
                     ],
                 ],
-            ],
-            'encoders' => [
-                UserInterface::class => 'plaintext',
             ],
         ]);
 
@@ -140,7 +130,6 @@ class TestKernel extends Kernel implements CompilerPassInterface
                     'entity_manager' => 'default',
                 ],
             ],
-            'authorization_endpoint' => null,
         ]);
 
         $container

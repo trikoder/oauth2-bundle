@@ -91,13 +91,6 @@
             <tag name="controller.service_arguments" />
         </service>
 
-        <!-- Event listeners -->
-        <service id="trikoder.oauth2.event_listener.check_required_authorization_listener" class="Trikoder\Bundle\OAuth2Bundle\EventListener\CheckRequiredAuthorizationListener">
-            <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface" />
-            <argument key="$requiredAttributes" />
-            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequestResolveEvent" priority="100" />
-        </service>
-
         <!-- Utility services -->
         <service id="trikoder.oauth2.converter.scope_converter" class="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
     </services>

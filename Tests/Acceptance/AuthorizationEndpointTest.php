@@ -27,11 +27,6 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
                 'response_type' => 'code',
                 'state' => 'foobar',
-            ],
-            [],
-            [
-                'PHP_AUTH_USER' => FixtureFactory::FIXTURE_USER,
-                'PHP_AUTH_PW' => FixtureFactory::FIXTURE_PASSWORD,
             ]
         );
 
@@ -70,11 +65,6 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'state' => 'foobar',
                 'redirect_uri' => FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI,
                 'scope' => FixtureFactory::FIXTURE_SCOPE_FIRST . ' ' . FixtureFactory::FIXTURE_SCOPE_SECOND,
-            ],
-            [],
-            [
-                'PHP_AUTH_USER' => FixtureFactory::FIXTURE_USER,
-                'PHP_AUTH_PW' => FixtureFactory::FIXTURE_PASSWORD,
             ]
         );
 
@@ -91,13 +81,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
     {
         $this->client->request(
             'GET',
-            '/authorize',
-            [],
-            [],
-            [
-                'PHP_AUTH_USER' => FixtureFactory::FIXTURE_USER,
-                'PHP_AUTH_PW' => FixtureFactory::FIXTURE_PASSWORD,
-            ]
+            '/authorize'
         );
 
         $response = $this->client->getResponse();

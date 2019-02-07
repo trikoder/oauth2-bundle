@@ -207,6 +207,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                     'entity_manager' => 'default',
                 ],
             ],
+            'authorization_endpoint' => null,
         ]);
 
         $this->configureControllers($container);

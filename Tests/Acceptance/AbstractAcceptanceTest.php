@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\AuthCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
@@ -36,7 +37,8 @@ abstract class AbstractAcceptanceTest extends WebTestCase
             $this->client->getContainer()->get(ScopeManagerInterface::class),
             $this->client->getContainer()->get(ClientManagerInterface::class),
             $this->client->getContainer()->get(AccessTokenManagerInterface::class),
-            $this->client->getContainer()->get(RefreshTokenManagerInterface::class)
+            $this->client->getContainer()->get(RefreshTokenManagerInterface::class),
+            $this->client->getContainer()->get(AuthCodeManagerInterface::class)
         );
     }
 }

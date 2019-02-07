@@ -41,11 +41,12 @@ final class OAuth2Grants
 
     public static function has(string $grant): bool
     {
-        // TODO: Add support for "authorization_code" and "implicit" grant types.
+        // TODO: Add support for "implicit" grant type.
         return \in_array($grant, [
             self::CLIENT_CREDENTIALS,
             self::PASSWORD,
             self::REFRESH_TOKEN,
+            self::AUTHORIZATION_CODE,
         ]);
     }
 }

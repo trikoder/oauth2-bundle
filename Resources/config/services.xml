@@ -29,6 +29,11 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
         </service>
+        <service id="trikoder.oauth2.league.repository.auth_code_repository" class="Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthCodeManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <argument type="service" id="trikoder.oauth2.converter.scope_converter" />
+        </service>
 
         <!-- Security layer -->
         <service id="trikoder.oauth2.security.authentication.provider.oauth2_provider" class="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider">
@@ -65,6 +70,19 @@
         </service>
         <service id="league.oauth2.server.grant.refresh_token_grant" class="League\OAuth2\Server\Grant\RefreshTokenGrant">
             <argument type="service" id="trikoder.oauth2.league.repository.refresh_token_repository" />
+        </service>
+        <service id="league.oauth2.server.grant.auth_code_grant" class="League\OAuth2\Server\Grant\AuthCodeGrant" >
+            <argument type="service" id="trikoder.oauth2.league.repository.auth_code_repository" />
+            <argument type="service" id="trikoder.oauth2.league.repository.refresh_token_repository" />
+            <argument key="$authCodeTTL" />
+        </service>
+
+        <!-- Authorization controller -->
+        <service id="trikoder.oauth2.controller.authorization_controller" class="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">
+            <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
+            <argument type="service" id="Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+            <tag name="controller.service_arguments" />
         </service>
 
         <!-- Token controller -->

@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\AuthCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
@@ -190,6 +191,15 @@ class TestKernel extends Kernel implements CompilerPassInterface
             ->getDefinition(
                 $container
                     ->getAlias(RefreshTokenManagerInterface::class)
+                    ->setPublic(true)
+            )
+            ->setPublic(true)
+        ;
+
+        $container
+            ->getDefinition(
+                $container
+                    ->getAlias(AuthCodeManagerInterface::class)
                     ->setPublic(true)
             )
             ->setPublic(true)

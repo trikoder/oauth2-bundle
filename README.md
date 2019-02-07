@@ -122,6 +122,8 @@ Make sure your Docker images are all built and up-to-date using the following co
 dev/bin/docker-compose build
 ```
 
+> **NOTE:** You can target a different version of PHP during development by appending the `--build-arg PHP_VERSION=<version>` argument.
+
 After that, install all the needed packages required to develop the project:
 
 ```sh

@@ -20,6 +20,7 @@ final class Configuration implements ConfigurationInterface
         $rootNode->append($this->createResourceServerNode());
         $rootNode->append($this->createScopesNode());
         $rootNode->append($this->createPersistenceNode());
+        $rootNode->append($this->createAuthorizationEndpointNode());
 
         return $treeBuilder;
     }
@@ -121,6 +122,23 @@ final class Configuration implements ConfigurationInterface
                 ->end()
                 // In-memory persistence
                 ->scalarNode('in_memory')
+                ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    private function createAuthorizationEndpointNode(): NodeDefinition
+    {
+        $treeBuilder = $this->getWrappedTreeBuilder('authorization_endpoint');
+        $node = $treeBuilder->getRootNode();
+
+        $node
+            ->children()
+                ->variableNode('required_attributes')
+                    ->info('Required attributes to proccess authorization request')
+                    ->defaultValue('IS_AUTHENTICATED_REMEMBERED')
                 ->end()
             ->end()
         ;

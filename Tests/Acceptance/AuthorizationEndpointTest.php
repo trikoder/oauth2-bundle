@@ -45,13 +45,13 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertEquals('foobar', $query['state']);
     }
 
-    public function testCodeRequestRedirectToDecision()
+    public function testCodeRequestRedirectToResolutionUri()
     {
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
             ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
-                $event->setDecisionUri('/authorize/decision');
+                $event->setResolutionUri('/authorize/consent');
             });
 
         timecop_freeze(new DateTime());
@@ -74,7 +74,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         $this->assertSame(302, $response->getStatusCode());
         $redirectUri = $response->headers->get('Location');
-        $this->assertEquals('/authorize/decision', $redirectUri);
+        $this->assertEquals('/authorize/consent', $redirectUri);
     }
 
     public function testFailedAuthorizeRequest()

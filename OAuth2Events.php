@@ -25,7 +25,7 @@ final class OAuth2Events
      * complete the authorization request.
      *
      * You could approve or deny the authorization request, or set the uri where
-     * the user should decide about it.
+     * must be redirected to resolve the authorization request.
      */
     public const AUTHORIZATION_REQUEST_RESOLVE = 'trikoder.oauth2.authorization_request_resolve';
 }

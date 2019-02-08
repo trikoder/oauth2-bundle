@@ -20,7 +20,7 @@ final class AuthorizationRequestResolveEvent extends Event
     /**
      * @var ?string
      */
-    private $decisionUri;
+    private $resolutionUri;
 
     /**
      * @var ?bool
@@ -45,18 +45,18 @@ final class AuthorizationRequestResolveEvent extends Event
         $this->authorizationResolution = $authorizationResolution;
     }
 
-    public function getDecisionUri(): string
+    public function getResolutionUri(): string
     {
-        if (null === $this->decisionUri) {
-            throw new LogicException('There is no decision URI. If the authorization request is not approved nor denied, a decision URI should be provided');
+        if (null === $this->resolutionUri) {
+            throw new LogicException('There is no resolution URI. If the authorization request is not approved nor denied, a resolution URI should be provided');
         }
 
-        return $this->decisionUri;
+        return $this->resolutionUri;
     }
 
-    public function setDecisionUri(string $decisionUri)
+    public function setResolutionUri(string $resolutionUri)
     {
-        $this->decisionUri = $decisionUri;
+        $this->resolutionUri = $resolutionUri;
     }
 
     /**

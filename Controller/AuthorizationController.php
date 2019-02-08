@@ -53,7 +53,7 @@ final class AuthorizationController
             );
 
             if (AuthorizationRequestResolveEvent::AUTHORIZATION_PENDING === $event->getAuhorizationResolution()) {
-                return $serverResponse->withStatus(302)->withHeader('Location', $event->getDecisionUri());
+                return $serverResponse->withStatus(302)->withHeader('Location', $event->getResolutionUri());
             }
 
             if (AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED === $event->getAuhorizationResolution()) {

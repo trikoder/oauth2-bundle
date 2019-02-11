@@ -2,6 +2,9 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
+use League\OAuth2\Server\Entities\ClientEntityInterface;
+use League\OAuth2\Server\Entities\ScopeEntityInterface;
+use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Security\Core\Exception\LogicException;
@@ -54,31 +57,22 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->resolutionUri;
     }
 
-    public function setResolutionUri(string $resolutionUri)
+    public function setResolutionUri(string $resolutionUri): void
     {
         $this->resolutionUri = $resolutionUri;
     }
 
-    /**
-     * @return string
-     */
-    public function getGrantTypeId()
+    public function getGrantTypeId(): string
     {
         return $this->authorizationRequest->getGrantTypeId();
     }
 
-    /**
-     * @return ClientEntityInterface
-     */
-    public function getClient()
+    public function getClient(): ClientEntityInterface
     {
         return $this->authorizationRequest->getClient();
     }
 
-    /**
-     * @return UserEntityInterface
-     */
-    public function getUser()
+    public function getUser(): UserEntityInterface
     {
         return $this->authorizationRequest->getUser();
     }
@@ -86,47 +80,32 @@ final class AuthorizationRequestResolveEvent extends Event
     /**
      * @return ScopeEntityInterface[]
      */
-    public function getScopes()
+    public function getScopes(): array
     {
         return $this->authorizationRequest->getScopes();
     }
 
-    /**
-     * @return bool
-     */
-    public function isAuthorizationApproved()
+    public function isAuthorizationApproved(): bool
     {
         return $this->authorizationRequest->isAuthorizationApproved();
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRedirectUri()
+    public function getRedirectUri(): ?string
     {
         return $this->authorizationRequest->getRedirectUri();
     }
 
-    /**
-     * @return string|null
-     */
-    public function getState()
+    public function getState(): ?string
     {
         return $this->authorizationRequest->getState();
     }
 
-    /**
-     * @return string
-     */
-    public function getCodeChallenge()
+    public function getCodeChallenge(): string
     {
         return $this->authorizationRequest->getCodeChallenge();
     }
 
-    /**
-     * @return string
-     */
-    public function getCodeChallengeMethod()
+    public function getCodeChallengeMethod(): string
     {
         return $this->authorizationRequest->getCodeChallengeMethod();
     }

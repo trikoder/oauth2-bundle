@@ -2,61 +2,34 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
+use League\OAuth2\Server\Entities\ClientEntityInterface;
+use League\OAuth2\Server\Entities\ScopeEntityInterface;
+use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\Security\Core\Exception\LogicException;
+use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
+use Zend\Diactoros\Response;
 
+/**
+ * Class AuthorizationRequestResolveEvent
+
+ * @package Trikoder\Bundle\OAuth2Bundle\Event
+ */
 final class AuthorizationRequestResolveEvent extends Event
 {
-    public const AUTHORIZATION_APPROVED = true;
-    public const AUTHORIZATION_DENIED = false;
-    public const AUTHORIZATION_PENDING = null;
-
     /**
      * @var AuthorizationRequest
      */
     private $authorizationRequest;
 
     /**
-     * @var ?string
+     * @var Response
      */
-    private $resolutionUri;
-
-    /**
-     * @var ?bool
-     */
-    private $authorizationResolution;
+    private $response;
 
     public function __construct(AuthorizationRequest $authorizationRequest)
     {
         $this->authorizationRequest = $authorizationRequest;
-    }
-
-    /**
-     * @return ?bool
-     */
-    public function getAuhorizationResolution(): ?bool
-    {
-        return $this->authorizationResolution;
-    }
-
-    public function resolveAuthorization(bool $authorizationResolution)
-    {
-        $this->authorizationResolution = $authorizationResolution;
-    }
-
-    public function getResolutionUri(): string
-    {
-        if (null === $this->resolutionUri) {
-            throw new LogicException('There is no resolution URI. If the authorization request is not approved nor denied, a resolution URI should be provided');
-        }
-
-        return $this->resolutionUri;
-    }
-
-    public function setResolutionUri(string $resolutionUri)
-    {
-        $this->resolutionUri = $resolutionUri;
     }
 
     /**
@@ -83,6 +56,11 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->authorizationRequest->getUser();
     }
 
+    public function setUser(User $user): void
+    {
+        $this->authorizationRequest->setUser($user);
+    }
+
     /**
      * @return ScopeEntityInterface[]
      */
@@ -97,6 +75,14 @@ final class AuthorizationRequestResolveEvent extends Event
     public function isAuthorizationApproved()
     {
         return $this->authorizationRequest->isAuthorizationApproved();
+    }
+
+    /**
+     * @return void
+     */
+    public function approveAuthorization()
+    {
+        $this->authorizationRequest->setAuthorizationApproved(true);
     }
 
     /**
@@ -129,5 +115,29 @@ final class AuthorizationRequestResolveEvent extends Event
     public function getCodeChallengeMethod()
     {
         return $this->authorizationRequest->getCodeChallengeMethod();
+    }
+
+    /**
+     * @return Response
+     */
+    public function getResponse(): ?Response
+    {
+        return $this->response;
+    }
+
+    /**
+     * @param Response $response
+     */
+    public function setResponse(Response $response): void
+    {
+        $this->response = $response;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasResponse(): bool
+    {
+        return $this->response !== null;
     }
 }

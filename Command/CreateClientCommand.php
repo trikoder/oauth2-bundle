@@ -81,7 +81,7 @@ final class CreateClientCommand extends Command
         return 0;
     }
 
-    protected function buildClientFromInput(InputInterface $input)
+    private function buildClientFromInput(InputInterface $input)
     {
         $identifier = $input->getArgument('identifier') ?? hash('md5', random_bytes(16));
         $secret = $input->getArgument('secret') ?? hash('sha512', random_bytes(32));

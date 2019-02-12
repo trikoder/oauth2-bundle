@@ -80,9 +80,35 @@
         <!-- Authorization controller -->
         <service id="trikoder.oauth2.controller.authorization_controller" class="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
-            <argument type="service" id="Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <tag name="controller.service_arguments" />
+        </service>
+
+        <!-- Authorization listeners -->
+        <service id="trikoder.oauth2.event_listener.authorization.user" class="Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestUserResolvingListener">
+            <argument type="service" id="Symfony\Component\Security\Core\Security" />
+            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" />
+        </service>
+        <service id="trikoder.oauth2.event_listener.authorization.decision" class="Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestDecisionListener">
+            <argument type="service" id="trikoder.oauth2.authorization_decision_strategy.user_consent" />
+            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" />
+        </service>
+        <service id="trikoder.oauth2.event_listener.authorization.authentication" class="Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationListener">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="session" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="router" />
+            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" />
+        </service>
+
+        <!-- Authorization decision strategies -->
+        <!-- @todo add config option to enable -->
+        <service id="trikoder.oauth2.authorization_decision_strategy.always_allow" class="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\AlwaysAllowDecisionStrategy">
+        </service>
+        <service id="trikoder.oauth2.authorization_decision_strategy.user_consent" class="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\UserConsentDecisionStrategy">
+            <argument type="service" id="uri_signer" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="router" />
         </service>
 
         <!-- Token controller -->

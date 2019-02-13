@@ -58,6 +58,11 @@ final class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->defaultValue('PT10M')
                 ->end()
+                ->enumNode('authorization_strategy')
+                    ->info("What strategy should be used to authorize user.\nAvailable options are: user_consent - let user authorize the client request, always_allow - silently authorizes all client requests")
+                    ->values(['user_consent', 'always_allow'])
+                    ->defaultValue('user_consent')
+                ->end()
             ->end()
         ;
 

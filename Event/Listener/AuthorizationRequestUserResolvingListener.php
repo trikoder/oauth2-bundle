@@ -21,6 +21,16 @@ class AuthorizationRequestUserResolvingListener
      */
     private $security;
 
+    /**
+     * AuthorizationRequestUserResolvingListener constructor.
+     *
+     * @param Security $security
+     */
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function onAuthorizationRequest(AuthorizationRequestResolveEvent $authRequest)
     {
         $authRequest->setUser($this->getUserEntity());

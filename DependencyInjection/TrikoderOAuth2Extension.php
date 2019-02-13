@@ -218,4 +218,38 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 ->replaceArgument(0, new Reference('trikoder.oauth2.authorization_decision_strategy.always_allow'));
         }
     }
+
+    private function configureOpenIDConnect(ContainerBuilder $container, array $openid_connect): void
+    {
+        if (isset($openid_connect['enabled']) && $openid_connect['enabled']) {
+            $container
+                ->getDefinition('league.oauth2.server.authorization_server')
+                ->setArgument(5, new Reference('openid_connect_server.id_token_response'))
+            ;
+            $container
+                ->setDefinition(
+                    'trikoder.oauth2.event_listener.require_authentication.',
+                    $this->cerateAuthorizationRequestAuthenticationListenerDefinition()
+                )
+            ;
+        }
+    }
+
+    private function cerateAuthorizationRequestAuthenticationListenerDefinition(): Definition
+    {
+        return (new Definition(AuthorizationRequestAuthenticationListener::class))
+            ->setArguments([
+                new Reference('security.authorization_checker'),
+                new Reference('session'),
+                new Reference('request_stack'),
+                new Reference('router'),
+            ])
+            ->addTag('kernel.event_listener', [
+                'event' => 'trikoder.oauth2.authorization_request_resolve',
+                'method' => 'onAuthorizationRequest',
+                'priority' => 300
+            ])
+        ;
+
+    }
 }

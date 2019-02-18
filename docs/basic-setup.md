@@ -2,38 +2,68 @@
 
 ## Managing clients
 
-For now, clients have to be managed manually using SQL queries. Here are the fields that you can set on the client:
-
-| Field | Type | Required | Description | Notes |
-| --- | --- | --- | --- | --- |
-| identifier | string(32) | Yes | Client ID used for obtaining an access token. | *N/A* |
-| secret | string(128) | Yes | Client secret used for obtaining an access token. | *N/A* |
-| redirect_uris | string | No | List of URIs the user can get redirected to after completing the `authorization_code` flow. | Multiple values need to be separated with a space. |
-| grants | string | No | List of grants the client is able to utilize. | Multiple values need to be separated with a space. |
-| scopes | string | No | List of scopes the client will receive. | Multiple values need to be separated with a space. |
-| active | boolean | Yes | Whether the client can obtain new access tokens or not. | *N/A* |
+There are several commands available to manage clients.
 
 ### Add a client
 
-```sql
-INSERT INTO `oauth2_client` (`identifier`, `secret`, `active`) VALUES ('foo', 'bar', 1);
+To add a client you should use the `trikoder:oauth2:create-client` command.
+
+```sh
+Description:
+  Creates a new oAuth2 client
+
+Usage:
+  trikoder:oauth2:create-client [options] [--] [<identifier> [<secret>]]
+
+Arguments:
+  identifier                         The client identifier
+  secret                             The client secret
+
+Options:
+      --redirect-uri[=REDIRECT-URI]  Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs. (multiple values allowed)
+      --grant-type[=GRANT-TYPE]      Sets allowed grant type for client. Use this option multiple times to set multiple grant types. (multiple values allowed)
+      --scope[=SCOPE]                Sets allowed scope for client. Use this option multiple times to set multiple scopes. (multiple values allowed)
+```
+
+
+### Update a client
+
+To update a client you should use the `trikoder:oauth2:update-client` command.
+
+```sh
+Description:
+  Updates an oAuth2 client
+
+Usage:
+  trikoder:oauth2:update-client [options] [--] <identifier>
+
+Arguments:
+  identifier                         The client ID
+
+Options:
+      --redirect-uri[=REDIRECT-URI]  Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs. (multiple values allowed)
+      --grant-type[=GRANT-TYPE]      Sets allowed grant type for client. Use this option multiple times to set multiple grant types. (multiple values allowed)
+      --scope[=SCOPE]                Sets allowed scope for client. Use this option multiple times to set multiple scopes. (multiple values allowed)
+      --deactivated                  If provided, it will deactivate the given client.
 ```
 
 #### Restrict which grant types a client can access
 
-```sql
-UPDATE `oauth2_client` SET `grants` = 'client_credentials password' WHERE `identifier` = 'foo';
+```sh
+$ bin/console trikoder:oauth2:update-client --grant-type client_credentials --grant-type password foo
 ```
 
 #### Assign which scopes the client will receive
 
-```sql
-UPDATE `oauth2_client` SET `scopes` = 'create read' WHERE `identifier` = 'foo';
+
+```sh
+$ bin/console trikoder:oauth2:update-client --scope create --scope read foo
 ```
 
 > **NOTE:** You will have to setup an [event listener](controlling-token-scopes.md#listener) which will assign the client scopes to the issued access token.
 
 ### Delete a client
+For now, clients deletion have to be managed manually using SQL queries.
 
 ```sql
 DELETE FROM `oauth2_client` WHERE `identifier` = 'foo';

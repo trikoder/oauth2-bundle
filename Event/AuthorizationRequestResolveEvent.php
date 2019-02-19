@@ -6,14 +6,19 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
+use LogicException;
 use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\Security\Core\Exception\LogicException;
 
 final class AuthorizationRequestResolveEvent extends Event
 {
-    public const AUTHORIZATION_APPROVED = true;
-    public const AUTHORIZATION_DENIED = false;
-    public const AUTHORIZATION_PENDING = null;
+    public const AUTHORIZATION_PENDING = 0;
+    public const AUTHORIZATION_APPROVED = 1;
+    public const AUTHORIZATION_DENIED = 2;
+
+    public const ALLOWED_RESOLUTIONS = [
+        self::AUTHORIZATION_APPROVED,
+        self::AUTHORIZATION_DENIED,
+    ];
 
     /**
      * @var AuthorizationRequest
@@ -26,25 +31,26 @@ final class AuthorizationRequestResolveEvent extends Event
     private $resolutionUri;
 
     /**
-     * @var ?bool
+     * @var int
      */
     private $authorizationResolution;
 
     public function __construct(AuthorizationRequest $authorizationRequest)
     {
         $this->authorizationRequest = $authorizationRequest;
+        $this->authorizationResolution = self::AUTHORIZATION_PENDING;
     }
 
-    /**
-     * @return ?bool
-     */
-    public function getAuhorizationResolution(): ?bool
+    public function getAuhorizationResolution(): int
     {
         return $this->authorizationResolution;
     }
 
-    public function resolveAuthorization(bool $authorizationResolution)
+    public function resolveAuthorization(int $authorizationResolution): void
     {
+        if (!\in_array($authorizationResolution, self::ALLOWED_RESOLUTIONS, true)) {
+            throw new LogicException('The given resolution code is not allowed.');
+        }
         $this->authorizationResolution = $authorizationResolution;
     }
 

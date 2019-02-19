@@ -73,6 +73,16 @@
             <tag name="controller.service_arguments" />
         </service>
 
+        <!-- Commands -->
+        <service id="trikoder.oauth2.command.create_client_command" class="Trikoder\Bundle\OAuth2Bundle\Command\CreateClientCommand">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <tag name="console.command" />
+        </service>
+        <service id="trikoder.oauth2.command.update_client_command" class="Trikoder\Bundle\OAuth2Bundle\Command\UpdateClientCommand">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <tag name="console.command" />
+        </service>
+
         <!-- Utility services -->
         <service id="trikoder.oauth2.converter.scope_converter" class="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
     </services>

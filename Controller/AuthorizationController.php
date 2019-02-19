@@ -7,8 +7,7 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
@@ -23,19 +22,19 @@ final class AuthorizationController
     private $server;
 
     /**
-     * @var TokenStorageInterface
+     * @var Security
      */
-    private $tokenStorage;
+    private $security;
 
     /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
 
-    public function __construct(AuthorizationServer $server, TokenStorageInterface $tokenStorage, EventDispatcherInterface $eventDispatcher)
+    public function __construct(AuthorizationServer $server, Security $security, EventDispatcherInterface $eventDispatcher)
     {
         $this->server = $server;
-        $this->tokenStorage = $tokenStorage;
+        $this->security = $security;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -70,11 +69,9 @@ final class AuthorizationController
     {
         $userEntity = new User();
 
-        $token = $this->tokenStorage->getToken();
-        if ($token instanceof TokenInterface) {
-            $user = $token->getUser();
-            $username = $user instanceof UserInterface ? $user->getUsername() : (string) $user;
-            $userEntity->setIdentifier($username);
+        $user = $this->security->getUser();
+        if ($user instanceof UserInterface) {
+            $userEntity->setIdentifier($user->getUsername());
         }
 
         return $userEntity;

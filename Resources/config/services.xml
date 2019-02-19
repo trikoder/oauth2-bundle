@@ -80,7 +80,7 @@
         <!-- Authorization controller -->
         <service id="trikoder.oauth2.controller.authorization_controller" class="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
-            <argument type="service" id="Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface" />
+            <argument type="service" id="Symfony\Component\Security\Core\Security" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <tag name="controller.service_arguments" />
         </service>

@@ -19,6 +19,7 @@ use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use League\OAuth2\Server\ResourceServer;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -211,7 +212,7 @@ abstract class AbstractIntegrationTest extends TestCase
         return $serverRequest;
     }
 
-    protected function handleAuthorizeRequest(ServerRequestInterface $serverRequest, $approved = true): array
+    protected function handleAuthorizeRequest(ServerRequestInterface $serverRequest, $approved = true): ResponseInterface
     {
         $response = new Response();
 
@@ -227,12 +228,15 @@ abstract class AbstractIntegrationTest extends TestCase
             $response = $e->generateHttpResponse($response);
         }
 
-        if (!$response->hasHeader('Location')) {
-            return json_decode($response->getBody(), true);
-        }
+        return $response;
+    }
+
+    protected function extractQueryDataFromUri(string $uri): array
+    {
+        $uriObject = new \Zend\Diactoros\Uri($uri);
 
         $data = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $data);
+        parse_str($uriObject->getQuery(), $data);
 
         return $data;
     }

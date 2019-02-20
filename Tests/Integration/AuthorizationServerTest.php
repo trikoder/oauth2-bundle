@@ -394,7 +394,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizeRequest($request);
 
         // Response assertions.
-        $this->assertArrayHasKey('code', $response);
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertTrue($response->hasHeader('Location'));
+        $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $response->getHeaderLine('Location'));
+        $queryData = $this->extractQueryDataFromUri($response->getHeaderLine('Location'));
+        $this->assertArrayHasKey('code', $queryData);
     }
 
     public function testSuccessfulCodeRequestWithState(): void
@@ -408,8 +412,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizeRequest($request);
 
         // Response assertions.
-        $this->assertArrayHasKey('code', $response);
-        $this->assertSame('quzbaz', $response['state']);
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertTrue($response->hasHeader('Location'));
+        $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $response->getHeaderLine('Location'));
+        $queryData = $this->extractQueryDataFromUri($response->getHeaderLine('Location'));
+        $this->assertArrayHasKey('code', $queryData);
+        $this->assertSame('quzbaz', $queryData['state']);
     }
 
     public function testSuccessfulCodeRequestWithRedirectUri(): void
@@ -423,7 +431,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizeRequest($request);
 
         // Response assertions.
-        $this->assertArrayHasKey('code', $response);
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertTrue($response->hasHeader('Location'));
+        $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $response->getHeaderLine('Location'));
+        $queryData = $this->extractQueryDataFromUri($response->getHeaderLine('Location'));
+        $this->assertArrayHasKey('code', $queryData);
     }
 
     public function testCodeRequestWithInvalidScope(): void
@@ -437,9 +449,13 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizeRequest($request);
 
         // Response assertions.
-        $this->assertSame('invalid_scope', $response['error']);
-        $this->assertSame('The requested scope is invalid, unknown, or malformed', $response['message']);
-        $this->assertSame('Check the `non_existing` scope', $response['hint']);
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertTrue($response->hasHeader('Location'));
+        $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $response->getHeaderLine('Location'));
+        $queryData = $this->extractQueryDataFromUri($response->getHeaderLine('Location'));
+        $this->assertSame('invalid_scope', $queryData['error']);
+        $this->assertSame('The requested scope is invalid, unknown, or malformed', $queryData['message']);
+        $this->assertSame('Check the `non_existing` scope', $queryData['hint']);
     }
 
     public function testCodeRequestWithInvalidRedirectUri(): void
@@ -453,8 +469,10 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizeRequest($request);
 
         // Response assertions.
-        $this->assertSame('invalid_client', $response['error']);
-        $this->assertSame('Client authentication failed', $response['message']);
+        $this->assertSame(401, $response->getStatusCode());
+        $responseData = json_decode($response->getBody(), true);
+        $this->assertSame('invalid_client', $responseData['error']);
+        $this->assertSame('Client authentication failed', $responseData['message']);
     }
 
     public function testDeniedCodeRequest(): void
@@ -467,9 +485,13 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizeRequest($request, false);
 
         // Response assertions.
-        $this->assertSame('access_denied', $response['error']);
-        $this->assertSame('The resource owner or authorization server denied the request.', $response['message']);
-        $this->assertSame('The user denied the request', $response['hint']);
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertTrue($response->hasHeader('Location'));
+        $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $response->getHeaderLine('Location'));
+        $queryData = $this->extractQueryDataFromUri($response->getHeaderLine('Location'));
+        $this->assertSame('access_denied', $queryData['error']);
+        $this->assertSame('The resource owner or authorization server denied the request.', $queryData['message']);
+        $this->assertSame('The user denied the request', $queryData['hint']);
     }
 
     public function testCodeRequestWithMissingClient(): void
@@ -482,8 +504,10 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizeRequest($request, false);
 
         // Response assertions.
-        $this->assertSame('invalid_client', $response['error']);
-        $this->assertSame('Client authentication failed', $response['message']);
+        $this->assertSame(401, $response->getStatusCode());
+        $responseData = json_decode($response->getBody(), true);
+        $this->assertSame('invalid_client', $responseData['error']);
+        $this->assertSame('Client authentication failed', $responseData['message']);
     }
 
     public function testCodeRequestWithInactiveClient(): void
@@ -496,8 +520,10 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizeRequest($request, false);
 
         // Response assertions.
-        $this->assertSame('invalid_client', $response['error']);
-        $this->assertSame('Client authentication failed', $response['message']);
+        $this->assertSame(401, $response->getStatusCode());
+        $responseData = json_decode($response->getBody(), true);
+        $this->assertSame('invalid_client', $responseData['error']);
+        $this->assertSame('Client authentication failed', $responseData['message']);
     }
 
     public function testCodeRequestWithRestrictedGrantClient(): void
@@ -510,8 +536,10 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizeRequest($request, false);
 
         // Response assertions.
-        $this->assertSame('invalid_client', $response['error']);
-        $this->assertSame('Client authentication failed', $response['message']);
+        $this->assertSame(401, $response->getStatusCode());
+        $responseData = json_decode($response->getBody(), true);
+        $this->assertSame('invalid_client', $responseData['error']);
+        $this->assertSame('Client authentication failed', $responseData['message']);
     }
 
     public function testSuccessfulAuthorizationWithCode(): void

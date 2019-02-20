@@ -47,7 +47,7 @@ final class ScopeResolveEvent extends Event
 
     public function setScopes(Scope ...$scopes): self
     {
-        $this->scopes = (array) $scopes;
+        $this->scopes = $scopes;
 
         return $this;
     }

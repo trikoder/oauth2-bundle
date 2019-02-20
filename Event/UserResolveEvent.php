@@ -62,17 +62,11 @@ final class UserResolveEvent extends Event
         return $this->client;
     }
 
-    /**
-     * @return UserInterface
-     */
     public function getUser(): ?UserInterface
     {
         return $this->user;
     }
 
-    /**
-     * @param UserInterface $user
-     */
     public function setUser(?UserInterface $user): self
     {
         $this->user = $user;

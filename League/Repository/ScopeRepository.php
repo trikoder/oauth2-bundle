@@ -90,6 +90,8 @@ final class ScopeRepository implements ScopeRepositoryInterface
     }
 
     /**
+     * @param ScopeModel[] $requestedScopes
+     *
      * @return ScopeModel[]
      */
     private function setupScopes(ClientModel $client, array $requestedScopes): array

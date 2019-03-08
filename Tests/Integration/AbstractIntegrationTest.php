@@ -188,7 +188,7 @@ abstract class AbstractIntegrationTest extends TestCase
         return new ServerRequest([], [], null, null, 'php://temp', $headers, [], $query, '');
     }
 
-    protected function handleAuthorizationRequest(ServerRequestInterface $serverRequest): array
+    protected function handleTokenRequest(ServerRequestInterface $serverRequest): array
     {
         $response = new Response();
 
@@ -212,7 +212,7 @@ abstract class AbstractIntegrationTest extends TestCase
         return $serverRequest;
     }
 
-    protected function handleAuthorizeRequest(ServerRequestInterface $serverRequest, $approved = true): ResponseInterface
+    protected function handleAuthorizationRequest(ServerRequestInterface $serverRequest, $approved = true): ResponseInterface
     {
         $response = new Response();
 

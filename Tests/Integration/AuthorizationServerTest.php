@@ -17,7 +17,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Assert that we got something that looks like a normal response.
         $this->assertArrayHasKey('token_type', $response);
@@ -31,7 +31,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Assert that we got something that looks like a normal response.
         $this->assertArrayHasKey('token_type', $response);
@@ -43,7 +43,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -57,7 +57,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_client', $response['error']);
@@ -70,7 +70,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_client', $response['error']);
@@ -83,7 +83,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_client', $response['error']);
@@ -96,7 +96,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_client', $response['error']);
@@ -109,7 +109,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'non_existing',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('unsupported_grant_type', $response['error']);
@@ -124,7 +124,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'non_existing',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_scope', $response['error']);
@@ -140,7 +140,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         timecop_return();
 
@@ -164,7 +164,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         timecop_return();
 
@@ -201,7 +201,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         timecop_return();
 
@@ -233,7 +233,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'password' => 'pass',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_credentials', $response['error']);
@@ -247,7 +247,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'password' => 'pass',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -262,7 +262,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'username' => 'user',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -282,7 +282,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         timecop_return();
 
@@ -313,7 +313,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'refresh_token' => TestHelper::generateEncryptedPayload($existingRefreshToken),
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -330,7 +330,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'refresh_token' => TestHelper::generateEncryptedPayload($existingRefreshToken),
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -347,7 +347,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'refresh_token' => TestHelper::generateEncryptedPayload($existingRefreshToken),
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -361,7 +361,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'refresh_token',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -376,7 +376,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'refresh_token' => 'invalid',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -391,7 +391,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'foo',
         ]);
 
-        $response = $this->handleAuthorizeRequest($request);
+        $response = $this->handleAuthorizationRequest($request);
 
         // Response assertions.
         $this->assertSame(302, $response->getStatusCode());
@@ -409,7 +409,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'state' => 'quzbaz',
         ]);
 
-        $response = $this->handleAuthorizeRequest($request);
+        $response = $this->handleAuthorizationRequest($request);
 
         // Response assertions.
         $this->assertSame(302, $response->getStatusCode());
@@ -428,7 +428,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        $response = $this->handleAuthorizeRequest($request);
+        $response = $this->handleAuthorizationRequest($request);
 
         // Response assertions.
         $this->assertSame(302, $response->getStatusCode());
@@ -446,7 +446,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'non_existing',
         ]);
 
-        $response = $this->handleAuthorizeRequest($request);
+        $response = $this->handleAuthorizationRequest($request);
 
         // Response assertions.
         $this->assertSame(302, $response->getStatusCode());
@@ -466,7 +466,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/other-uri',
         ]);
 
-        $response = $this->handleAuthorizeRequest($request);
+        $response = $this->handleAuthorizationRequest($request);
 
         // Response assertions.
         $this->assertSame(401, $response->getStatusCode());
@@ -482,7 +482,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'foo',
         ]);
 
-        $response = $this->handleAuthorizeRequest($request, false);
+        $response = $this->handleAuthorizationRequest($request, false);
 
         // Response assertions.
         $this->assertSame(302, $response->getStatusCode());
@@ -501,7 +501,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'yolo',
         ]);
 
-        $response = $this->handleAuthorizeRequest($request, false);
+        $response = $this->handleAuthorizationRequest($request, false);
 
         // Response assertions.
         $this->assertSame(401, $response->getStatusCode());
@@ -517,7 +517,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'baz_inactive',
         ]);
 
-        $response = $this->handleAuthorizeRequest($request, false);
+        $response = $this->handleAuthorizationRequest($request, false);
 
         // Response assertions.
         $this->assertSame(401, $response->getStatusCode());
@@ -533,7 +533,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'qux_restricted',
         ]);
 
-        $response = $this->handleAuthorizeRequest($request, false);
+        $response = $this->handleAuthorizationRequest($request, false);
 
         // Response assertions.
         $this->assertSame(401, $response->getStatusCode());
@@ -552,7 +552,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
         $accessToken = $this->getAccessToken($response['access_token']);
 
         $this->assertSame('Bearer', $response['token_type']);
@@ -571,7 +571,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -589,7 +589,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_request', $response['error']);
@@ -607,7 +607,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/other-uri',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_client', $response['error']);

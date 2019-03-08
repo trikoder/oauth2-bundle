@@ -6,6 +6,7 @@ use DateTime;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
+use Zend\Diactoros\Response;
 
 final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 {
@@ -51,7 +52,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
             ->getContainer()
             ->get('event_dispatcher')
             ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
-                $event->setResolutionUri('/authorize/consent');
+                $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
+                $event->setResponse($response);
             });
 
         timecop_freeze(new DateTime());

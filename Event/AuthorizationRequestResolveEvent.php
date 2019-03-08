@@ -7,18 +7,13 @@ use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use LogicException;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 final class AuthorizationRequestResolveEvent extends Event
 {
-    public const AUTHORIZATION_PENDING = 0;
-    public const AUTHORIZATION_APPROVED = 1;
-    public const AUTHORIZATION_DENIED = 2;
-
-    public const ALLOWED_RESOLUTIONS = [
-        self::AUTHORIZATION_APPROVED,
-        self::AUTHORIZATION_DENIED,
-    ];
+    public const AUTHORIZATION_APPROVED = true;
+    public const AUTHORIZATION_DENIED = false;
 
     /**
      * @var AuthorizationRequest
@@ -26,46 +21,48 @@ final class AuthorizationRequestResolveEvent extends Event
     private $authorizationRequest;
 
     /**
-     * @var ?string
+     * @var ?ResponseInterface
      */
-    private $resolutionUri;
+    private $response;
 
     /**
-     * @var int
+     * @var bool
      */
-    private $authorizationResolution;
+    private $authorizationResolution = self::AUTHORIZATION_DENIED;
 
     public function __construct(AuthorizationRequest $authorizationRequest)
     {
         $this->authorizationRequest = $authorizationRequest;
-        $this->authorizationResolution = self::AUTHORIZATION_PENDING;
     }
 
-    public function getAuhorizationResolution(): int
+    public function getAuhorizationResolution(): bool
     {
         return $this->authorizationResolution;
     }
 
-    public function resolveAuthorization(int $authorizationResolution): void
+    public function resolveAuthorization(bool $authorizationResolution): void
     {
-        if (!\in_array($authorizationResolution, self::ALLOWED_RESOLUTIONS, true)) {
-            throw new LogicException('The given resolution code is not allowed.');
-        }
         $this->authorizationResolution = $authorizationResolution;
+        $this->response = null;
     }
 
-    public function getResolutionUri(): string
+    public function hasResponse(): bool
     {
-        if (null === $this->resolutionUri) {
-            throw new LogicException('There is no resolution URI. If the authorization request is not approved nor denied, a resolution URI should be provided');
+        return $this->response instanceof ResponseInterface;
+    }
+
+    public function getResponse(): ResponseInterface
+    {
+        if (!$this->hasResponse()) {
+            throw new LogicException('There is no response. You should call "hasResponse" to check if the response exists.');
         }
 
-        return $this->resolutionUri;
+        return $this->response;
     }
 
-    public function setResolutionUri(string $resolutionUri): void
+    public function setResponse(ResponseInterface $response): void
     {
-        $this->resolutionUri = $resolutionUri;
+        $this->response = $response;
     }
 
     public function getGrantTypeId(): string

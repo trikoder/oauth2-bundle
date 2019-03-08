@@ -46,18 +46,17 @@ final class AuthorizationController
             $authRequest = $this->server->validateAuthorizationRequest($serverRequest);
             $authRequest->setUser($this->getUserEntity());
 
+            /** @var AuthorizationRequestResolveEvent $event */
             $event = $this->eventDispatcher->dispatch(
                 OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE,
                 new AuthorizationRequestResolveEvent($authRequest)
             );
 
-            if (AuthorizationRequestResolveEvent::AUTHORIZATION_PENDING === $event->getAuhorizationResolution()) {
-                return $serverResponse->withStatus(302)->withHeader('Location', $event->getResolutionUri());
+            if ($event->hasResponse()) {
+                return $event->getResponse();
             }
 
-            if (AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED === $event->getAuhorizationResolution()) {
-                $authRequest->setAuthorizationApproved(true);
-            }
+            $authRequest->setAuthorizationApproved($event->getAuhorizationResolution());
 
             return $this->server->completeAuthorizationRequest($authRequest, $serverResponse);
         } catch (OAuthServerException $e) {

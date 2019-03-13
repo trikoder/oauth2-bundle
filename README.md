@@ -35,7 +35,7 @@ This package is currently in the active development.
     ```sh
     composer require trikoder/oauth2-bundle --no-plugins --no-scripts
     ```
-    
+
     > **NOTE:** Due to required pre-configuration, this bundle is currently not compatible with [Symfony Flex](https://github.com/symfony/flex).
 
 2. Create the bundle configuration file under `config/packages/trikoder_oauth2.yaml`. Here is a reference configuration file:
@@ -48,6 +48,9 @@ This package is currently in the active development.
             # Full path to the private key file.
             # How to generate a private key: https://oauth2.thephpleague.com/installation/#generating-public-and-private-keys
             private_key:    # Required, Example: /var/oauth/private.key
+
+            # Passphrase of the private key, if any.
+            private_key_passphrase: ~  # Optional, default null
 
             # The string used as an encryption key.
             # How to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password
@@ -79,7 +82,7 @@ This package is currently in the active development.
 
                 # Name of the entity manager that you wish to use for managing clients and tokens.
                 entity_manager: default # Required
-             
+
             in_memory: ~
     ```
 

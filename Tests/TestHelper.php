@@ -13,7 +13,7 @@ use Trikoder\Bundle\OAuth2Bundle\League\Entity\AccessToken as AccessTokenEntity;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Client as ClientEntity;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Scope as ScopeEntity;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken as AccessTokenModel;
-use Trikoder\Bundle\OAuth2Bundle\Model\AuthCode as AuthCodeModel;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode as AuthorizationCodeModel;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken as RefreshTokenModel;
 
 final class TestHelper
@@ -40,7 +40,7 @@ final class TestHelper
         }
     }
 
-    public static function generateEncryptedAuthCodePayload(AuthCodeModel $authCode): ?string
+    public static function generateEncryptedAuthCodePayload(AuthorizationCodeModel $authCode): ?string
     {
         $payload = json_encode([
             'client_id' => $authCode->getClient()->getIdentifier(),

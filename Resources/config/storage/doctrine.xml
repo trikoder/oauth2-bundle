@@ -7,7 +7,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" alias="trikoder.oauth2.manager.doctrine.access_token_manager" />
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" alias="trikoder.oauth2.manager.doctrine.refresh_token_manager" />
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface" alias="trikoder.oauth2.manager.in_memory.scope_manager" />
-        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthCodeManagerInterface" alias="trikoder.oauth2.manager.doctrine.auth_code_manager" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" alias="trikoder.oauth2.manager.doctrine.authorization_code_manager" />
 
         <!-- Services -->
         <service id="trikoder.oauth2.manager.doctrine.client_manager" class="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager">
@@ -20,7 +20,7 @@
             <argument key="$entityManager" />
         </service>
         <service id="trikoder.oauth2.manager.in_memory.scope_manager" class="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
-        <service id="trikoder.oauth2.manager.doctrine.auth_code_manager" class="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthCodeManager">
+        <service id="trikoder.oauth2.manager.doctrine.authorization_code_manager" class="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager">
             <argument key="$entityManager" />
         </service>
     </services>

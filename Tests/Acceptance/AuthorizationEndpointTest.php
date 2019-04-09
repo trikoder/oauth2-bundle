@@ -6,6 +6,7 @@ use DateTime;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
+use Zend\Diactoros\Response;
 
 final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 {
@@ -51,7 +52,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
             ->getContainer()
             ->get('event_dispatcher')
             ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
-                $event->setResolutionUri('/authorize/consent');
+                $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
+                $event->setResponse($response);
             });
 
         timecop_freeze(new DateTime());
@@ -75,6 +77,41 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertSame(302, $response->getStatusCode());
         $redirectUri = $response->headers->get('Location');
         $this->assertEquals('/authorize/consent', $redirectUri);
+    }
+
+    public function testFailedCodeRequestRedirectWithFakedRedirectUri()
+    {
+        $this->client
+            ->getContainer()
+            ->get('event_dispatcher')
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+                $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+            });
+
+        timecop_freeze(new DateTime());
+
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+                'redirect_uri' => 'https://example.org/oauth2/malicious-uri',
+            ]
+        );
+
+        timecop_return();
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(401, $response->getStatusCode());
+        $this->assertSame('application/json', $response->headers->get('Content-Type'));
+
+        $jsonResponse = json_decode($response->getContent(), true);
+
+        $this->assertSame('invalid_client', $jsonResponse['error']);
+        $this->assertSame('Client authentication failed', $jsonResponse['message']);
     }
 
     public function testFailedAuthorizeRequest()

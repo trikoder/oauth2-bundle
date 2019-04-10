@@ -38,6 +38,7 @@ final class AuthorizationController
         try {
             $authRequest = $this->server->validateAuthorizationRequest($serverRequest);
 
+            /** @var AuthorizationRequestResolveEvent $event */
             $event = $this->eventDispatcher->dispatch(
                 OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE,
                 new AuthorizationRequestResolveEvent($authRequest)

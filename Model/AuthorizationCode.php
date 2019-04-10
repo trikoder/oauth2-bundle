@@ -4,7 +4,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
 use DateTime;
 
-class AuthCode
+class AuthorizationCode
 {
     /**
      * @var string

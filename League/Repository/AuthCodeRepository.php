@@ -6,17 +6,17 @@ use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Exception\UniqueTokenIdentifierConstraintViolationException;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
-use Trikoder\Bundle\OAuth2Bundle\League\Entity\AuthCode as AuthCodeEntity;
-use Trikoder\Bundle\OAuth2Bundle\Manager\AuthCodeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\League\Entity\AuthCode;
+use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
-use Trikoder\Bundle\OAuth2Bundle\Model\AuthCode as AuthCodeModel;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
 
 final class AuthCodeRepository implements AuthCodeRepositoryInterface
 {
     /**
-     * @var AuthCodeManagerInterface
+     * @var AuthorizationCodeManagerInterface
      */
-    private $authCodeManager;
+    private $authorizationCodeManager;
 
     /**
      * @var ClientManagerInterface
@@ -29,11 +29,11 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     private $scopeConverter;
 
     public function __construct(
-        AuthCodeManagerInterface $authCodeManager,
+        AuthorizationCodeManagerInterface $authorizationCodeManager,
         ClientManagerInterface $clientManager,
         ScopeConverter $scopeConverter
     ) {
-        $this->authCodeManager = $authCodeManager;
+        $this->authorizationCodeManager = $authorizationCodeManager;
         $this->clientManager = $clientManager;
         $this->scopeConverter = $scopeConverter;
     }
@@ -43,23 +43,23 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
      */
     public function getNewAuthCode()
     {
-        return new AuthCodeEntity();
+        return new AuthCode();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity)
+    public function persistNewAuthCode(AuthCodeEntityInterface $authCode)
     {
-        $authCode = $this->authCodeManager->find($authCodeEntity->getIdentifier());
+        $authorizationCode = $this->authorizationCodeManager->find($authCode->getIdentifier());
 
-        if (null !== $authCode) {
+        if (null !== $authorizationCode) {
             throw UniqueTokenIdentifierConstraintViolationException::create();
         }
 
-        $authCode = $this->buildAuthCodeModel($authCodeEntity);
+        $authorizationCode = $this->buildAuthorizationCode($authCode);
 
-        $this->authCodeManager->save($authCode);
+        $this->authorizationCodeManager->save($authorizationCode);
     }
 
     /**
@@ -67,15 +67,15 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
      */
     public function revokeAuthCode($codeId)
     {
-        $authCode = $this->authCodeManager->find($codeId);
+        $authorizationCode = $this->authorizationCodeManager->find($codeId);
 
         if (null === $codeId) {
             return;
         }
 
-        $authCode->revoke();
+        $authorizationCode->revoke();
 
-        $this->authCodeManager->save($authCode);
+        $this->authorizationCodeManager->save($authorizationCode);
     }
 
     /**
@@ -83,27 +83,27 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
      */
     public function isAuthCodeRevoked($codeId)
     {
-        $authCode = $this->authCodeManager->find($codeId);
+        $authorizationCode = $this->authorizationCodeManager->find($codeId);
 
-        if (null === $authCode) {
+        if (null === $authorizationCode) {
             return true;
         }
 
-        return $authCode->isRevoked();
+        return $authorizationCode->isRevoked();
     }
 
-    private function buildAuthCodeModel(AuthCodeEntity $authCodeEntity): AuthCodeModel
+    private function buildAuthorizationCode(AuthCode $authCode): AuthorizationCode
     {
-        $client = $this->clientManager->find($authCodeEntity->getClient()->getIdentifier());
+        $client = $this->clientManager->find($authCode->getClient()->getIdentifier());
 
-        $authCode = new AuthCodeModel(
-            $authCodeEntity->getIdentifier(),
-            $authCodeEntity->getExpiryDateTime(),
+        $authorizationCode = new AuthorizationCode(
+            $authCode->getIdentifier(),
+            $authCode->getExpiryDateTime(),
             $client,
-            $authCodeEntity->getUserIdentifier(),
-            $this->scopeConverter->toDomainArray($authCodeEntity->getScopes())
+            $authCode->getUserIdentifier(),
+            $this->scopeConverter->toDomainArray($authCode->getScopes())
         );
 
-        return $authCode;
+        return $authorizationCode;
     }
 }

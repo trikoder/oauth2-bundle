@@ -6,6 +6,7 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
+use LogicException;
 use Symfony\Component\EventDispatcher\Event;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
 use Zend\Diactoros\Response;
@@ -32,26 +33,17 @@ final class AuthorizationRequestResolveEvent extends Event
         $this->authorizationRequest = $authorizationRequest;
     }
 
-    /**
-     * @return string
-     */
-    public function getGrantTypeId()
+    public function getGrantTypeId(): string
     {
         return $this->authorizationRequest->getGrantTypeId();
     }
 
-    /**
-     * @return ClientEntityInterface
-     */
-    public function getClient()
+    public function getClient(): ClientEntityInterface
     {
         return $this->authorizationRequest->getClient();
     }
 
-    /**
-     * @return UserEntityInterface
-     */
-    public function getUser()
+    public function getUser(): UserEntityInterface
     {
         return $this->authorizationRequest->getUser();
     }
@@ -64,78 +56,55 @@ final class AuthorizationRequestResolveEvent extends Event
     /**
      * @return ScopeEntityInterface[]
      */
-    public function getScopes()
+    public function getScopes(): array
     {
         return $this->authorizationRequest->getScopes();
     }
 
-    /**
-     * @return bool
-     */
-    public function isAuthorizationApproved()
+    public function isAuthorizationApproved(): bool
     {
         return $this->authorizationRequest->isAuthorizationApproved();
     }
 
-    /**
-     * @return void
-     */
-    public function approveAuthorization()
+    public function approveAuthorization():void
     {
         $this->authorizationRequest->setAuthorizationApproved(true);
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRedirectUri()
+    public function getRedirectUri(): ?string
     {
         return $this->authorizationRequest->getRedirectUri();
     }
 
-    /**
-     * @return string|null
-     */
-    public function getState()
+    public function getState(): ?string
     {
         return $this->authorizationRequest->getState();
     }
 
-    /**
-     * @return string
-     */
-    public function getCodeChallenge()
+    public function getCodeChallenge(): string
     {
         return $this->authorizationRequest->getCodeChallenge();
     }
 
-    /**
-     * @return string
-     */
-    public function getCodeChallengeMethod()
+    public function getCodeChallengeMethod(): string
     {
         return $this->authorizationRequest->getCodeChallengeMethod();
     }
 
-    /**
-     * @return Response
-     */
     public function getResponse(): ?Response
     {
+        if (!$this->hasResponse()) {
+            throw new LogicException('There is no response. You should call "hasResponse" to check if the response exists.');
+        }
+
         return $this->response;
     }
 
-    /**
-     * @param Response $response
-     */
     public function setResponse(Response $response): void
     {
         $this->response = $response;
     }
 
-    /**
-     * @return bool
-     */
     public function hasResponse(): bool
     {
         return $this->response !== null;

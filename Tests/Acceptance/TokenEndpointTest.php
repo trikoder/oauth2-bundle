@@ -4,7 +4,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTime;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
-use Trikoder\Bundle\OAuth2Bundle\Manager\AuthCodeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
@@ -104,7 +104,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
     {
         $authCode = $this->client
             ->getContainer()
-            ->get(AuthCodeManagerInterface::class)
+            ->get(AuthorizationCodeManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_AUTH_CODE);
 
         timecop_freeze(new DateTime());

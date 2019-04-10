@@ -24,6 +24,7 @@ use League\OAuth2\Server\ResourceServer;
 use OpenIDConnectServer\ClaimExtractor;
 use OpenIDConnectServer\IdTokenResponse;
 use OpenIDConnectServer\Repositories\IdentityProviderInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -37,10 +38,10 @@ use Trikoder\Bundle\OAuth2Bundle\League\Repository\RefreshTokenRepository;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
-use Trikoder\Bundle\OAuth2Bundle\Manager\AuthCodeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager;
-use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthCodeManager;
+use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager;
@@ -72,7 +73,7 @@ abstract class AbstractIntegrationTest extends TestCase
     protected $accessTokenManager;
 
     /**
-     * @var AuthCodeManagerInterface
+     * @var AuthorizationCodeManagerInterface
      */
     protected $authCodeManager;
 
@@ -105,7 +106,7 @@ abstract class AbstractIntegrationTest extends TestCase
         $this->clientManager = new ClientManager();
         $this->accessTokenManager = new AccessTokenManager();
         $this->refreshTokenManager = new RefreshTokenManager();
-        $this->authCodeManager = new AuthCodeManager();
+        $this->authCodeManager = new AuthorizationCodeManager();
         $this->eventDispatcher = new EventDispatcher();
 
         FixtureFactory::initializeFixtures(
@@ -200,7 +201,7 @@ abstract class AbstractIntegrationTest extends TestCase
         return new ServerRequest([], [], null, null, 'php://temp', $headers, [], $query, '');
     }
 
-    protected function handleAuthorizationRequest(ServerRequestInterface $serverRequest): array
+    protected function handleTokenRequest(ServerRequestInterface $serverRequest): array
     {
         $response = new Response();
 
@@ -224,7 +225,7 @@ abstract class AbstractIntegrationTest extends TestCase
         return $serverRequest;
     }
 
-    protected function handleAuthorizeRequest(ServerRequestInterface $serverRequest, $approved = true): array
+    protected function handleAuthorizationRequest(ServerRequestInterface $serverRequest, $approved = true): ResponseInterface
     {
         $response = new Response();
 
@@ -240,12 +241,15 @@ abstract class AbstractIntegrationTest extends TestCase
             $response = $e->generateHttpResponse($response);
         }
 
-        if (!$response->hasHeader('Location')) {
-            return json_decode($response->getBody(), true);
-        }
+        return $response;
+    }
+
+    protected function extractQueryDataFromUri(string $uri): array
+    {
+        $uriObject = new \Zend\Diactoros\Uri($uri);
 
         $data = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $data);
+        parse_str($uriObject->getQuery(), $data);
 
         return $data;
     }

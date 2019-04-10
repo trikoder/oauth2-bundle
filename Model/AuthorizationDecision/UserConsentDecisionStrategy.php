@@ -59,7 +59,7 @@ class UserConsentDecisionStrategy implements AuthorizationDecisionStrategy
         UriSigner $uriSigner,
         RequestStack $requestStack,
         UrlGeneratorInterface $urlGenerator,
-        string $consentApprovalRoute = 'oauth2_consent'
+        string $consentApprovalRoute
     ) {
         $this->consentApprovalRoute = $consentApprovalRoute;
         $this->uriSigner = $uriSigner;

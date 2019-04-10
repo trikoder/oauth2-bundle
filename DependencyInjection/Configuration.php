@@ -65,6 +65,11 @@ final class Configuration implements ConfigurationInterface
                     ->info("What strategy should be used to authorize user.\nService must implement AuthorizationDecisionStrategy interface")
                     ->defaultValue(UserConsentDecisionStrategy::class)
                 ->end()
+                ->scalarNode('consent_route')
+                    ->isRequired()
+                    ->info('The route to redirect the user to when the user consent is required for authorization')
+                    ->defaultValue('oauth2_consent')
+                ->end()
             ->end()
         ;
 

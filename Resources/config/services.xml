@@ -90,7 +90,7 @@
             <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="200" />
         </service>
         <service id="trikoder.oauth2.event_listener.authorization.decision" class="Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestDecisionListener">
-            <argument type="service" id="trikoder.oauth2.authorization_decision_strategy.user_consent" />
+            <argument />
             <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="100" />
         </service>
 
@@ -104,11 +104,15 @@
 
         <!-- Authorization decision strategies -->
         <service id="trikoder.oauth2.authorization_decision_strategy.always_allow" class="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\AlwaysAllowDecisionStrategy" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\AlwaysAllowDecisionStrategy" alias="trikoder.oauth2.authorization_decision_strategy.always_allow" />
+
         <service id="trikoder.oauth2.authorization_decision_strategy.user_consent" class="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\UserConsentDecisionStrategy">
             <argument type="service" id="uri_signer" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="router" />
+            <argument />
         </service>
+        <service id="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\UserConsentDecisionStrategy" alias="trikoder.oauth2.authorization_decision_strategy.user_consent" />
 
         <!-- Token controller -->
         <service id="trikoder.oauth2.controller.token_controller" class="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">

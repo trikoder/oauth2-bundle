@@ -7,9 +7,9 @@ use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use LogicException;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
-use Zend\Diactoros\Response;
 
 /**
  * Class AuthorizationRequestResolveEvent
@@ -24,13 +24,32 @@ final class AuthorizationRequestResolveEvent extends Event
     private $authorizationRequest;
 
     /**
-     * @var Response
+     * @var null|ResponseInterface
      */
     private $response;
 
     public function __construct(AuthorizationRequest $authorizationRequest)
     {
         $this->authorizationRequest = $authorizationRequest;
+    }
+
+    public function getResponse(): ?ResponseInterface
+    {
+        if (!$this->hasResponse()) {
+            throw new LogicException('There is no response. You should call "hasResponse" to check if the response exists.');
+        }
+
+        return $this->response;
+    }
+
+    public function setResponse(ResponseInterface $response): void
+    {
+        $this->response = $response;
+    }
+
+    public function hasResponse(): bool
+    {
+        return $this->response !== null;
     }
 
     public function getGrantTypeId(): string
@@ -89,24 +108,5 @@ final class AuthorizationRequestResolveEvent extends Event
     public function getCodeChallengeMethod(): string
     {
         return $this->authorizationRequest->getCodeChallengeMethod();
-    }
-
-    public function getResponse(): ?Response
-    {
-        if (!$this->hasResponse()) {
-            throw new LogicException('There is no response. You should call "hasResponse" to check if the response exists.');
-        }
-
-        return $this->response;
-    }
-
-    public function setResponse(Response $response): void
-    {
-        $this->response = $response;
-    }
-
-    public function hasResponse(): bool
-    {
-        return $this->response !== null;
     }
 }

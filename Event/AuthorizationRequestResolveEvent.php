@@ -33,6 +33,11 @@ final class AuthorizationRequestResolveEvent extends Event
         $this->authorizationRequest = $authorizationRequest;
     }
 
+    public function hasResponse(): bool
+    {
+        return $this->response !== null;
+    }
+
     public function getResponse(): ?ResponseInterface
     {
         if (!$this->hasResponse()) {
@@ -45,11 +50,6 @@ final class AuthorizationRequestResolveEvent extends Event
     public function setResponse(ResponseInterface $response): void
     {
         $this->response = $response;
-    }
-
-    public function hasResponse(): bool
-    {
-        return $this->response !== null;
     }
 
     public function getGrantTypeId(): string

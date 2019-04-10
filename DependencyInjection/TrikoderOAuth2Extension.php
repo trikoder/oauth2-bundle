@@ -18,6 +18,7 @@ use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
 use Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationListener;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\UserConsentDecisionStrategy;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface
@@ -97,7 +98,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         ]);
 
         $this->configureGrants($container, $config);
-        $this->configureAuthorizationStrategy($container, $config['authorization_strategy']);
+        $this->configureAuthorizationStrategy($container, $config['authorization_strategy'], $config['consent_route']);
     }
 
     private function configureGrants(ContainerBuilder $container, array $config): void
@@ -210,13 +211,12 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         }
     }
 
-    private function configureAuthorizationStrategy(ContainerBuilder $container, string $authorizationStrategy)
+    private function configureAuthorizationStrategy(ContainerBuilder $container, string $authorizationStrategy, string $consentRoute)
     {
-        if ($authorizationStrategy == 'always_allow') {
-            $container
-                ->getDefinition('trikoder.oauth2.event_listener.authorization.decision')
-                ->replaceArgument(0, new Reference('trikoder.oauth2.authorization_decision_strategy.always_allow'));
-        }
+        $container->getDefinition(UserConsentDecisionStrategy::class)->replaceArgument(3, $consentRoute);
+        $container
+            ->getDefinition('trikoder.oauth2.event_listener.authorization.decision')
+            ->replaceArgument(0, new Reference($authorizationStrategy));
     }
 
     private function configureOpenIDConnect(ContainerBuilder $container, array $openid_connect): void

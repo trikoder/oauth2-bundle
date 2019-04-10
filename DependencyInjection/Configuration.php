@@ -5,6 +5,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\UserConsentDecisionStrategy;
 
 final class Configuration implements ConfigurationInterface
 {
@@ -27,6 +28,7 @@ final class Configuration implements ConfigurationInterface
 
     private function createAuthorizationServerNode(): NodeDefinition
     {
+        /** @var TreeBuilder $treeBuilder */
         $treeBuilder = $this->getWrappedTreeBuilder('authorization_server');
         $node = $treeBuilder->getRootNode();
 
@@ -59,10 +61,10 @@ final class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->defaultValue('PT10M')
                 ->end()
-                ->enumNode('authorization_strategy')
-                    ->info("What strategy should be used to authorize user.\nAvailable options are: user_consent - let user authorize the client request, always_allow - silently authorizes all client requests")
-                    ->values(['user_consent', 'always_allow'])
-                    ->defaultValue('user_consent')
+                ->scalarNode('authorization_strategy')
+                    ->isRequired()
+                    ->info("What strategy should be used to authorize user.\nService must implement AuthorizationDecisionStrategy interface")
+                    ->defaultValue(UserConsentDecisionStrategy::class)
                 ->end()
             ->end()
         ;
@@ -136,6 +138,7 @@ final class Configuration implements ConfigurationInterface
 
     private function createOpenIDConnectNode(): NodeDefinition
     {
+        /** @var TreeBuilder $treeBuilder */
         $treeBuilder = $this->getWrappedTreeBuilder('openid_connect');
         $node = $treeBuilder->getRootNode();
 
@@ -147,6 +150,11 @@ final class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->booleanNode('enabled')->defaultNull()->end()
+                ->scalarNode('login_route')
+                    ->isRequired()
+                    ->info('Login route to redirect to unauthenticated users')
+                    ->defaultValue('app_login')
+                ->end()
             ->end()
         ;
 

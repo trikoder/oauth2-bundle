@@ -228,14 +228,14 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             ;
             $container
                 ->setDefinition(
-                    'trikoder.oauth2.event_listener.require_authentication.',
-                    $this->cerateAuthorizationRequestAuthenticationListenerDefinition()
+                    'trikoder.oauth2.event_listener.require_authentication',
+                    $this->createAuthorizationRequestAuthenticationListenerDefinition($openid_connect['login_route'])
                 )
             ;
         }
     }
 
-    private function cerateAuthorizationRequestAuthenticationListenerDefinition(): Definition
+    private function createAuthorizationRequestAuthenticationListenerDefinition(string $loginRoute): Definition
     {
         return (new Definition(AuthorizationRequestAuthenticationListener::class))
             ->setArguments([
@@ -243,6 +243,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 new Reference('session'),
                 new Reference('request_stack'),
                 new Reference('router'),
+                $loginRoute
             ])
             ->addTag('kernel.event_listener', [
                 'event' => 'trikoder.oauth2.authorization_request_resolve',

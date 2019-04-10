@@ -2,6 +2,7 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Event\Listener;
 
+use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -43,35 +44,31 @@ class AuthorizationRequestAuthenticationListener implements AuthorizationEventLi
     private $urlGenerator;
 
     /**
+     * @var FirewallMap
+     */
+    private $firewallMap;
+
+    /**
      * @var string
      */
     private $loginRoute;
 
-    /**
-     * AuthorizationRequestAuthenticationListener constructor.
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param SessionInterface $session
-     * @param RequestStack $requestStack
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param string $loginRoute
-     */
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         SessionInterface $session,
         RequestStack $requestStack,
         UrlGeneratorInterface $urlGenerator,
-        string $loginRoute = 'app_login'
+        FirewallMap $firewallMap,
+        string $loginRoute
     ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->session = $session;
         $this->requestStack = $requestStack;
         $this->urlGenerator = $urlGenerator;
+        $this->firewallMap = $firewallMap;
         $this->loginRoute = $loginRoute;
     }
 
-    /**
-     * @param AuthorizationRequestResolveEvent $event
-     */
     public function onAuthorizationRequest(AuthorizationRequestResolveEvent $event): void
     {
         if (null === $request = $this->requestStack->getMasterRequest()) {
@@ -79,7 +76,8 @@ class AuthorizationRequestAuthenticationListener implements AuthorizationEventLi
         }
 
         if (!$this->authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            $this->saveTargetPath($this->session, 'main', $request->getUri());
+            $firewallConfig = $this->firewallMap->getFirewallConfig($request);
+            $this->saveTargetPath($this->session, $firewallConfig->getProvider(), $request->getUri());
 
             $loginUrl = $this->urlGenerator->generate($this->loginRoute);
             $event->setResponse(new Response(null, 302, ['Location' => $loginUrl]));

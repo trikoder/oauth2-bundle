@@ -21,6 +21,9 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
         ]);
         $output = $commandTester->getDisplay();
         $this->assertContains('Given oAuth2 client deleted successfully', $output);
+
+        $client = $this->getClient($client->getIdentifier());
+        $this->assertNull($client);
     }
 
     public function testDeleteNonExistentClient()
@@ -34,6 +37,17 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
         ]);
         $output = $commandTester->getDisplay();
         $this->assertContains(sprintf('oAuth2 client identified as "%s" does not exist', $identifierName), $output);
+    }
+
+    private function getClient($identifier): ?Client
+    {
+        return
+            $this
+                ->client
+                ->getContainer()
+                ->get(ClientManagerInterface::class)
+                ->find($identifier)
+            ;
     }
 
     private function fakeAClient($identifier): Client

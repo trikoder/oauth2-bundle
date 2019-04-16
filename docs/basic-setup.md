@@ -61,10 +61,34 @@ $ bin/console trikoder:oauth2:update-client --scope create --scope read foo
 ```
 
 ### Delete a client
-For now, clients deletion have to be managed manually using SQL queries.
+To delete a client you should use the `trikoder:oauth2:delete-client` command.
 
-```sql
-DELETE FROM `oauth2_client` WHERE `identifier` = 'foo';
+```sh
+Description:
+  Deletes an oAuth2 client
+
+Usage:
+  trikoder:oauth2:delete-client <identifier>
+
+Arguments:
+  identifier            The client ID
+```
+
+### List clients
+To list clients you should use the `trikoder:oauth2:list-clients` command.
+
+```sh
+Description:
+  Lists existing oAuth2 clients
+
+Usage:
+  trikoder:oauth2:list-clients [options]
+
+Options:
+      --columns[=COLUMNS]            Determine which parameters are shown. Comma separated list.
+      --redirect-uri[=REDIRECT-URI]  Finds by redirect uri for client. Use this option multiple times to filter by multiple redirect URIs. (multiple values allowed)
+      --grant-type[=GRANT-TYPE]      Finds by allowed grant type for client. Use this option multiple times to filter by multiple grant types. (multiple values allowed)
+      --scope[=SCOPE]                Finds by allowed scope for client. Use this option multiple times to find by multiple scopes. (multiple values allowed)
 ```
 
 ## Configuring the Security layer

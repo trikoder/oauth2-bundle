@@ -12,7 +12,7 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
     {
         $client = $this->fakeAClient('foobar');
         $this->getClientManager()->save($client);
-        $this->assertCount(0, $client->getRedirectUris());
+
         $command = $this->command();
         $commandTester = new CommandTester($command);
         $commandTester->execute([

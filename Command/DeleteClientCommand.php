@@ -39,11 +39,13 @@ final class DeleteClientCommand extends Command
         $client = $this->entityManager->find(Client::class, $input->getArgument('identifier'));
         if (null === $client) {
             $io->error(sprintf('oAuth2 client identified as "%s" does not exist', $input->getArgument('identifier')));
+
             return 1;
         }
         $this->entityManager->remove($client);
         $this->entityManager->flush();
         $io->success('Given oAuth2 client deleted successfully.');
+
         return 0;
     }
 }

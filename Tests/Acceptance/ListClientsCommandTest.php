@@ -32,6 +32,23 @@ TABLE;
         $this->assertEquals(trim($expected), trim($output));
     }
 
+    public function testListClientsEmpty()
+    {
+        $command = $this->command();
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
+            'command' => $command->getName(),
+        ]);
+        $output = $commandTester->getDisplay();
+        $expected = <<<TABLE
+ ------------ -------- ------- -------------- ------------ 
+  identifier   secret   scope   redirect uri   grant type  
+ ------------ -------- ------- -------------- ------------
+TABLE;
+
+        $this->assertEquals(trim($expected), trim($output));
+    }
+
     public function testListClientColumns()
     {
         $scopes = [

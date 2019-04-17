@@ -72,7 +72,7 @@ final class ListClientsCommand extends Command
     {
         return
             ClientFilter
-                ::createFilter()
+                ::create()
                 ->addGrantCriteria($input->getOption('grant-type'))
                 ->addRedirectUriCriteria($input->getOption('redirect-uri'))
                 ->addScopeCriteria($input->getOption('scope'))

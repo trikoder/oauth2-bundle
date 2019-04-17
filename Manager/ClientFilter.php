@@ -8,7 +8,7 @@ final class ClientFilter
     private $redirectUris = null;
     private $scopes = null;
 
-    public static function createFilter(): self
+    public static function create(): self
     {
         return new static();
     }

@@ -34,4 +34,27 @@ final class ClientManager implements ClientManagerInterface
         $this->entityManager->persist($client);
         $this->entityManager->flush();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remove(Client $client): void
+    {
+        $this->entityManager->remove($client);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function list(?array $filterBy): array
+    {
+        $repository = $this->entityManager->getRepository(Client::class);
+
+        if ($filterBy) {
+            return $repository->findBy($filterBy);
+        }
+
+        return $repository->findAll();
+    }
 }

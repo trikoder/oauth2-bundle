@@ -2,12 +2,12 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Command;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
 final class ListClientsCommand extends Command
@@ -15,10 +15,10 @@ final class ListClientsCommand extends Command
     protected static $defaultName = 'trikoder:oauth2:list-clients';
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(ClientManagerInterface $clientManager)
     {
         parent::__construct();
-        $this->entityManager = $entityManager;
+        $this->entityManager = $clientManager;
     }
 
     protected function configure(): void
@@ -59,7 +59,7 @@ final class ListClientsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $criteria = $this->getFindByCriteria($input);
-        $clients = $this->entityManager->getRepository(Client::class)->findBy($criteria);
+        $clients = $this->entityManager->list($criteria);
         $this->drawTable($input, $output, $clients);
 
         return 0;

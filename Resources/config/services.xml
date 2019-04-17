@@ -83,11 +83,11 @@
             <tag name="console.command" />
         </service>
         <service id="trikoder.oauth2.command.delete_client_command" class="Trikoder\Bundle\OAuth2Bundle\Command\DeleteClientCommand">
-            <argument type="service" id="Doctrine\ORM\EntityManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="console.command" />
         </service>
         <service id="trikoder.oauth2.command.list_clients_command" class="Trikoder\Bundle\OAuth2Bundle\Command\ListClientsCommand">
-            <argument type="service" id="Doctrine\ORM\EntityManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="console.command" />
         </service>
 

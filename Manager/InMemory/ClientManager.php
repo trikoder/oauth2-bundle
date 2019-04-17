@@ -27,4 +27,20 @@ final class ClientManager implements ClientManagerInterface
     {
         $this->clients[$client->getIdentifier()] = $client;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remove(Client $client): void
+    {
+        unset($this->clients[$client->getIdentifier()]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function list(?array $filterBy): array
+    {
+        return $this->clients;
+    }
 }

@@ -14,7 +14,7 @@ final class ClientFilter
     }
 
     /**
-     * @param string|array $grantOrGrants
+     * @param string|array|null $grantOrGrants
      */
     public function addGrantCriteria($grantOrGrants): self
     {
@@ -36,7 +36,7 @@ final class ClientFilter
     }
 
     /**
-     * @param string|array $redirectUriOrUris
+     * @param string|array|null $redirectUriOrUris
      */
     public function addRedirectUriCriteria($redirectUriOrUris): self
     {
@@ -58,7 +58,7 @@ final class ClientFilter
     }
 
     /**
-     * @param string|array $scopeOrScopes
+     * @param string|array|null $scopeOrScopes
      */
     public function addScopeCriteria($scopeOrScopes): self
     {
@@ -70,7 +70,7 @@ final class ClientFilter
             $scopeOrScopes = [$scopeOrScopes];
         }
 
-        if (null === $this->redirectUris) {
+        if (null === $this->scopes) {
             $this->scopes = [];
         }
 

@@ -18,21 +18,7 @@ final class ClientFilter
      */
     public function addGrantCriteria($grantOrGrants): self
     {
-        if (null === $grantOrGrants) {
-            return $this;
-        }
-
-        if (false === \is_array($grantOrGrants)) {
-            $grantOrGrants = [$grantOrGrants];
-        }
-
-        if (null === $this->grants) {
-            $this->grants = [];
-        }
-
-        $this->grants = array_merge($this->grants, $grantOrGrants);
-
-        return $this;
+        return $this->addCriteria($this->grants, $grantOrGrants);
     }
 
     /**
@@ -40,21 +26,7 @@ final class ClientFilter
      */
     public function addRedirectUriCriteria($redirectUriOrUris): self
     {
-        if (null === $redirectUriOrUris) {
-            return $this;
-        }
-
-        if (false === \is_array($redirectUriOrUris)) {
-            $redirectUriOrUris = [$redirectUriOrUris];
-        }
-
-        if (null === $this->redirectUris) {
-            $this->redirectUris = [];
-        }
-
-        $this->redirectUris = array_merge($this->redirectUris, $redirectUriOrUris);
-
-        return $this;
+        return $this->addCriteria($this->redirectUris, $redirectUriOrUris);
     }
 
     /**
@@ -62,19 +34,27 @@ final class ClientFilter
      */
     public function addScopeCriteria($scopeOrScopes): self
     {
-        if (null === $scopeOrScopes) {
+        return $this->addCriteria($this->scopes, $scopeOrScopes);
+    }
+
+    /**
+     * @param string|array|null $valueOrValues
+     */
+    private function addCriteria(&$field, $valueOrValues): self
+    {
+        if (null === $valueOrValues) {
             return $this;
         }
 
-        if (false === \is_array($scopeOrScopes)) {
-            $scopeOrScopes = [$scopeOrScopes];
+        if (false === \is_array($valueOrValues)) {
+            $valueOrValues = [$valueOrValues];
         }
 
         if (null === $this->scopes) {
-            $this->scopes = [];
+            $field = [];
         }
 
-        $this->scopes = array_merge($this->scopes, $scopeOrScopes);
+        $field = array_merge($field, $valueOrValues);
 
         return $this;
     }

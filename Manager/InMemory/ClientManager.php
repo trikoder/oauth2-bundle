@@ -2,6 +2,7 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\InMemory;
 
+use Trikoder\Bundle\OAuth2Bundle\Manager\ClientFilter;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
@@ -39,8 +40,37 @@ final class ClientManager implements ClientManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function list(?array $filterBy): array
+    public function list(?ClientFilter $clientFilter): array
     {
-        return $this->clients;
+        if (!$clientFilter || !$clientFilter->hasFilters()) {
+            return $this->clients;
+        }
+
+        return array_filter($this->clients, function (Client $client) use ($clientFilter) {
+            $grantsPassed = self::passesFilter($client->getGrants(), $clientFilter->getGrants());
+            $scopesPassed = self::passesFilter($client->getScopes(), $clientFilter->getScopes());
+            $redirectUrisPassed = self::passesFilter($client->getRedirectUris(), $clientFilter->getRedirectUris());
+
+            return $grantsPassed && $scopesPassed && $redirectUrisPassed;
+        });
+    }
+
+    private static function stringifyFunction()
+    {
+        return function ($obj) {
+            return (string)$obj;
+        };
+    }
+
+    private static function passesFilter(array $clientValues, ?array $filterValues): bool
+    {
+        if (!$filterValues) {
+            return true;
+        }
+
+        $clientGrants = array_map(self::stringifyFunction(), $clientValues);
+        $grantsPassed = array_intersect($filterValues, $clientGrants);
+
+        return count($grantsPassed) > 0;
     }
 }

@@ -85,10 +85,10 @@ Usage:
   trikoder:oauth2:list-clients [options]
 
 Options:
-      --columns[=COLUMNS]            Determine which parameters are shown. Comma separated list.
+      --columns[=COLUMNS]            Determine which columns are shown. Comma separated list. [default: "identifier, secret, scope, redirect uri, grant type"]
       --redirect-uri[=REDIRECT-URI]  Finds by redirect uri for client. Use this option multiple times to filter by multiple redirect URIs. (multiple values allowed)
       --grant-type[=GRANT-TYPE]      Finds by allowed grant type for client. Use this option multiple times to filter by multiple grant types. (multiple values allowed)
-      --scope[=SCOPE]                Finds by allowed scope for client. Use this option multiple times to find by multiple scopes. (multiple values allowed)
+      --scope[=SCOPE]                Finds by allowed scope for client. Use this option multiple times to find by multiple scopes. (multiple values allowed)__
 ```
 
 ## Configuring the Security layer

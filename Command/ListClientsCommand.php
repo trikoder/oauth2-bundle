@@ -13,6 +13,8 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
 final class ListClientsCommand extends Command
 {
+    public static $allowedColumns = ['identifier', 'secret', 'scope', 'redirect uri', 'grant type'];
+
     protected static $defaultName = 'trikoder:oauth2:list-clients';
     private $entityManager;
 
@@ -30,8 +32,8 @@ final class ListClientsCommand extends Command
                 'columns',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Determine which parameters are shown. Comma separated list.',
-                null
+                'Determine which columns are shown. Comma separated list.',
+                implode(', ', self::$allowedColumns)
             )
             ->addOption(
                 'redirect-uri',
@@ -104,7 +106,7 @@ final class ListClientsCommand extends Command
 
     private function getColumns(InputInterface $input): array
     {
-        $allowedColumns = ['identifier', 'secret', 'scope', 'redirect uri', 'grant type'];
+        $allowedColumns = self::$allowedColumns;
         $requestedColumns = $input->getOption('columns');
         if ($requestedColumns) {
             $requestedColumns = explode(',', $requestedColumns);

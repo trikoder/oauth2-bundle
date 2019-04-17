@@ -51,18 +51,17 @@ final class ClientManager implements ClientManagerInterface
     public function list(?ClientFilter $clientFilter): array
     {
         $repository = $this->entityManager->getRepository(Client::class);
-
-        if (!$clientFilter || !$clientFilter->hasFilters()) {
-            return $repository->findAll();
-        }
-
         $criteria = self::filterToCriteria($clientFilter);
 
         return $repository->findBy($criteria);
     }
 
-    private static function filterToCriteria(ClientFilter $clientFilter): array
+    private static function filterToCriteria(?ClientFilter $clientFilter): array
     {
+        if (null === $clientFilter || false === $clientFilter->hasFilters()) {
+            return [];
+        }
+
         $criteria = [];
 
         $grants = $clientFilter->getGrants();

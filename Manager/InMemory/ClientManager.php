@@ -55,20 +55,13 @@ final class ClientManager implements ClientManagerInterface
         });
     }
 
-    private static function stringifyFunction()
-    {
-        return function ($obj) {
-            return (string) $obj;
-        };
-    }
-
     private static function passesFilter(array $clientValues, ?array $filterValues): bool
     {
         if (!$filterValues) {
             return true;
         }
 
-        $clientGrants = array_map(self::stringifyFunction(), $clientValues);
+        $clientGrants = array_map('strval', $clientValues);
         $grantsPassed = array_intersect($filterValues, $clientGrants);
 
         return \count($grantsPassed) > 0;

@@ -16,6 +16,7 @@ use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use League\OAuth2\Server\ResourceServer;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -38,8 +39,6 @@ use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
 
 abstract class AbstractIntegrationTest extends TestCase
 {
@@ -79,6 +78,11 @@ abstract class AbstractIntegrationTest extends TestCase
     protected $resourceServer;
 
     /**
+     * @var Psr17Factory
+     */
+    private $psrFactory;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp()
@@ -112,6 +116,8 @@ abstract class AbstractIntegrationTest extends TestCase
         );
 
         $this->resourceServer = $this->createResourceServer($accessTokenRepository);
+
+        $this->psrFactory = new Psr17Factory();
     }
 
     protected function getAccessToken(string $jwtToken): ?AccessToken
@@ -146,25 +152,26 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function createAuthorizationRequest(?string $credentials, array $body = []): ServerRequestInterface
     {
-        $headers = [
-            'Authorization' => sprintf('Basic %s', base64_encode($credentials)),
-        ];
-
-        return new ServerRequest([], [], null, null, 'php://temp', $headers, [], [], $body);
+        return $this
+            ->psrFactory
+            ->createServerRequest('', '')
+            ->withHeader('Authorization', sprintf('Basic %s', base64_encode($credentials)))
+            ->withParsedBody($body)
+        ;
     }
 
     protected function createResourceRequest(string $jwtToken): ServerRequestInterface
     {
-        $headers = [
-            'Authorization' => sprintf('Bearer %s', $jwtToken),
-        ];
-
-        return new ServerRequest([], [], null, null, 'php://temp', $headers);
+        return $this
+            ->psrFactory
+            ->createServerRequest('', '')
+            ->withHeader('Authorization', sprintf('Bearer %s', $jwtToken))
+        ;
     }
 
     protected function handleAuthorizationRequest(ServerRequestInterface $serverRequest): array
     {
-        $response = new Response();
+        $response = $this->psrFactory->createResponse();
 
         try {
             $response = $this->authorizationServer->respondToAccessTokenRequest($serverRequest, $response);

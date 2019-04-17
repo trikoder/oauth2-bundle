@@ -2,10 +2,17 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests;
 
+use LogicException;
+use Nyholm\Psr7\Factory as Nyholm;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UploadedFileFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
@@ -14,19 +21,27 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
+use Zend\Diactoros as ZendFramework;
 
-class TestKernel extends Kernel implements CompilerPassInterface
+final class TestKernel extends Kernel implements CompilerPassInterface
 {
     use MicroKernelTrait;
+
+    private const PSR_HTTP_PROVIDER_NYHOLM = 'nyholm';
+    private const PSR_HTTP_PROVIDER_ZENDFRAMEWORK = 'zendframework';
+
+    /**
+     * @var string
+     */
+    private $psrHttpProvider;
 
     /**
      * {@inheritdoc}
      */
     public function boot()
     {
-        putenv(sprintf('PRIVATE_KEY_PATH=%s', TestHelper::PRIVATE_KEY_PATH));
-        putenv(sprintf('PUBLIC_KEY_PATH=%s', TestHelper::PUBLIC_KEY_PATH));
-        putenv(sprintf('ENCRYPTION_KEY=%s', TestHelper::ENCRYPTION_KEY));
+        $this->determinePsrHttpFactory();
+        $this->initializeEnvironmentVariables();
 
         parent::boot();
     }
@@ -48,19 +63,55 @@ class TestKernel extends Kernel implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
+    public function getCacheDir()
+    {
+        return sprintf('%s/Tests/.kernel/cache', $this->getProjectDir());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLogDir()
+    {
+        return sprintf('%s/Tests/.kernel/logs', $this->getProjectDir());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function process(ContainerBuilder $container)
+    {
+        $this->exposeManagerServices($container);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getContainerClass()
+    {
+        return parent::getContainerClass() . ucfirst($this->psrHttpProvider);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
         $routes->import('@TrikoderOAuth2Bundle/Resources/config/routes.xml');
 
-        $routes->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:helloAction');
+        $routes
+            ->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:helloAction')
+        ;
 
         $routes
             ->add('/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:scopeAction')
-            ->setDefault('oauth2_scopes', ['fancy']);
+            ->setDefault('oauth2_scopes', ['fancy'])
+        ;
 
         $routes
             ->add('/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:rolesAction')
-            ->setDefault('oauth2_scopes', ['fancy']);
+            ->setDefault('oauth2_scopes', ['fancy'])
+        ;
     }
 
     /**
@@ -131,33 +182,11 @@ class TestKernel extends Kernel implements CompilerPassInterface
             ],
         ]);
 
-        $container
-            ->register(SecurityTestController::class)
-            ->setAutoconfigured(true)
-            ->setAutowired(true)
-        ;
+        $this->configureControllers($container);
+        $this->configurePsrHttpFactory($container);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCacheDir()
-    {
-        return sprintf('%s/Tests/.kernel/%s/cache', $this->getProjectDir(), $this->getEnvironment());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLogDir()
-    {
-        return sprintf('%s/Tests/.kernel/%s/logs', $this->getProjectDir(), $this->getEnvironment());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function process(ContainerBuilder $container)
+    private function exposeManagerServices(ContainerBuilder $container): void
     {
         $container
             ->getDefinition(
@@ -194,5 +223,75 @@ class TestKernel extends Kernel implements CompilerPassInterface
             )
             ->setPublic(true)
         ;
+    }
+
+    private function configurePsrHttpFactory(ContainerBuilder $container): void
+    {
+        switch ($this->psrHttpProvider) {
+            case self::PSR_HTTP_PROVIDER_ZENDFRAMEWORK:
+                $serverRequestFactory = ZendFramework\ServerRequestFactory::class;
+                $streamFactory = ZendFramework\StreamFactory::class;
+                $uploadedFileFactory = ZendFramework\UploadedFileFactory::class;
+                $responseFactory = ZendFramework\ResponseFactory::class;
+                break;
+            case self::PSR_HTTP_PROVIDER_NYHOLM:
+                $serverRequestFactory = Nyholm\Psr17Factory::class;
+                $streamFactory = Nyholm\Psr17Factory::class;
+                $uploadedFileFactory = Nyholm\Psr17Factory::class;
+                $responseFactory = Nyholm\Psr17Factory::class;
+                break;
+            default:
+                throw new LogicException(
+                    sprintf('PSR HTTP factory provider \'%s\' is not supported.', $this->psrHttpProvider)
+                );
+        }
+
+        $container->addDefinitions([
+            $serverRequestFactory => new Definition($serverRequestFactory),
+            $streamFactory => new Definition($streamFactory),
+            $uploadedFileFactory => new Definition($uploadedFileFactory),
+            $responseFactory => new Definition($responseFactory),
+        ]);
+
+        $container->addAliases([
+            ServerRequestFactoryInterface::class => $serverRequestFactory,
+            StreamFactoryInterface::class => $streamFactory,
+            UploadedFileFactoryInterface::class => $uploadedFileFactory,
+            ResponseFactoryInterface::class => $responseFactory,
+        ]);
+    }
+
+    private function configureControllers(ContainerBuilder $container)
+    {
+        $container
+            ->register(SecurityTestController::class)
+            ->setAutoconfigured(true)
+            ->setAutowired(true)
+        ;
+    }
+
+    private function determinePsrHttpFactory(): void
+    {
+        $psrHttpProvider = getenv('PSR_HTTP_PROVIDER');
+
+        switch ($psrHttpProvider) {
+            case self::PSR_HTTP_PROVIDER_ZENDFRAMEWORK:
+                $this->psrHttpProvider = self::PSR_HTTP_PROVIDER_ZENDFRAMEWORK;
+                break;
+            case self::PSR_HTTP_PROVIDER_NYHOLM:
+                $this->psrHttpProvider = self::PSR_HTTP_PROVIDER_NYHOLM;
+                break;
+            default:
+                throw new LogicException(
+                    sprintf('PSR HTTP factory provider \'%s\' is not supported.', $psrHttpProvider)
+                );
+        }
+    }
+
+    private function initializeEnvironmentVariables(): void
+    {
+        putenv(sprintf('PRIVATE_KEY_PATH=%s', TestHelper::PRIVATE_KEY_PATH));
+        putenv(sprintf('PUBLIC_KEY_PATH=%s', TestHelper::PUBLIC_KEY_PATH));
+        putenv(sprintf('ENCRYPTION_KEY=%s', TestHelper::ENCRYPTION_KEY));
     }
 }

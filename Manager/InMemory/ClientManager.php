@@ -61,9 +61,9 @@ final class ClientManager implements ClientManagerInterface
             return true;
         }
 
-        $clientGrants = array_map('strval', $clientValues);
-        $grantsPassed = array_intersect($filterValues, $clientGrants);
+        $clientValues = array_map('strval', $clientValues);
+        $valuesPassed = array_intersect($filterValues, $clientValues);
 
-        return \count($grantsPassed) > 0;
+        return \count($valuesPassed) > 0;
     }
 }

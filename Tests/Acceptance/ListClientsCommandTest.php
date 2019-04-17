@@ -21,28 +21,31 @@ final class ListClientsCommandTest extends AbstractAcceptanceTest
             'command' => $command->getName(),
         ]);
         $output = $commandTester->getDisplay();
+        $expected = <<<TABLE
+ ------------ -------- ------- -------------- ------------ 
+  identifier   secret   scope   redirect uri   grant type  
+ ------------ -------- ------- -------------- ------------ 
+  foobar       quzbaz                                      
+ ------------ -------- ------- -------------- ------------
+TABLE;
 
-        $id = preg_quote($client->getIdentifier());
-        $secret = preg_quote($client->getSecret());
-
-        $this->assertRegExp("/^.*{$id}\s+{$secret}.*$/s", $output);
+        $this->assertEquals(trim($expected), trim($output));
     }
 
     public function testListClientColumns()
     {
-        $secret = 'What the jiminy crickets did you just flaming say about me, you little bozo? I’ll have you know I graduated top of my class in the Cub Scouts, and I’ve been involved in numerous secret camping trips in Wyoming, and I have over 300 confirmed knots. I am trained in first aid and I’m the top bandager in the entire US Boy Scouts (of America). You are nothing to me but just another friendly face. I will clean your wounds for you with precision the likes of which has never been seen before on this annual trip, mark my words. You think you can get away with saying those shenanigans to me over the Internet? Think again, finkle. As we speak I am contacting my secret network of MSN friends across the USA and your IP is being traced right now so you better prepare for the seminars, man. The storm that wipes out the pathetic little thing you call your bake sale. You’re frigging done, kid. I can be anywhere, anytime, and I can tie knots in over seven hundred ways, and that’s just with my bare hands. Not only am I extensively trained in road safety, but I have access to the entire manual of the United States Boy Scouts (of America) and I will use it to its full extent to train your miserable butt on the facts of the continents, you little schmuck. If only you could have known what unholy retribution your little “clever” comment was about to bring down upon you, maybe you would have held your silly tongue. But you couldn’t, you didn’t, and now you’re paying the price, you goshdarned sillyhead. I will throw leaves all over you and you will dance in them. You’re friggin done, kiddo.';
         $scopes = [
-            new Scope('This 👈👉 is money snek. 🐍🐍💰💰 Upsnek ⬆⬆🔜🔜 in 7.123 7⃣ 1⃣2⃣3⃣ snekonds 🐍🐍 or you ✋✋ will NEVER ❌❌❌❌ get monies 💰💰 again Beware!! ✋✋❌❌ You😏😏 don\'t ❌❌ have much time!!🕛🕧🕐🕜🕑🕝🕝 You 😏😏 may never ❌❌get monies 💰💰🐍💰💰 again!!'),
-            new Scope('To hit, or not to hit. Dost thou ever miss? I suppose it not. You have a male love interest, yet I would wager he does not kiss thee (Ye olde mwah). Furthermore; he will find another lass like he won\'t miss thee. And at the end of it all. He is going to skrrt, and he will hit that dab, as if he were the man known by the name of Wiz Khalifa'),
+            new Scope('client-scope-1'),
+            new Scope('client-scope-2'),
         ];
 
         $redirectUris = [
-            new RedirectUri('http://redirect-uri-oh-my-oh-my'),
+            new RedirectUri('http://client-redirect-url'),
         ];
 
         $client =
             $this
-                ->fakeAClient('foobar', $secret)
+                ->fakeAClient('foobar')
                 ->setScopes(...$scopes)
                 ->setRedirectUris(...$redirectUris)
         ;
@@ -56,26 +59,26 @@ final class ListClientsCommandTest extends AbstractAcceptanceTest
         ]);
         $output = $commandTester->getDisplay();
 
-        $id = $client->getIdentifier();
-        $scopes = implode(', ', $client->getScopes());
-        $secret = $client->getSecret();
-        $redirectUris = implode(', ', $client->getRedirectUris());
+        $expected = <<<TABLE
+ ------------ -------------------------------- 
+  identifier   scope                           
+ ------------ -------------------------------- 
+  foobar       client-scope-1, client-scope-2  
+ ------------ --------------------------------
+TABLE;
 
-        $this->assertContains($id, $output);
-        $this->assertContains($scopes, $output);
-        $this->assertNotContains($secret, $output);
-        $this->assertNotContains($redirectUris, $output);
+        $this->assertEquals(trim($expected), trim($output));
     }
 
     public function testListFiltersClients()
     {
-        $clientA = $this->fakeAClient('CLIENTE_A', 'SECRET_DE_A');
+        $clientA = $this->fakeAClient('client-a', 'client-a-secret');
         $this->getClientManager()->save($clientA);
 
         $clientB =
             $this
-                ->fakeAClient('DER_CLIENT_B', 'DAS_GEHEIMNIS_VON_B')
-                ->setScopes(new Scope('EIN_GRANT_VON_B'))
+                ->fakeAClient('client-b', 'client-b-secret')
+                ->setScopes(new Scope('client-b-scope'))
         ;
         $this->getClientManager()->save($clientB);
 
@@ -87,10 +90,15 @@ final class ListClientsCommandTest extends AbstractAcceptanceTest
         ]);
         $output = $commandTester->getDisplay();
 
-        $this->assertContains($clientB->getIdentifier(), $output);
-        $this->assertContains($clientB->getSecret(), $output);
-        $this->assertNotContains($clientA->getIdentifier(), $output);
-        $this->assertNotContains($clientA->getSecret(), $output);
+        $expected = <<<TABLE
+ ------------ ----------------- ---------------- -------------- ------------ 
+  identifier   secret            scope            redirect uri   grant type  
+ ------------ ----------------- ---------------- -------------- ------------ 
+  client-b     client-b-secret   client-b-scope                              
+ ------------ ----------------- ---------------- -------------- ------------
+TABLE;
+
+        $this->assertEquals(trim($expected), trim($output));
     }
 
     private function fakeAClient($identifier, $secret = 'quzbaz'): Client

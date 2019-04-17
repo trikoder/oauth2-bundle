@@ -18,15 +18,15 @@ final class ClientFilter
      */
     public function addGrantCriteria($grantOrGrants): self
     {
-        if (!isset($grantOrGrants)) {
+        if (null === $grantOrGrants) {
             return $this;
         }
 
-        if (!\is_array($grantOrGrants)) {
+        if (false === \is_array($grantOrGrants)) {
             $grantOrGrants = [$grantOrGrants];
         }
 
-        if (!$this->grants) {
+        if (null === $this->grants) {
             $this->grants = [];
         }
 
@@ -40,15 +40,15 @@ final class ClientFilter
      */
     public function addRedirectUriCriteria($redirectUriOrUris): self
     {
-        if (!isset($redirectUriOrUris)) {
+        if (null === $redirectUriOrUris) {
             return $this;
         }
 
-        if (!\is_array($redirectUriOrUris)) {
+        if (false === \is_array($redirectUriOrUris)) {
             $redirectUriOrUris = [$redirectUriOrUris];
         }
 
-        if (!$this->redirectUris) {
+        if (null === $this->redirectUris) {
             $this->redirectUris = [];
         }
 
@@ -62,15 +62,15 @@ final class ClientFilter
      */
     public function addScopeCriteria($scopeOrScopes): self
     {
-        if (!isset($scopeOrScopes)) {
+        if (null === $scopeOrScopes) {
             return $this;
         }
 
-        if (!\is_array($scopeOrScopes)) {
+        if (false === \is_array($scopeOrScopes)) {
             $scopeOrScopes = [$scopeOrScopes];
         }
 
-        if (!$this->redirectUris) {
+        if (null === $this->redirectUris) {
             $this->scopes = [];
         }
 

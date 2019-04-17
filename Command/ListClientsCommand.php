@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Trikoder\Bundle\OAuth2Bundle\Manager\ClientFilter;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
@@ -65,23 +66,15 @@ final class ListClientsCommand extends Command
         return 0;
     }
 
-    private function getFindByCriteria(InputInterface $input): array
+    private function getFindByCriteria(InputInterface $input): ClientFilter
     {
-        $criteria = [];
-        $grants = $input->getOption('grant-type');
-        if ($grants) {
-            $criteria['grants'] = $grants;
-        }
-        $redirectUris = $input->getOption('redirect-uri');
-        if ($redirectUris) {
-            $criteria['redirect_uris'] = $redirectUris;
-        }
-        $scopes = $input->getOption('scope');
-        if ($scopes) {
-            $criteria['scopes'] = $scopes;
-        }
-
-        return $criteria;
+        return
+            ClientFilter
+                ::createFilter()
+                ->addGrantCriteria($input->getOption('grant-type'))
+                ->addRedirectUriCriteria($input->getOption('redirect-uri'))
+                ->addScopeCriteria($input->getOption('scope'))
+            ;
     }
 
     private function drawTable(InputInterface $input, OutputInterface $output, array $clients): void

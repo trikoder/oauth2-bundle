@@ -15,5 +15,5 @@ interface ClientManagerInterface
     /*
      * @return Client[]
      */
-    public function list(?array $filterBy): array;
+    public function list(?ClientFilter $filterBy): array;
 }

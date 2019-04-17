@@ -58,7 +58,7 @@ final class ClientManager implements ClientManagerInterface
     private static function stringifyFunction()
     {
         return function ($obj) {
-            return (string)$obj;
+            return (string) $obj;
         };
     }
 
@@ -71,6 +71,6 @@ final class ClientManager implements ClientManagerInterface
         $clientGrants = array_map(self::stringifyFunction(), $clientValues);
         $grantsPassed = array_intersect($filterValues, $clientGrants);
 
-        return count($grantsPassed) > 0;
+        return \count($grantsPassed) > 0;
     }
 }

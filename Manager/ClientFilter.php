@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Trikoder\Bundle\OAuth2Bundle\Manager;
-
 
 final class ClientFilter
 {
@@ -24,7 +22,7 @@ final class ClientFilter
             return $this;
         }
 
-        if (!is_array($grantOrGrants)) {
+        if (!\is_array($grantOrGrants)) {
             $grantOrGrants = [$grantOrGrants];
         }
 
@@ -46,7 +44,7 @@ final class ClientFilter
             return $this;
         }
 
-        if (!is_array($redirectUriOrUris)) {
+        if (!\is_array($redirectUriOrUris)) {
             $redirectUriOrUris = [$redirectUriOrUris];
         }
 
@@ -68,7 +66,7 @@ final class ClientFilter
             return $this;
         }
 
-        if (!is_array($scopeOrScopes)) {
+        if (!\is_array($scopeOrScopes)) {
             $scopeOrScopes = [$scopeOrScopes];
         }
 

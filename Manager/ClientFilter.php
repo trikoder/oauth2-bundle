@@ -77,8 +77,8 @@ final class ClientFilter
     public function hasFilters(): bool
     {
         return
-            isset($this->grants)
-            || isset($this->redirectUris)
-            || isset($this->scopes);
+            null === $this->grants
+            || null === $this->redirectUris
+            || null === $this->scopes;
     }
 }

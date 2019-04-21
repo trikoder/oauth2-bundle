@@ -78,7 +78,19 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="console.command" />
         </service>
+        <service id="trikoder.oauth2.command.list_client_command" class="Trikoder\Bundle\OAuth2Bundle\Command\ListClientCommand">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <tag name="console.command" />
+        </service>
+        <service id="trikoder.oauth2.command.get_client_command" class="Trikoder\Bundle\OAuth2Bundle\Command\GetClientCommand">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <tag name="console.command" />
+        </service>
         <service id="trikoder.oauth2.command.update_client_command" class="Trikoder\Bundle\OAuth2Bundle\Command\UpdateClientCommand">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <tag name="console.command" />
+        </service>
+        <service id="trikoder.oauth2.command.remove_client_command" class="Trikoder\Bundle\OAuth2Bundle\Command\RemoveClientCommand">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="console.command" />
         </service>

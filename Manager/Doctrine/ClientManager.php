@@ -21,6 +21,14 @@ final class ClientManager implements ClientManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function list(): array
+    {
+        return $this->entityManager->getRepository(Client::class)->findAll();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function find(string $identifier): ?Client
     {
         return $this->entityManager->find(Client::class, $identifier);
@@ -32,6 +40,15 @@ final class ClientManager implements ClientManagerInterface
     public function save(Client $client): void
     {
         $this->entityManager->persist($client);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remove(Client $client): void
+    {
+        $this->entityManager->remove($client);
         $this->entityManager->flush();
     }
 }

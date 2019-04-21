@@ -4,6 +4,16 @@
 
 There are several commands available to manage clients.
 
+### Get the list of client
+
+To get the list of client use the `trikoder:oauth2:list-client` command
+
+### Get a client information
+
+To get a client information use the `trikoder:oauth2:list-client <identifier>` command
+
+- *<identifier>*: **Required**, the client identifier to get
+
 ### Add a client
 
 To add a client you should use the `trikoder:oauth2:create-client` command.
@@ -63,10 +73,20 @@ $ bin/console trikoder:oauth2:update-client --scope create --scope read foo
 > **NOTE:** You will have to setup an [event listener](controlling-token-scopes.md#listener) which will assign the client scopes to the issued access token.
 
 ### Delete a client
-For now, clients deletion have to be managed manually using SQL queries.
+To delete a client you should use the `trikoder:oauth2:remove-client` command.
 
-```sql
-DELETE FROM `oauth2_client` WHERE `identifier` = 'foo';
+```sh
+Description:
+  Remove an oAuth2 client
+
+Usage:
+  trikoder:oauth2:remove-client [options] [--] <identifier>
+
+Arguments:
+  identifier                         The client ID
+
+Options:
+      -f, --force[=FORCE]            Delete the client whiteout asking [default: false]
 ```
 
 ## Configuring the Security layer

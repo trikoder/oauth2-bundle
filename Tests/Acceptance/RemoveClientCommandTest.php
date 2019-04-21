@@ -19,6 +19,7 @@ final class RemoveClientCommandTest extends AbstractAcceptanceTest
         $commandTester->execute([
             'command' => $command->getName(),
             'identifier' => $client->getIdentifier(),
+            '--force' => null
         ]);
         $output = $commandTester->getDisplay();
         $this->assertContains('Client foobar removed', $output);

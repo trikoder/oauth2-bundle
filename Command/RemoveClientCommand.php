@@ -35,9 +35,8 @@ final class RemoveClientCommand extends Command
             ->addOption(
                 'force',
                 'f',
-                InputOption::VALUE_OPTIONAL,
-                'Delete the client whiteout asking',
-                false
+                InputOption::VALUE_NONE,
+                'Delete the client whiteout asking'
             )
         ;
     }
@@ -49,8 +48,15 @@ final class RemoveClientCommand extends Command
 
         if (!$client) {
             $io->error(sprintf('oAuth2 client identified as "%s" not found', $input->getArgument('identifier')));
-
             return 1;
+        }
+
+        if (!$input->getOption('force')) {
+            $reponse = $io->ask('Are you sure you want to delete this client? y/N', 'N');
+            if (strtolower($reponse)[0] !== 'y') {
+                $io->writeln('Deletion canceled');
+                return 0;
+            }
         }
 
         $this->clientManager->remove($client);

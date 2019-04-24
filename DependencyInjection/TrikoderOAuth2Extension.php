@@ -3,12 +3,15 @@
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use DateInterval;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use League\OAuth2\Server\CryptKey;
 use LogicException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
+use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -72,7 +75,28 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
      */
     public function process(ContainerBuilder $container)
     {
+        $this->assertRequiredBundlesAreEnabled($container);
         $this->assertPsrHttpAliasesExist($container);
+    }
+
+    private function assertRequiredBundlesAreEnabled(ContainerBuilder $container): void
+    {
+        $requiredBundles = [
+            'doctrine' => DoctrineBundle::class,
+            'security' => SecurityBundle::class,
+            'sensio_framework_extra' => SensioFrameworkExtraBundle::class,
+        ];
+
+        foreach ($requiredBundles as $bundleAlias => $requiredBundle) {
+            if (!$container->hasExtension($bundleAlias)) {
+                throw new LogicException(
+                    sprintf(
+                        'Bundle \'%s\' needs to be enabled in your application kernel.',
+                        $requiredBundle
+                    )
+                );
+            }
+        }
     }
 
     private function assertPsrHttpAliasesExist(ContainerBuilder $container): void

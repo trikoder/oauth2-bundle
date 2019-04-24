@@ -26,7 +26,7 @@ final class TestHelper
             'client_id' => $refreshToken->getAccessToken()->getClient()->getIdentifier(),
             'refresh_token_id' => $refreshToken->getIdentifier(),
             'access_token_id' => $refreshToken->getAccessToken()->getIdentifier(),
-            'scopes' => $refreshToken->getAccessToken()->getScopes(),
+            'scopes' => array_map('strval', $refreshToken->getAccessToken()->getScopes()),
             'user_id' => $refreshToken->getAccessToken()->getUserIdentifier(),
             'expire_time' => $refreshToken->getExpiry()->getTimestamp(),
         ]);

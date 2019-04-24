@@ -4,9 +4,9 @@ namespace Trikoder\Bundle\OAuth2Bundle\Controller;
 
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
 
 final class TokenController
 {
@@ -20,9 +20,11 @@ final class TokenController
         $this->server = $server;
     }
 
-    public function indexAction(ServerRequestInterface $serverRequest): ResponseInterface
-    {
-        $serverResponse = new Response();
+    public function indexAction(
+        ServerRequestInterface $serverRequest,
+        ResponseFactoryInterface $responseFactory
+    ): ResponseInterface {
+        $serverResponse = $responseFactory->createResponse();
 
         try {
             return $this->server->respondToAccessTokenRequest($serverRequest, $serverResponse);

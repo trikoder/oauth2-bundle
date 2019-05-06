@@ -32,7 +32,7 @@ final class ListClientsCommand extends Command
                 'columns',
                 null,
                 InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-                'Determine which columns are shown. Comma separated list.',
+                'Determine which columns are shown. Can be used multiple times to specify multiple columns.',
                 self::ALLOWED_COLUMNS
             )
             ->addOption(

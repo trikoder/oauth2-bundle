@@ -31,21 +31,21 @@ final class ListClientsCommand extends Command
             ->addOption(
                 'columns',
                 null,
-                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
                 'Determine which columns are shown. Comma separated list.',
                 self::ALLOWED_COLUMNS
             )
             ->addOption(
                 'redirect-uri',
                 null,
-                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
                 'Finds by redirect uri for client. Use this option multiple times to filter by multiple redirect URIs.',
                 []
             )
             ->addOption(
                 'grant-type',
                 null,
-                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
                 'Finds by allowed grant type for client. Use this option multiple times to filter by multiple grant types.',
                 []
             )

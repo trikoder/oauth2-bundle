@@ -12,7 +12,7 @@ interface ClientManagerInterface
 
     public function remove(Client $client): void;
 
-    /*
+    /**
      * @return Client[]
      */
     public function list(?ClientFilter $clientFilter): array;

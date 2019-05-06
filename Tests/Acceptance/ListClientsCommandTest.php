@@ -72,7 +72,7 @@ TABLE;
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command' => $command->getName(),
-            '--columns' => 'identifier,scope',
+            '--columns' => ['identifier', 'scope'],
         ]);
         $output = $commandTester->getDisplay();
 

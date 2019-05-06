@@ -31,30 +31,30 @@ final class ListClientsCommand extends Command
             ->addOption(
                 'columns',
                 null,
-                InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
                 'Determine which columns are shown. Comma separated list.',
-                implode(', ', self::ALLOWED_COLUMNS)
+                self::ALLOWED_COLUMNS
             )
             ->addOption(
                 'redirect-uri',
                 null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
                 'Finds by redirect uri for client. Use this option multiple times to filter by multiple redirect URIs.',
-                null
+                []
             )
             ->addOption(
                 'grant-type',
                 null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
                 'Finds by allowed grant type for client. Use this option multiple times to filter by multiple grant types.',
-                null
+                []
             )
             ->addOption(
                 'scope',
                 null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
                 'Finds by allowed scope for client. Use this option multiple times to find by multiple scopes.',
-                null
+                []
             )
         ;
     }
@@ -107,15 +107,11 @@ final class ListClientsCommand extends Command
     private function getColumns(InputInterface $input): array
     {
         $allowedColumns = self::ALLOWED_COLUMNS;
+
         $requestedColumns = $input->getOption('columns');
-        if ($requestedColumns) {
-            $requestedColumns = explode(',', $requestedColumns);
-            $requestedColumns = array_map(function ($column) {
-                return strtolower(trim($column));
-            }, $requestedColumns);
-        } else {
-            $requestedColumns = $allowedColumns;
-        }
+        $requestedColumns = array_map(function ($column) {
+            return strtolower(trim($column));
+        }, $requestedColumns);
 
         return array_intersect($requestedColumns, $allowedColumns);
     }

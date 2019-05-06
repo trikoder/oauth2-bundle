@@ -34,23 +34,23 @@ final class CreateClientCommand extends Command
             ->addOption(
                 'redirect-uri',
                 null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs.',
-                null
+                []
             )
             ->addOption(
                 'grant-type',
                 null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Sets allowed grant type for client. Use this option multiple times to set multiple grant types.',
-                null
+                []
             )
             ->addOption(
                 'scope',
                 null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Sets allowed scope for client. Use this option multiple times to set multiple scopes.',
-                null
+                []
             )
             ->addArgument(
                 'identifier',

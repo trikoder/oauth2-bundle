@@ -10,6 +10,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientFilter;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
+use Trikoder\Bundle\OAuth2Bundle\Model\Grant;
+use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri;
+use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
 final class ListClientsCommand extends Command
 {
@@ -73,9 +76,15 @@ final class ListClientsCommand extends Command
         return
             ClientFilter
                 ::create()
-                ->addGrantCriteria($input->getOption('grant-type'))
-                ->addRedirectUriCriteria($input->getOption('redirect-uri'))
-                ->addScopeCriteria($input->getOption('scope'))
+                ->addGrantCriteria(...array_map(function (string $grant): Grant {
+                    return new Grant($grant);
+                }, $input->getOption('grant-type')))
+                ->addRedirectUriCriteria(...array_map(function (string $redirectUri): RedirectUri {
+                    return new RedirectUri($redirectUri);
+                }, $input->getOption('redirect-uri')))
+                ->addScopeCriteria(...array_map(function (string $scope): Scope {
+                    return new Scope($scope);
+                }, $input->getOption('scope')))
             ;
     }
 

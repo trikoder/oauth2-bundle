@@ -2,6 +2,10 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager;
 
+use Trikoder\Bundle\OAuth2Bundle\Model\Grant;
+use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri;
+use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
+
 final class ClientFilter
 {
     private $grants = null;
@@ -13,48 +17,32 @@ final class ClientFilter
         return new static();
     }
 
-    /**
-     * @param string|array|null $grantOrGrants
-     */
-    public function addGrantCriteria($grantOrGrants): self
+    public function addGrantCriteria(Grant ...$grants): self
     {
-        return $this->addCriteria($this->grants, $grantOrGrants);
+        return $this->addCriteria($this->grants, ...$grants);
     }
 
-    /**
-     * @param string|array|null $redirectUriOrUris
-     */
-    public function addRedirectUriCriteria($redirectUriOrUris): self
+    public function addRedirectUriCriteria(RedirectUri ...$redirectUris): self
     {
-        return $this->addCriteria($this->redirectUris, $redirectUriOrUris);
+        return $this->addCriteria($this->redirectUris, ...$redirectUris);
     }
 
-    /**
-     * @param string|array|null $scopeOrScopes
-     */
-    public function addScopeCriteria($scopeOrScopes): self
+    public function addScopeCriteria(Scope ...$scopes): self
     {
-        return $this->addCriteria($this->scopes, $scopeOrScopes);
+        return $this->addCriteria($this->scopes, ...$scopes);
     }
 
-    /**
-     * @param string|array|null $valueOrValues
-     */
-    private function addCriteria(&$field, $valueOrValues): self
+    private function addCriteria(&$field, ...$values): self
     {
-        if (null === $valueOrValues) {
+        if (0 === \count($values)) {
             return $this;
-        }
-
-        if (false === \is_array($valueOrValues)) {
-            $valueOrValues = [$valueOrValues];
         }
 
         if (null === $this->scopes) {
             $field = [];
         }
 
-        $field = array_merge($field, $valueOrValues);
+        $field = array_merge($field, $values);
 
         return $this;
     }

@@ -8,7 +8,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
 final class CreateClientCommandTest extends AbstractAcceptanceTest
 {
-    public function testCreateClient()
+    public function testCreateClient(): void
     {
         $command = $this->application->find('trikoder:oauth2:create-client');
         $commandTester = new CommandTester($command);
@@ -20,7 +20,7 @@ final class CreateClientCommandTest extends AbstractAcceptanceTest
         $this->assertContains('New oAuth2 client created successfully', $output);
     }
 
-    public function testCreateClientWithIdentifier()
+    public function testCreateClientWithIdentifier(): void
     {
         $command = $this->application->find('trikoder:oauth2:create-client');
         $commandTester = new CommandTester($command);
@@ -40,7 +40,7 @@ final class CreateClientCommandTest extends AbstractAcceptanceTest
         $this->assertInstanceOf(Client::class, $client);
     }
 
-    public function testCreateClientWithSecret()
+    public function testCreateClientWithSecret(): void
     {
         $command = $this->application->find('trikoder:oauth2:create-client');
         $commandTester = new CommandTester($command);
@@ -60,7 +60,7 @@ final class CreateClientCommandTest extends AbstractAcceptanceTest
         $this->assertSame('quzbaz', $client->getSecret());
     }
 
-    public function testCreateClientWithRedirectUris()
+    public function testCreateClientWithRedirectUris(): void
     {
         $command = $this->application->find('trikoder:oauth2:create-client');
         $commandTester = new CommandTester($command);
@@ -80,7 +80,7 @@ final class CreateClientCommandTest extends AbstractAcceptanceTest
         $this->assertCount(2, $client->getRedirectUris());
     }
 
-    public function testCreateClientWithGrantTypes()
+    public function testCreateClientWithGrantTypes(): void
     {
         $command = $this->application->find('trikoder:oauth2:create-client');
         $commandTester = new CommandTester($command);
@@ -100,7 +100,7 @@ final class CreateClientCommandTest extends AbstractAcceptanceTest
         $this->assertCount(2, $client->getGrants());
     }
 
-    public function testCreateClientWithScopes()
+    public function testCreateClientWithScopes(): void
     {
         $command = $this->application->find('trikoder:oauth2:create-client');
         $commandTester = new CommandTester($command);

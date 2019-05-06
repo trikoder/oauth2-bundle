@@ -20,7 +20,7 @@ final class DeleteClientCommand extends Command
         $this->clientManager = $clientManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Deletes an oAuth2 client')
@@ -32,7 +32,7 @@ final class DeleteClientCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $identifier = $input->getArgument('identifier');

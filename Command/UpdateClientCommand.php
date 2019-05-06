@@ -27,7 +27,7 @@ final class UpdateClientCommand extends Command
         $this->clientManager = $clientManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Updates an oAuth2 client')
@@ -66,7 +66,7 @@ final class UpdateClientCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -88,19 +88,19 @@ final class UpdateClientCommand extends Command
         $client->setActive(!$input->getOption('deactivated'));
 
         $redirectUris = array_map(
-            function (string $redirectUri) { return new RedirectUri($redirectUri); },
+            function (string $redirectUri): RedirectUri { return new RedirectUri($redirectUri); },
             $input->getOption('redirect-uri')
         );
         $client->setRedirectUris(...$redirectUris);
 
         $grants = array_map(
-            function (string $grant) { return new Grant($grant); },
+            function (string $grant): Grant { return new Grant($grant); },
             $input->getOption('grant-type')
         );
         $client->setGrants(...$grants);
 
         $scopes = array_map(
-            function (string $scope) { return new Scope($scope); },
+            function (string $scope): Scope { return new Scope($scope); },
             $input->getOption('scope')
         );
         $client->setScopes(...$scopes);

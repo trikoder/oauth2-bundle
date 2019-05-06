@@ -2,6 +2,7 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
@@ -10,7 +11,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
 final class ListClientsCommandTest extends AbstractAcceptanceTest
 {
-    public function testListClients()
+    public function testListClients(): void
     {
         $client = $this->fakeAClient('foobar');
         $this->getClientManager()->save($client);
@@ -32,7 +33,7 @@ TABLE;
         $this->assertEquals(trim($expected), trim($output));
     }
 
-    public function testListClientsEmpty()
+    public function testListClientsEmpty(): void
     {
         $command = $this->command();
         $commandTester = new CommandTester($command);
@@ -49,7 +50,7 @@ TABLE;
         $this->assertEquals(trim($expected), trim($output));
     }
 
-    public function testListClientColumns()
+    public function testListClientColumns(): void
     {
         $scopes = [
             new Scope('client-scope-1'),
@@ -87,7 +88,7 @@ TABLE;
         $this->assertEquals(trim($expected), trim($output));
     }
 
-    public function testListFiltersClients()
+    public function testListFiltersClients(): void
     {
         $clientA = $this->fakeAClient('client-a', 'client-a-secret');
         $this->getClientManager()->save($clientA);
@@ -133,7 +134,7 @@ TABLE;
             ;
     }
 
-    private function command()
+    private function command(): Command
     {
         return $this->application->find('trikoder:oauth2:list-clients');
     }

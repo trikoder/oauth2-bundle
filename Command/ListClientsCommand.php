@@ -89,7 +89,7 @@ final class ListClientsCommand extends Command
 
     private function getRows(array $clients, array $columns): array
     {
-        return array_map(function (Client $client) use ($columns) {
+        return array_map(function (Client $client) use ($columns): array {
             $values = [
                 'identifier' => $client->getIdentifier(),
                 'secret' => $client->getSecret(),
@@ -98,7 +98,7 @@ final class ListClientsCommand extends Command
                 'grant type' => implode(', ', $client->getGrants()),
             ];
 
-            return array_map(function ($column) use ($values) {
+            return array_map(function (string $column) use ($values): string {
                 return $values[$column];
             }, $columns);
         }, $clients);
@@ -109,7 +109,7 @@ final class ListClientsCommand extends Command
         $allowedColumns = self::ALLOWED_COLUMNS;
 
         $requestedColumns = $input->getOption('columns');
-        $requestedColumns = array_map(function ($column) {
+        $requestedColumns = array_map(function (string $column): string {
             return strtolower(trim($column));
         }, $requestedColumns);
 

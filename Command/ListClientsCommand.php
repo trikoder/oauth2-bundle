@@ -55,7 +55,7 @@ final class ListClientsCommand extends Command
             ->addOption(
                 'scope',
                 null,
-                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
                 'Finds by allowed scope for client. Use this option multiple times to find by multiple scopes.',
                 []
             )

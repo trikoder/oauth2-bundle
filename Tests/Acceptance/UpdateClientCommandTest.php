@@ -8,7 +8,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
 final class UpdateClientCommandTest extends AbstractAcceptanceTest
 {
-    public function testUpdateRedirectUris()
+    public function testUpdateRedirectUris(): void
     {
         $client = $this->fakeAClient('foobar');
         $this->getClientManager()->save($client);
@@ -26,7 +26,7 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
         $this->assertCount(2, $client->getRedirectUris());
     }
 
-    public function testUpdateGrantTypes()
+    public function testUpdateGrantTypes(): void
     {
         $client = $this->fakeAClient('foobar');
         $this->getClientManager()->save($client);
@@ -44,7 +44,7 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
         $this->assertCount(2, $client->getGrants());
     }
 
-    public function testUpdateScopes()
+    public function testUpdateScopes(): void
     {
         $client = $this->fakeAClient('foobar');
         $this->getClientManager()->save($client);
@@ -62,7 +62,7 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
         $this->assertCount(2, $client->getScopes());
     }
 
-    public function testDeactivate()
+    public function testDeactivate(): void
     {
         $client = $this->fakeAClient('foobar');
         $this->getClientManager()->save($client);

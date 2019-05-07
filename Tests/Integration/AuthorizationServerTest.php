@@ -11,6 +11,18 @@ use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 final class AuthorizationServerTest extends AbstractIntegrationTest
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        FixtureFactory::initializeFixtures(
+            $this->scopeManager,
+            $this->clientManager,
+            $this->accessTokenManager,
+            $this->refreshTokenManager
+        );
+    }
+
     public function testSuccessfulAuthorizationThroughHeaders(): void
     {
         $request = $this->createAuthorizationRequest('foo:secret', [

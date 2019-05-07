@@ -37,7 +37,6 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
-use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 abstract class AbstractIntegrationTest extends TestCase
@@ -92,13 +91,6 @@ abstract class AbstractIntegrationTest extends TestCase
         $this->accessTokenManager = new AccessTokenManager();
         $this->refreshTokenManager = new RefreshTokenManager();
         $this->eventDispatcher = new EventDispatcher();
-
-        FixtureFactory::initializeFixtures(
-            $this->scopeManager,
-            $this->clientManager,
-            $this->accessTokenManager,
-            $this->refreshTokenManager
-        );
 
         $scopeConverter = new ScopeConverter();
         $scopeRepository = new ScopeRepository($this->scopeManager, $this->clientManager, $scopeConverter, $this->eventDispatcher);

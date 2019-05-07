@@ -34,23 +34,23 @@ final class CreateClientCommand extends Command
             ->addOption(
                 'redirect-uri',
                 null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs.',
-                null
+                []
             )
             ->addOption(
                 'grant-type',
                 null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Sets allowed grant type for client. Use this option multiple times to set multiple grant types.',
-                null
+                []
             )
             ->addOption(
                 'scope',
                 null,
-                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Sets allowed scope for client. Use this option multiple times to set multiple scopes.',
-                null
+                []
             )
             ->addArgument(
                 'identifier',
@@ -81,7 +81,7 @@ final class CreateClientCommand extends Command
         return 0;
     }
 
-    private function buildClientFromInput(InputInterface $input)
+    private function buildClientFromInput(InputInterface $input): Client
     {
         $identifier = $input->getArgument('identifier') ?? hash('md5', random_bytes(16));
         $secret = $input->getArgument('secret') ?? hash('sha512', random_bytes(32));
@@ -90,19 +90,19 @@ final class CreateClientCommand extends Command
         $client->setActive(true);
 
         $redirectUris = array_map(
-            function (string $redirectUri) { return new RedirectUri($redirectUri); },
+            function (string $redirectUri): RedirectUri { return new RedirectUri($redirectUri); },
             $input->getOption('redirect-uri')
         );
         $client->setRedirectUris(...$redirectUris);
 
         $grants = array_map(
-            function (string $grant) { return new Grant($grant); },
+            function (string $grant): Grant { return new Grant($grant); },
             $input->getOption('grant-type')
         );
         $client->setGrants(...$grants);
 
         $scopes = array_map(
-            function (string $scope) { return new Scope($scope); },
+            function (string $scope): Scope { return new Scope($scope); },
             $input->getOption('scope')
         );
         $client->setScopes(...$scopes);

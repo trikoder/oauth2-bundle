@@ -55,13 +55,15 @@ final class ClientManager implements ClientManagerInterface
         });
     }
 
-    private static function passesFilter(array $clientValues, ?array $filterValues): bool
+    private static function passesFilter(array $clientValues, array $filterValues): bool
     {
-        if (!$filterValues) {
+        if (empty($filterValues)) {
             return true;
         }
 
         $clientValues = array_map('strval', $clientValues);
+        $filterValues = array_map('strval', $filterValues);
+
         $valuesPassed = array_intersect($filterValues, $clientValues);
 
         return \count($valuesPassed) > 0;

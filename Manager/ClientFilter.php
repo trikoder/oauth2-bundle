@@ -8,9 +8,18 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
 final class ClientFilter
 {
-    private $grants = null;
-    private $redirectUris = null;
-    private $scopes = null;
+    /**
+     * @var array
+     */
+    private $grants = [];
+    /**
+     * @var array
+     */
+    private $redirectUris = [];
+    /**
+     * @var array
+     */
+    private $scopes = [];
 
     public static function create(): self
     {
@@ -38,26 +47,31 @@ final class ClientFilter
             return $this;
         }
 
-        if (null === $this->scopes) {
-            $field = [];
-        }
-
         $field = array_merge($field, $values);
 
         return $this;
     }
 
-    public function getGrants(): ?array
+    /**
+     * @return Grant[]
+     */
+    public function getGrants(): array
     {
         return $this->grants;
     }
 
-    public function getRedirectUris(): ?array
+    /**
+     * @return RedirectUri[]
+     */
+    public function getRedirectUris(): array
     {
         return $this->redirectUris;
     }
 
-    public function getScopes(): ?array
+    /**
+     * @return Scope[]
+     */
+    public function getScopes(): array
     {
         return $this->scopes;
     }
@@ -65,8 +79,8 @@ final class ClientFilter
     public function hasFilters(): bool
     {
         return
-            null !== $this->grants
-            || null !== $this->redirectUris
-            || null !== $this->scopes;
+            !empty($this->grants)
+            || !empty($this->redirectUris)
+            || !empty($this->scopes);
     }
 }

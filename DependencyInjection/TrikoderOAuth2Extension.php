@@ -212,7 +212,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
     private function configureAuthorizationStrategy(ContainerBuilder $container, string $authorizationStrategy, string $consentRoute)
     {
-        $container->getDefinition(UserConsentDecisionStrategy::class)->replaceArgument(3, $consentRoute);
+        $container->getDefinition('trikoder.oauth2.authorization_decision_strategy.user_consent')->replaceArgument(3, $consentRoute);
         $container
             ->getDefinition('trikoder.oauth2.event_listener.authorization.decision')
             ->replaceArgument(0, new Reference($authorizationStrategy));

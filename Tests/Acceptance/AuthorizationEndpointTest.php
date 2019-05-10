@@ -99,6 +99,80 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertEquals('/authorize/consent', $redirectUri);
     }
 
+    public function testAuthorizationRequestEventIsStoppedAfterSettingAResponse()
+    {
+        $eventDispatcher = $this->client
+            ->getContainer()
+            ->get('event_dispatcher');
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+            $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+        }, 100);
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+            $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
+            $event->setResponse($response);
+        }, 200);
+
+        timecop_freeze(new DateTime());
+
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+            ]
+        );
+
+        timecop_return();
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(302, $response->getStatusCode());
+        $redirectUri = $response->headers->get('Location');
+        $this->assertEquals('/authorize/consent', $redirectUri);
+    }
+
+    public function testAuthorizationRequestEventIsStoppedAfterResolution()
+    {
+        $eventDispatcher = $this->client
+            ->getContainer()
+            ->get('event_dispatcher');
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+            $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+        }, 200);
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+            $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
+            $event->setResponse($response);
+        }, 100);
+
+        timecop_freeze(new DateTime());
+
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+            ]
+        );
+
+        timecop_return();
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(302, $response->getStatusCode());
+        $redirectUri = $response->headers->get('Location');
+
+        $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $redirectUri);
+        $query = [];
+        parse_str(parse_url($redirectUri, PHP_URL_QUERY), $query);
+        $this->assertArrayHasKey('code', $query);
+        $this->assertArrayHasKey('state', $query);
+        $this->assertEquals('foobar', $query['state']);
+    }
+
     public function testFailedCodeRequestRedirectWithFakedRedirectUri()
     {
         $this->client

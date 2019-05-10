@@ -48,8 +48,6 @@ final class AuthorizationController
                 return $event->getResponse();
             }
 
-            $authRequest->setAuthorizationApproved($event->getAuthorizationResolution());
-
             return $this->server->completeAuthorizationRequest($authRequest, $serverResponse);
         } catch (OAuthServerException $e) {
             return $e->generateHttpResponse($serverResponse);

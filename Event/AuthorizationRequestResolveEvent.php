@@ -82,6 +82,11 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->authorizationRequest->getUser();
     }
 
+    public function setUser(UserEntityInterface $user): void
+    {
+        $this->authorizationRequest->setUser($user);
+    }
+
     /**
      * @return ScopeEntityInterface[]
      */

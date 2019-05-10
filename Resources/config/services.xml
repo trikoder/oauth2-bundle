@@ -80,9 +80,14 @@
         <!-- Authorization controller -->
         <service id="trikoder.oauth2.controller.authorization_controller" class="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
-            <argument type="service" id="Symfony\Component\Security\Core\Security" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <tag name="controller.service_arguments" />
+        </service>
+
+        <!-- Authorization listeners -->
+        <service id="trikoder.oauth2.event_listener.authorization.user" class="Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestUserResolvingListener">
+            <argument type="service" id="Symfony\Component\Security\Core\Security" />
+            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="1024" />
         </service>
 
         <!-- Token controller -->

@@ -10,10 +10,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
-use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
 final class AuthorizationController
@@ -24,19 +21,13 @@ final class AuthorizationController
     private $server;
 
     /**
-     * @var Security
-     */
-    private $security;
-
-    /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
 
-    public function __construct(AuthorizationServer $server, Security $security, EventDispatcherInterface $eventDispatcher)
+    public function __construct(AuthorizationServer $server, EventDispatcherInterface $eventDispatcher)
     {
         $this->server = $server;
-        $this->security = $security;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -46,7 +37,6 @@ final class AuthorizationController
 
         try {
             $authRequest = $this->server->validateAuthorizationRequest($serverRequest);
-            $authRequest->setUser($this->getUserEntity());
 
             /** @var AuthorizationRequestResolveEvent $event */
             $event = $this->eventDispatcher->dispatch(
@@ -64,17 +54,5 @@ final class AuthorizationController
         } catch (OAuthServerException $e) {
             return $e->generateHttpResponse($serverResponse);
         }
-    }
-
-    private function getUserEntity(): User
-    {
-        $userEntity = new User();
-
-        $user = $this->security->getUser();
-        if ($user instanceof UserInterface) {
-            $userEntity->setIdentifier($user->getUsername());
-        }
-
-        return $userEntity;
     }
 }

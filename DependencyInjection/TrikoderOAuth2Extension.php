@@ -7,6 +7,7 @@ use League\OAuth2\Server\CryptKey;
 use LogicException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -16,8 +17,8 @@ use Symfony\Component\DependencyInjection\Reference;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
+use Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationListener;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
-use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\UserConsentDecisionStrategy;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface
@@ -226,30 +227,9 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 ->setArgument(5, new Reference('openid_connect_server.id_token_response'))
             ;
             $container
-                ->setDefinition(
-                    'trikoder.oauth2.event_listener.require_authentication',
-                    $this->createAuthorizationRequestAuthenticationListenerDefinition($openid_connect['login_route'])
-                )
+                ->getDefinition('trikoder.oauth2.event_listener.authorization.authentication')
+                ->setArgument(5, $openid_connect['login_route'])
             ;
         }
-    }
-
-    private function createAuthorizationRequestAuthenticationListenerDefinition(string $loginRoute): Definition
-    {
-        return (new Definition(AuthorizationRequestAuthenticationListener::class))
-            ->setArguments([
-                new Reference('security.authorization_checker'),
-                new Reference('session'),
-                new Reference('request_stack'),
-                new Reference('router'),
-                $loginRoute
-            ])
-            ->addTag('kernel.event_listener', [
-                'event' => 'trikoder.oauth2.authorization_request_resolve',
-                'method' => 'onAuthorizationRequest',
-                'priority' => 300
-            ])
-        ;
-
     }
 }

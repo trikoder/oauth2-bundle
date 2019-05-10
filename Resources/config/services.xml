@@ -94,13 +94,16 @@
             <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="100" />
         </service>
 
-        <!--<service id="trikoder.oauth2.event_listener.authorization.authentication" class="Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationListener">-->
-            <!--<argument type="service" id="security.authorization_checker" />-->
-            <!--<argument type="service" id="session" />-->
-            <!--<argument type="service" id="request_stack" />-->
-            <!--<argument type="service" id="router" />-->
-            <!--<tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="300" />-->
-        <!--</service>-->
+        <service id="trikoder.oauth2.event_listener.authorization.authentication" class="Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationListener">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="session" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="router" />
+            <argument type="service" id="security.firewall.map" />
+            <argument type="string" />
+            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="300" />
+        </service>
+        <service id="Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationListener" alias="trikoder.oauth2.event_listener.authorization.authentication" />
 
         <!-- Authorization decision strategies -->
         <service id="trikoder.oauth2.authorization_decision_strategy.always_allow" class="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\AlwaysAllowDecisionStrategy" />

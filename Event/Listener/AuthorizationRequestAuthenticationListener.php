@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
-use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * Class AuthorizationRequestAuthenticationListener
@@ -34,24 +34,24 @@ class AuthorizationRequestAuthenticationListener implements AuthorizationEventLi
     private $session;
 
     /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
      * @var FirewallMap
      */
     private $firewallMap;
 
     /**
+     * @var RequestStack
+     */
+    protected $requestStack;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    protected $urlGenerator;
+
+    /**
      * @var string
      */
-    private $loginRoute;
+    protected $loginRoute;
 
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
@@ -59,7 +59,7 @@ class AuthorizationRequestAuthenticationListener implements AuthorizationEventLi
         RequestStack $requestStack,
         UrlGeneratorInterface $urlGenerator,
         FirewallMap $firewallMap,
-        string $loginRoute
+        string $loginRoute = 'app_login'
     ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->session = $session;
@@ -78,9 +78,13 @@ class AuthorizationRequestAuthenticationListener implements AuthorizationEventLi
         if (!$this->authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $firewallConfig = $this->firewallMap->getFirewallConfig($request);
             $this->saveTargetPath($this->session, $firewallConfig->getProvider(), $request->getUri());
-
-            $loginUrl = $this->urlGenerator->generate($this->loginRoute);
-            $event->setResponse(new Response(null, 302, ['Location' => $loginUrl]));
+            $this->setResponse($event);
         }
+    }
+
+    protected function setResponse(AuthorizationRequestResolveEvent $event): void
+    {
+        $loginUrl = $this->urlGenerator->generate($this->loginRoute);
+        $event->setResponse(new RedirectResponse($loginUrl));
     }
 }

@@ -13,7 +13,7 @@ use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 final class TokenEndpointTest extends AbstractAcceptanceTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

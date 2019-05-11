@@ -22,7 +22,7 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
             '--redirect-uri' => ['http://example.com', 'http://example.org'],
         ]);
         $output = $commandTester->getDisplay();
-        $this->assertContains('Given oAuth2 client updated successfully', $output);
+        $this->assertStringContainsString('Given oAuth2 client updated successfully', $output);
         $this->assertCount(2, $client->getRedirectUris());
     }
 
@@ -40,7 +40,7 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
             '--grant-type' => ['password', 'client_credentials'],
         ]);
         $output = $commandTester->getDisplay();
-        $this->assertContains('Given oAuth2 client updated successfully', $output);
+        $this->assertStringContainsString('Given oAuth2 client updated successfully', $output);
         $this->assertCount(2, $client->getGrants());
     }
 
@@ -58,7 +58,7 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
             '--scope' => ['foo', 'bar'],
         ]);
         $output = $commandTester->getDisplay();
-        $this->assertContains('Given oAuth2 client updated successfully', $output);
+        $this->assertStringContainsString('Given oAuth2 client updated successfully', $output);
         $this->assertCount(2, $client->getScopes());
     }
 
@@ -76,7 +76,7 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
             '--deactivated' => true,
         ]);
         $output = $commandTester->getDisplay();
-        $this->assertContains('Given oAuth2 client updated successfully', $output);
+        $this->assertStringContainsString('Given oAuth2 client updated successfully', $output);
         $updatedClient = $this->getClientManager()->find($client->getIdentifier());
         $this->assertFalse($updatedClient->isActive());
     }

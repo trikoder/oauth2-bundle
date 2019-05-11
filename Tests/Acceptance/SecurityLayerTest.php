@@ -11,7 +11,7 @@ use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 final class SecurityLayerTest extends AbstractAcceptanceTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

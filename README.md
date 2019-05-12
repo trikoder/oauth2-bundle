@@ -145,7 +145,7 @@ dev/bin/php composer test
 
 ### Code linting
 
-This bundle enforces the PSR-2 and Symfony code standards during development using the [PHP CS Fixer](https://cs.sensiolabs.org/) utility. Before commiting any code, you can run the utility so it can fix any potential rule violations for you:
+This bundle enforces the PSR-2 and Symfony code standards during development using the [PHP CS Fixer](https://cs.sensiolabs.org/) utility. Before committing any code, you can run the utility so it can fix any potential rule violations for you:
 
 ```sh
 dev/bin/php composer lint

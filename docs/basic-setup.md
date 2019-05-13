@@ -125,7 +125,7 @@ oauth2_restricted:
     controller: 'App\Controller\FooController::barAction'
     defaults:
         oauth2_scopes: ['foo', 'bar']
-``` 
+```
 
 ## Security roles
 

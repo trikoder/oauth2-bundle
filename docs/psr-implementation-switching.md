@@ -23,7 +23,7 @@ In this example we'll use the [zendframework/zend-diactoros](https://github.com/
         Zend\Diactoros\StreamFactory: ~
         Zend\Diactoros\UploadedFileFactory: ~
         Zend\Diactoros\ResponseFactory: ~
-        
+
         # Setup autowiring aliases
         Psr\Http\Message\ServerRequestFactoryInterface: '@Zend\Diactoros\ServerRequestFactory'
         Psr\Http\Message\StreamFactoryInterface: '@Zend\Diactoros\StreamFactory'

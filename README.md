@@ -38,7 +38,7 @@ This package is currently in the active development.
 
     > **NOTE #1:** Due to required pre-configuration, this bundle is currently not compatible with [Symfony Flex](https://github.com/symfony/flex).
 
-    > **NOTE #2:** This bundle requires a PSR 7/17 implementation to operate. We recommend that you use [nyholm/psr7](https://github.com/Nyholm/psr7). Check out this [document](docs/psr-implementation-switching.md) if you wish to use a different implementation. 
+    > **NOTE #2:** This bundle requires a PSR 7/17 implementation to operate. We recommend that you use [nyholm/psr7](https://github.com/Nyholm/psr7). Check out this [document](docs/psr-implementation-switching.md) if you wish to use a different implementation.
 
 2. Create the bundle configuration file under `config/packages/trikoder_oauth2.yaml`. Here is a reference configuration file:
 
@@ -105,7 +105,7 @@ This package is currently in the active development.
     ```yaml
     oauth2:
         resource: '@TrikoderOAuth2Bundle/Resources/config/routes.xml'
-   ```
+    ```
 
 You can verify that everything is working by issuing a `GET` request to the `/token` endpoint.
 
@@ -145,7 +145,7 @@ dev/bin/php composer test
 
 ### Code linting
 
-This bundle enforces the PSR-2 and Symfony code standards during development using the [PHP CS Fixer](https://cs.sensiolabs.org/) utility. Before commiting any code, you can run the utility so it can fix any potential rule violations for you:
+This bundle enforces the PSR-2 and Symfony code standards during development using the [PHP CS Fixer](https://cs.sensiolabs.org/) utility. Before committing any code, you can run the utility so it can fix any potential rule violations for you:
 
 ```sh
 dev/bin/php composer lint

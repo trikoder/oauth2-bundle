@@ -84,7 +84,7 @@ abstract class AbstractIntegrationTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->scopeManager = new ScopeManager();
         $this->clientManager = new ClientManager();

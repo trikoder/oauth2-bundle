@@ -19,7 +19,7 @@ abstract class AbstractAcceptanceTest extends WebTestCase
      */
     protected $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = self::createClient();
 

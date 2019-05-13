@@ -8,7 +8,8 @@ use League\OAuth2\Server\Entities\Traits\EntityTrait;
 
 final class Client implements ClientEntityInterface
 {
-    use EntityTrait, ClientTrait;
+    use EntityTrait;
+    use ClientTrait;
 
     /**
      * {@inheritdoc}

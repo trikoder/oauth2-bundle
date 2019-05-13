@@ -11,7 +11,7 @@ use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 final class AuthorizationServerTest extends AbstractIntegrationTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

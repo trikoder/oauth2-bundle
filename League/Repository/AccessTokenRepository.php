@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\League\Repository;
 
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;

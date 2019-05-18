@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\Tests;
 
 use Defuse\Crypto\Crypto;
@@ -57,7 +59,7 @@ final class TestHelper
             $accessTokenEntity->addScope($scopeEntity);
         }
 
-        return $accessTokenEntity->convertToJWT(
+        return (string) $accessTokenEntity->convertToJWT(
             new CryptKey(self::PRIVATE_KEY_PATH, null, false)
         );
     }

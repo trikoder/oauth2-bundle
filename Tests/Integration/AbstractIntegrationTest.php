@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 
 use Defuse\Crypto\Crypto;
@@ -144,12 +146,17 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function createAuthorizationRequest(?string $credentials, array $body = []): ServerRequestInterface
     {
-        return $this
+        $request = $this
             ->psrFactory
             ->createServerRequest('', '')
-            ->withHeader('Authorization', sprintf('Basic %s', base64_encode($credentials)))
             ->withParsedBody($body)
         ;
+
+        if (null !== $credentials) {
+            $request = $request->withHeader('Authorization', sprintf('Basic %s', base64_encode($credentials)));
+        }
+
+        return $request;
     }
 
     protected function createResourceRequest(string $jwtToken): ServerRequestInterface
@@ -171,7 +178,7 @@ abstract class AbstractIntegrationTest extends TestCase
             $response = $e->generateHttpResponse($response);
         }
 
-        return json_decode($response->getBody(), true);
+        return json_decode($response->getBody()->__toString(), true);
     }
 
     protected function handleResourceRequest(ServerRequestInterface $serverRequest): ?ServerRequestInterface

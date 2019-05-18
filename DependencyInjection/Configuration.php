@@ -59,6 +59,18 @@ final class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->defaultValue('P1M')
                 ->end()
+                ->booleanNode('enable_client_credentials_grant')
+                    ->info('Whether to enable the client credentials grant')
+                    ->defaultTrue()
+                ->end()
+                ->booleanNode('enable_password_grant')
+                    ->info('Whether to enable the password grant')
+                    ->defaultTrue()
+                ->end()
+                ->booleanNode('enable_refresh_token_grant')
+                    ->info('Whether to enable the refresh token grant')
+                    ->defaultTrue()
+                ->end()
             ->end()
         ;
 

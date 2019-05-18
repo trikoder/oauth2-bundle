@@ -15,6 +15,9 @@
     </php>
 
     <testsuites>
+        <testsuite name="unit">
+            <directory>./Tests/Unit</directory>
+        </testsuite>
         <testsuite name="acceptance">
             <directory>./Tests/Acceptance</directory>
         </testsuite>

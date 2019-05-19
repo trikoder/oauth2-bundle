@@ -11,4 +11,6 @@ interface AccessTokenManagerInterface
     public function find(string $identifier): ?AccessToken;
 
     public function save(AccessToken $accessToken): void;
+
+    public function clearExpired(): int;
 }

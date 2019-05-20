@@ -12,11 +12,17 @@ final class AccessTokenManager implements AccessTokenManagerInterface
      */
     private $accessTokens = [];
 
+    /**
+     * {@inheritdoc}
+     */
     public function find(string $identifier): ?AccessToken
     {
         return $this->accessTokens[$identifier] ?? null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function save(AccessToken $accessToken): void
     {
         $this->accessTokens[$accessToken->getIdentifier()] = $accessToken;

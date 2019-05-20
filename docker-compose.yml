@@ -1,10 +1,11 @@
 version: '3'
 services:
-  php:
-    build: ./dev/docker
-    environment:
-      - HOST_USER_ID=${HOST_USER_ID}
-      - HOST_GROUP_ID=${HOST_GROUP_ID}
-    image: trikoder/oauth2-bundle
-    volumes:
-      - .:/app/src
+    php:
+        build: ./dev/docker
+        environment:
+            HOST_USER_ID: ${HOST_USER_ID}
+            HOST_GROUP_ID: ${HOST_GROUP_ID}
+            PSR_HTTP_PROVIDER: ${PSR_HTTP_PROVIDER:-nyholm}
+        image: trikoder/oauth2-bundle
+        volumes:
+            - .:/app/src

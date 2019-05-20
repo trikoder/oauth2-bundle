@@ -16,20 +16,23 @@
         "doctrine/doctrine-bundle": "^1.8",
         "doctrine/orm": "^2.6",
         "league/oauth2-server": "^7.2",
-        "sensio/framework-extra-bundle": "^3.0.0|^4.0.0|^5.0.0",
-        "symfony/framework-bundle": "~3.4|~4.0",
-        "symfony/psr-http-message-bridge": "^1.0",
-        "symfony/security-bundle": "~3.4|~4.0",
         "zendframework/zend-diactoros": "^1.7",
+        "psr/http-factory": "^1.0",
+        "sensio/framework-extra-bundle": "^5.3",
+        "symfony/framework-bundle": "^3.4|^4.2",
+        "symfony/psr-http-message-bridge": "^1.2",
+        "symfony/security-bundle": "^3.4|^4.2",
         "steverhoades/oauth2-openid-connect-server": "^1.0"
     },
     "require-dev": {
         "ext-timecop": "*",
         "ext-xdebug": "*",
-        "friendsofphp/php-cs-fixer": "2.14.0",
-        "phpunit/phpunit": "7.5.*",
-        "symfony/browser-kit": "~3.4|~4.0",
-        "symfony/phpunit-bridge": "~4.0"
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "nyholm/psr7": "^1.1",
+        "phpunit/phpunit": "^8.1",
+        "symfony/browser-kit": "^3.4|^4.2",
+        "symfony/phpunit-bridge": "^3.4|^4.2",
+        "zendframework/zend-diactoros": "^2.1"
     },
     "autoload": {
         "psr-4": { "Trikoder\\Bundle\\OAuth2Bundle\\": "" },
@@ -43,6 +46,10 @@
     },
     "suggest": {
         "nelmio/cors-bundle": "For handling CORS requests",
+        "nyholm/psr7": "For a super lightweight PSR-7/17 implementation",
         "steverhoades/oauth2-openid-connect-server": "For OpenID Connect Provider capabilities"
+    },
+    "config": {
+        "sort-packages": true
     }
 }

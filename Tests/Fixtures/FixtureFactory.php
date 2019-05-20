@@ -16,6 +16,12 @@ use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
+/**
+ * Development hints:
+ *
+ * You can easily generate token identifiers using the following command:
+ * --- dev/bin/php -r "echo bin2hex(random_bytes(40)) . PHP_EOL;"
+ */
 final class FixtureFactory
 {
     public const FIXTURE_ACCESS_TOKEN_USER_BOUND = '96fb0ff864bf242425bfa7b9b6f47294fda556bf5eef78f753f61c2b827125d37d5d5735bcaed5b8';
@@ -30,6 +36,7 @@ final class FixtureFactory
     public const FIXTURE_REFRESH_TOKEN_DIFFERENT_CLIENT = '73b1618470fdccf1c96eda132f8a19d6da43c31e2efd19daeab2c98c0ac36bf95b3ea72fdc8d6752';
     public const FIXTURE_REFRESH_TOKEN_EXPIRED = '3b3db453a137debb7b5f445c971bef18bb4f045d272a66a27054a0713096d2a8377679d204495c88';
     public const FIXTURE_REFRESH_TOKEN_REVOKED = '63641841630c2e4d747e0f9ebe12ee04424e322874b8e68ef69fd58f1899ef70beb09733e23928a6';
+    public const FIXTURE_REFRESH_TOKEN_WITH_SCOPES = 'e47d593ed661840b3633e4577c3261ef57ba225be193b190deb69ee9afefdc19f54f890fbdda59f5';
 
     public const FIXTURE_AUTH_CODE = '0aa70e8152259988b3c8e9e8cff604019bb986eb226bd126da189829b95a2be631e2506042064e12';
     public const FIXTURE_AUTH_CODE_DIFFERENT_CLIENT = 'e8fe264053cb346f4437af05c8cc9036931cfec3a0d5b54bdae349304ca4a83fd2f4590afd51e559';
@@ -39,7 +46,8 @@ final class FixtureFactory
     public const FIXTURE_CLIENT_FIRST = 'foo';
     public const FIXTURE_CLIENT_SECOND = 'bar';
     public const FIXTURE_CLIENT_INACTIVE = 'baz_inactive';
-    public const FIXTURE_CLIENT_RESTRICTED_GRANTS = 'qux_restricted';
+    public const FIXTURE_CLIENT_RESTRICTED_GRANTS = 'qux_restricted_grants';
+    public const FIXTURE_CLIENT_RESTRICTED_SCOPES = 'quux_restricted_scopes';
 
     public const FIXTURE_CLIENT_FIRST_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri';
 
@@ -48,6 +56,14 @@ final class FixtureFactory
     public const FIXTURE_SCOPE_OPENID = 'openid';
 
     public const FIXTURE_USER = 'user';
+
+    public static function createUser(array $roles = []): User
+    {
+        $user = new User();
+        $user['roles'] = $roles;
+
+        return $user;
+    }
 
     public static function initializeFixtures(
         ScopeManagerInterface $scopeManager,
@@ -80,7 +96,7 @@ final class FixtureFactory
     /**
      * @return AccessToken[]
      */
-    public static function createAccessTokens(ScopeManagerInterface $scopeManager, ClientManagerInterface $clientManager): array
+    private static function createAccessTokens(ScopeManagerInterface $scopeManager, ClientManagerInterface $clientManager): array
     {
         $accessTokens = [];
 
@@ -147,7 +163,7 @@ final class FixtureFactory
     /**
      * @return RefreshToken[]
      */
-    public static function createRefreshTokens(AccessTokenManagerInterface $accessTokenManager): array
+    private static function createRefreshTokens(AccessTokenManagerInterface $accessTokenManager): array
     {
         $refreshTokens = [];
 
@@ -175,6 +191,12 @@ final class FixtureFactory
             $accessTokenManager->find(self::FIXTURE_ACCESS_TOKEN_REVOKED)
         ))
             ->revoke();
+
+        $refreshTokens[] = new RefreshToken(
+            self::FIXTURE_REFRESH_TOKEN_WITH_SCOPES,
+            new DateTime('+1 month'),
+            $accessTokenManager->find(self::FIXTURE_ACCESS_TOKEN_USER_BOUND_WITH_SCOPES)
+        );
 
         return $refreshTokens;
     }
@@ -224,7 +246,7 @@ final class FixtureFactory
     /**
      * @return Client[]
      */
-    public static function createClients(): array
+    private static function createClients(): array
     {
         $clients = [];
 
@@ -239,27 +261,23 @@ final class FixtureFactory
         $clients[] = (new Client(self::FIXTURE_CLIENT_RESTRICTED_GRANTS, 'wicked'))
             ->setGrants(new Grant('password'));
 
+        $clients[] = (new Client(self::FIXTURE_CLIENT_RESTRICTED_SCOPES, 'beer'))
+            ->setScopes(new Scope(self::FIXTURE_SCOPE_SECOND));
+
         return $clients;
     }
 
     /**
      * @return Scope[]
      */
-    public static function createScopes(): array
+    private static function createScopes(): array
     {
         $scopes = [];
 
         $scopes[] = new Scope(self::FIXTURE_SCOPE_FIRST);
+        $scopes[] = new Scope(self::FIXTURE_SCOPE_SECOND);
         $scopes[] = new Scope(self::FIXTURE_SCOPE_OPENID);
 
         return $scopes;
-    }
-
-    public static function createUser(array $roles = []): User
-    {
-        $user = new User();
-        $user['roles'] = $roles;
-
-        return $user;
     }
 }

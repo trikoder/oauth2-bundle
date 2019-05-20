@@ -3,37 +3,39 @@ sudo: required
 language: bash
 
 services:
-  - docker
+    - docker
 
 addons:
-  apt:
-    packages:
-      - docker-ce
+    apt:
+        packages:
+            - docker-ce
 
 env:
-  # PHP 7.2
-  - PHP_VERSION=7.2 SYMFONY_VERSION=3.4.0
-  - PHP_VERSION=7.2 SYMFONY_VERSION=4.1.0
-  - PHP_VERSION=7.2 SYMFONY_VERSION=4.2.0
+    # PHP 7.2
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=3.4.0
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.2.0
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=3.4.0
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.2.0
 
-  # PHP 7.3
-  - PHP_VERSION=7.3 SYMFONY_VERSION=3.4.0
-  - PHP_VERSION=7.3 SYMFONY_VERSION=4.1.0
-  - PHP_VERSION=7.3 SYMFONY_VERSION=4.2.0
+    # PHP 7.3
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=3.4.0
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.2.0
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=3.4.0
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.2.0
 
 install:
-  - dev/bin/docker-compose build --build-arg PHP_VERSION=${PHP_VERSION} php
+    - dev/bin/docker-compose build --build-arg PHP_VERSION=${PHP_VERSION} php
 
 before_script:
-  - dev/bin/php composer require symfony/symfony:~${SYMFONY_VERSION} --ansi --no-update
-  - dev/bin/php composer install --ansi --prefer-dist
+    - dev/bin/php composer require symfony/symfony:~${SYMFONY_VERSION} --ansi --no-update
+    - dev/bin/php composer install --ansi --prefer-dist
 
 script:
-  - dev/bin/php composer test -- --colors=always --coverage-clover=coverage.xml --debug
-  - dev/bin/php composer lint -- --ansi --diff --dry-run --using-cache=no --verbose
+    - dev/bin/php composer test -- --colors=always --coverage-clover=coverage.xml --debug
+    - dev/bin/php composer lint -- --ansi --diff --dry-run --using-cache=no --verbose
 
 after_script:
-  - dev/bin/docker-compose down --volumes
+    - dev/bin/docker-compose down --volumes
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+    - bash <(curl -s https://codecov.io/bash)

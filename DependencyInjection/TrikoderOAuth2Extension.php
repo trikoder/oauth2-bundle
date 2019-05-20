@@ -3,11 +3,19 @@
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use DateInterval;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use League\OAuth2\Server\CryptKey;
 use LogicException;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UploadedFileFactoryInterface;
+use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -21,7 +29,7 @@ use Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticati
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 
-final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface
+final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -65,13 +73,72 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function process(ContainerBuilder $container)
+    {
+        $this->assertRequiredBundlesAreEnabled($container);
+        $this->assertPsrHttpAliasesExist($container);
+    }
+
+    private function assertRequiredBundlesAreEnabled(ContainerBuilder $container): void
+    {
+        $requiredBundles = [
+            'doctrine' => DoctrineBundle::class,
+            'security' => SecurityBundle::class,
+            'sensio_framework_extra' => SensioFrameworkExtraBundle::class,
+        ];
+
+        foreach ($requiredBundles as $bundleAlias => $requiredBundle) {
+            if (!$container->hasExtension($bundleAlias)) {
+                throw new LogicException(
+                    sprintf(
+                        'Bundle \'%s\' needs to be enabled in your application kernel.',
+                        $requiredBundle
+                    )
+                );
+            }
+        }
+    }
+
+    private function assertPsrHttpAliasesExist(ContainerBuilder $container): void
+    {
+        $requiredAliases = [
+            ServerRequestFactoryInterface::class,
+            StreamFactoryInterface::class,
+            UploadedFileFactoryInterface::class,
+            ResponseFactoryInterface::class,
+        ];
+
+        foreach ($requiredAliases as $requiredAlias) {
+            $definition = $container
+                ->getDefinition(
+                    $container->getAlias($requiredAlias)
+                )
+            ;
+
+            $aliasedClass = $definition->getClass();
+
+            if (!class_exists($aliasedClass)) {
+                throw new LogicException(
+                    sprintf(
+                        'Alias \'%s\' points to a non-existing class \'%s\'. Did you configure a PSR-7/17 compatible library?',
+                        $requiredAlias,
+                        $aliasedClass
+                    )
+                );
+            }
+        }
+    }
+
     private function configureAuthorizationServer(ContainerBuilder $container, array $config): void
     {
         $authorizationServer = $container
             ->getDefinition('league.oauth2.server.authorization_server')
             ->replaceArgument('$privateKey', new Definition(CryptKey::class, [
                 $config['private_key'],
-                null,
+                $config['private_key_passphrase'],
                 false,
             ]))
             ->replaceArgument('$encryptionKey', $config['encryption_key'])

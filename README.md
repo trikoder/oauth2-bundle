@@ -26,17 +26,19 @@ This package is currently in the active development.
 ## Requirements
 
 * [PHP 7.2](http://php.net/releases/7_2_0.php) or greater
-* [Symfony 4](https://symfony.com/4) or [Symfony 3.4](https://symfony.com/roadmap/3.4)
+* [Symfony 4.2](https://symfony.com/roadmap/4.2) or [Symfony 3.4](https://symfony.com/roadmap/3.4)
 
 ## Installation
 
-1. Require the bundle with Composer:
+1. Require the bundle and a PSR 7/17 implementation with Composer:
 
     ```sh
-    composer require trikoder/oauth2-bundle --no-plugins --no-scripts
+    composer require trikoder/oauth2-bundle nyholm/psr7 --no-plugins --no-scripts
     ```
-    
-    > **NOTE:** Due to required pre-configuration, this bundle is currently not compatible with [Symfony Flex](https://github.com/symfony/flex).
+
+    > **NOTE #1:** Due to required pre-configuration, this bundle is currently not compatible with [Symfony Flex](https://github.com/symfony/flex).
+
+    > **NOTE #2:** This bundle requires a PSR 7/17 implementation to operate. We recommend that you use [nyholm/psr7](https://github.com/Nyholm/psr7). Check out this [document](docs/psr-implementation-switching.md) if you wish to use a different implementation.
 
 2. Create the bundle configuration file under `config/packages/trikoder_oauth2.yaml`. Here is a reference configuration file:
 
@@ -48,6 +50,9 @@ This package is currently in the active development.
             # Full path to the private key file.
             # How to generate a private key: https://oauth2.thephpleague.com/installation/#generating-public-and-private-keys
             private_key:    # Required, Example: /var/oauth/private.key
+
+            # Passphrase of the private key, if any.
+            private_key_passphrase: ~  # Optional, default null
 
             # The string used as an encryption key.
             # How to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password
@@ -83,7 +88,7 @@ This package is currently in the active development.
 
                 # Name of the entity manager that you wish to use for managing clients and tokens.
                 entity_manager: default # Required
-             
+
             in_memory: ~
     ```
 
@@ -154,7 +159,7 @@ dev/bin/php composer test
 
 ### Code linting
 
-This bundle enforces the PSR-2 and Symfony code standards during development using the [PHP CS Fixer](https://cs.sensiolabs.org/) utility. Before commiting any code, you can run the utility so it can fix any potential rule violations for you:
+This bundle enforces the PSR-2 and Symfony code standards during development using the [PHP CS Fixer](https://cs.sensiolabs.org/) utility. Before committing any code, you can run the utility so it can fix any potential rule violations for you:
 
 ```sh
 dev/bin/php composer lint

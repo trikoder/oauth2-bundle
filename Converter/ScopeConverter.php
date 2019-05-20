@@ -13,6 +13,8 @@ final class ScopeConverter
     }
 
     /**
+     * @param ScopeEntity[] $scopes
+     *
      * @return ScopeModel[]
      */
     public function toDomainArray(array $scopes): array
@@ -31,6 +33,8 @@ final class ScopeConverter
     }
 
     /**
+     * @param ScopeModel[] $scopes
+     *
      * @return ScopeEntity[]
      */
     public function toLeagueArray(array $scopes): array

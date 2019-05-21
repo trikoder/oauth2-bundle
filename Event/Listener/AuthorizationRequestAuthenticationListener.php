@@ -26,17 +26,17 @@ class AuthorizationRequestAuthenticationListener implements AuthorizationEventLi
     /**
      * @var AuthorizationCheckerInterface
      */
-    private $authorizationChecker;
+    protected $authorizationChecker;
 
     /**
      * @var SessionInterface
      */
-    private $session;
+    protected $session;
 
     /**
      * @var FirewallMap
      */
-    private $firewallMap;
+    protected $firewallMap;
 
     /**
      * @var RequestStack

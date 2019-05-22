@@ -65,6 +65,15 @@ This package is currently in the active development.
             # How long the issued refresh token should be valid for.
             # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
             refresh_token_ttl: P1M
+         
+            # Whether to enable the client credentials grant
+            enable_client_credentials_grant: true
+         
+            # Whether to enable the password grant
+            enable_password_grant: true
+         
+            # Whether to enable the refresh token grant
+            enable_refresh_token_grant: true
 
         resource_server:
 

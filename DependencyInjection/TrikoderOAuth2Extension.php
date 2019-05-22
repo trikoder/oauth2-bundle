@@ -143,20 +143,26 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             ->replaceArgument('$encryptionKey', $config['encryption_key'])
         ;
 
-        $authorizationServer->addMethodCall('enableGrantType', [
-            new Reference('league.oauth2.server.grant.client_credentials_grant'),
-            new Definition(DateInterval::class, [$config['access_token_ttl']]),
-        ]);
+        if ($config['enable_client_credentials_grant']) {
+            $authorizationServer->addMethodCall('enableGrantType', [
+                new Reference('league.oauth2.server.grant.client_credentials_grant'),
+                new Definition(DateInterval::class, [$config['access_token_ttl']]),
+            ]);
+        }
 
-        $authorizationServer->addMethodCall('enableGrantType', [
-            new Reference('league.oauth2.server.grant.password_grant'),
-            new Definition(DateInterval::class, [$config['access_token_ttl']]),
-        ]);
+        if ($config['enable_password_grant']) {
+            $authorizationServer->addMethodCall('enableGrantType', [
+                new Reference('league.oauth2.server.grant.password_grant'),
+                new Definition(DateInterval::class, [$config['access_token_ttl']]),
+            ]);
+        }
 
-        $authorizationServer->addMethodCall('enableGrantType', [
-            new Reference('league.oauth2.server.grant.refresh_token_grant'),
-            new Definition(DateInterval::class, [$config['access_token_ttl']]),
-        ]);
+        if ($config['enable_refresh_token_grant']) {
+            $authorizationServer->addMethodCall('enableGrantType', [
+                new Reference('league.oauth2.server.grant.refresh_token_grant'),
+                new Definition(DateInterval::class, [$config['access_token_ttl']]),
+            ]);
+        }
 
         $this->configureGrants($container, $config);
     }

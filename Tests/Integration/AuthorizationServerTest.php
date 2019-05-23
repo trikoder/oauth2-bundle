@@ -247,6 +247,38 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         );
     }
 
+    public function testValidClientCredentialsGrantWithRequestedScope(): void
+    {
+        $request = $this->createAuthorizationRequest('quux_restricted_scopes:beer', [
+            'grant_type' => 'client_credentials',
+            'scope' => 'rock',
+        ]);
+
+        timecop_freeze(new DateTime());
+
+        $response = $this->handleAuthorizationRequest($request);
+
+        timecop_return();
+
+        $accessToken = $this->getAccessToken($response['access_token']);
+
+        // Response assertions.
+        $this->assertSame('Bearer', $response['token_type']);
+        $this->assertSame(3600, $response['expires_in']);
+        $this->assertInstanceOf(AccessToken::class, $accessToken);
+
+        // Make sure the access token is issued for the given client ID.
+        $this->assertSame('quux_restricted_scopes', $accessToken->getClient()->getIdentifier());
+
+        // The access token should have the requested scope.
+        $this->assertEquals(
+            [
+                $this->scopeManager->find(FixtureFactory::FIXTURE_SCOPE_SECOND),
+            ],
+            $accessToken->getScopes()
+        );
+    }
+
     public function testValidPasswordGrant(): void
     {
         $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event) {

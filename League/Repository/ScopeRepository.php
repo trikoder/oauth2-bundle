@@ -109,10 +109,12 @@ final class ScopeRepository implements ScopeRepositoryInterface
         }
 
         $finalizedScopes = [];
+        $clientScopesAsStrings = array_map('strval', $clientScopes);
 
         foreach ($requestedScopes as $requestedScope) {
-            if (!\in_array($requestedScope, $clientScopes, true)) {
-                throw OAuthServerException::invalidScope((string) $requestedScope);
+            $requestedScopeAsString = (string) $requestedScope;
+            if (!\in_array($requestedScopeAsString, $clientScopesAsStrings, true)) {
+                throw OAuthServerException::invalidScope($requestedScopeAsString);
             }
 
             $finalizedScopes[] = $requestedScope;

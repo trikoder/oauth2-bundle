@@ -11,4 +11,6 @@ interface RefreshTokenManagerInterface
     public function find(string $identifier): ?RefreshToken;
 
     public function save(RefreshToken $refreshToken): void;
+
+    public function clearExpired(): int;
 }

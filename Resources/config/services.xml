@@ -90,6 +90,11 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="console.command" />
         </service>
+        <service id="trikoder.oauth2.command.clear_expired_tokens_command" class="Trikoder\Bundle\OAuth2Bundle\Command\ClearExpiredTokensCommand">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" />
+            <tag name="console.command" />
+        </service>
 
         <!-- Utility services -->
         <service id="trikoder.oauth2.converter.scope_converter" class="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />

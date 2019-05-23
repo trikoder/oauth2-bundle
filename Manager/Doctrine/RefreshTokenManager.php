@@ -8,20 +8,22 @@ use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
-final class RefreshTokenManager implements RefreshTokenManagerInterface
+final class RefreshTokenManager extends TokenManager implements RefreshTokenManagerInterface
 {
     /**
-     * @var EntityManagerInterface
+     * RefreshTokenManager constructor.
+     * @param EntityManagerInterface $entityManager
      */
-    private $entityManager;
-
     public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
+        parent::__construct($entityManager);
+
+        $this->class = RefreshToken::class;
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $identifier
+     * @return RefreshToken|null
      */
     public function find(string $identifier): ?RefreshToken
     {
@@ -29,7 +31,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param RefreshToken $refreshToken
      */
     public function save(RefreshToken $refreshToken): void
     {

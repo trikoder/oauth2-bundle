@@ -8,20 +8,22 @@ use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 
-final class AccessTokenManager implements AccessTokenManagerInterface
+final class AccessTokenManager extends TokenManager implements AccessTokenManagerInterface
 {
     /**
-     * @var EntityManagerInterface
+     * AccessTokenManager constructor.
+     * @param EntityManagerInterface $entityManager
      */
-    private $entityManager;
-
     public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
+        parent::__construct($entityManager);
+
+        $this->class = AccessToken::class;
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $identifier
+     * @return AccessToken|null
      */
     public function find(string $identifier): ?AccessToken
     {
@@ -29,7 +31,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param AccessToken $accessToken
      */
     public function save(AccessToken $accessToken): void
     {

@@ -12,7 +12,6 @@ final class AccessTokenManager extends TokenManager implements AccessTokenManage
 {
     /**
      * AccessTokenManager constructor.
-     * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -21,18 +20,11 @@ final class AccessTokenManager extends TokenManager implements AccessTokenManage
         $this->class = AccessToken::class;
     }
 
-    /**
-     * @param string $identifier
-     * @return AccessToken|null
-     */
     public function find(string $identifier): ?AccessToken
     {
         return $this->entityManager->find(AccessToken::class, $identifier);
     }
 
-    /**
-     * @param AccessToken $accessToken
-     */
     public function save(AccessToken $accessToken): void
     {
         $this->entityManager->persist($accessToken);

@@ -12,7 +12,6 @@ final class RefreshTokenManager extends TokenManager implements RefreshTokenMana
 {
     /**
      * RefreshTokenManager constructor.
-     * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -21,18 +20,11 @@ final class RefreshTokenManager extends TokenManager implements RefreshTokenMana
         $this->class = RefreshToken::class;
     }
 
-    /**
-     * @param string $identifier
-     * @return RefreshToken|null
-     */
     public function find(string $identifier): ?RefreshToken
     {
         return $this->entityManager->find(RefreshToken::class, $identifier);
     }
 
-    /**
-     * @param RefreshToken $refreshToken
-     */
     public function save(RefreshToken $refreshToken): void
     {
         $this->entityManager->persist($refreshToken);

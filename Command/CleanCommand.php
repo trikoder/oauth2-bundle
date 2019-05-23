@@ -30,9 +30,6 @@ final class CleanCommand extends Command
 
     /**
      * CleanCommand constructor.
-     *
-     * @param AccessTokenManagerInterface $accessTokenManager
-     * @param RefreshTokenManagerInterface $refreshTokenManager
      */
     public function __construct(AccessTokenManagerInterface $accessTokenManager, RefreshTokenManagerInterface $refreshTokenManager)
     {
@@ -51,18 +48,13 @@ final class CleanCommand extends Command
             ->setDescription('Clean expired OAuth2 tokens');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
         foreach ([$this->refreshTokenManager, $this->accessTokenManager] as $manager) {
             $result = $manager->deleteExpired();
-            $io->writeln(sprintf('Removed <info>%d</info> tokens from <comment>%s</comment>.', $result, get_class($manager)));
+            $io->writeln(sprintf('Removed <info>%d</info> tokens from <comment>%s</comment>.', $result, \get_class($manager)));
         }
 
         $io->success('OAuth2 tokens deleted successfully.');

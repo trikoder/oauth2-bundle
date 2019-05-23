@@ -22,7 +22,6 @@ abstract class TokenManager
 
     /**
      * TokenManager constructor.
-     * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -38,7 +37,6 @@ abstract class TokenManager
     }
 
     /**
-     * @return mixed
      * @throws Exception
      */
     public function deleteExpired()

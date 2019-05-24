@@ -62,11 +62,13 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->authorizationResolution;
     }
 
-    public function resolveAuthorization(bool $authorizationResolution): void
+    public function resolveAuthorization(bool $authorizationResolution): self
     {
         $this->authorizationResolution = $authorizationResolution;
         $this->response = null;
         $this->stopPropagation();
+
+        return $this;
     }
 
     public function hasResponse(): bool
@@ -83,10 +85,12 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->response;
     }
 
-    public function setResponse(ResponseInterface $response): void
+    public function setResponse(ResponseInterface $response): self
     {
         $this->response = $response;
         $this->stopPropagation();
+
+        return $this;
     }
 
     public function getGrantTypeId(): string
@@ -111,9 +115,11 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->user;
     }
 
-    public function setUser(UserInterface $user): void
+    public function setUser(?UserInterface $user): self
     {
         $this->user = $user;
+
+        return $this;
     }
 
     /**

@@ -66,6 +66,44 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertEquals('foobar', $query['state']);
     }
 
+    public function testSuccessfulTokenRequest()
+    {
+        $this->client
+            ->getContainer()
+            ->get('event_dispatcher')
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+                $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+            });
+
+        timecop_freeze(new DateTime());
+
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'token',
+                'state' => 'foobar',
+            ]
+        );
+
+        timecop_return();
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(302, $response->getStatusCode());
+        $redirectUri = $response->headers->get('Location');
+
+        $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $redirectUri);
+        $fragment = [];
+        parse_str(parse_url($redirectUri, PHP_URL_FRAGMENT), $fragment);
+        $this->assertArrayHasKey('access_token', $fragment);
+        $this->assertArrayHasKey('token_type', $fragment);
+        $this->assertArrayHasKey('expires_in', $fragment);
+        $this->assertArrayHasKey('state', $fragment);
+        $this->assertEquals('foobar', $fragment['state']);
+    }
+
     public function testCodeRequestRedirectToResolutionUri()
     {
         $this->client

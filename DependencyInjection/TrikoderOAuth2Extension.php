@@ -171,6 +171,13 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             ]);
         }
 
+        if ($config['enable_implicit_grant']) {
+            $authorizationServer->addMethodCall('enableGrantType', [
+                new Reference('league.oauth2.server.grant.implicit_grant'),
+                new Definition(DateInterval::class, [$config['access_token_ttl']]),
+            ]);
+        }
+
         $this->configureGrants($container, $config);
     }
 
@@ -196,6 +203,11 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             ->addMethodCall('setRefreshTokenTTL', [
                 new Definition(DateInterval::class, [$config['refresh_token_ttl']]),
             ])
+        ;
+
+        $container
+            ->getDefinition('league.oauth2.server.grant.implicit_grant')
+            ->replaceArgument('$accessTokenTTL', new Definition(DateInterval::class, [$config['access_token_ttl']]))
         ;
     }
 

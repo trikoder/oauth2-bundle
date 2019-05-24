@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Controller;
 
 use League\OAuth2\Server\AuthorizationServer;
-use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory;
-use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
 final class AuthorizationController
@@ -34,11 +32,17 @@ final class AuthorizationController
      */
     private $eventFactory;
 
-    public function __construct(AuthorizationServer $server, EventDispatcherInterface $eventDispatcher, AuthorizationRequestResolveEventFactory $eventFactory)
+    /**
+     * @var UserConverter
+     */
+    private $userConverter;
+
+    public function __construct(AuthorizationServer $server, EventDispatcherInterface $eventDispatcher, AuthorizationRequestResolveEventFactory $eventFactory, UserConverter $userConverter)
     {
         $this->server = $server;
         $this->eventDispatcher = $eventDispatcher;
         $this->eventFactory = $eventFactory;
+        $this->userConverter = $userConverter;
     }
 
     public function indexAction(ServerRequestInterface $serverRequest, ResponseFactoryInterface $responseFactory): ResponseInterface
@@ -54,7 +58,7 @@ final class AuthorizationController
                 $this->eventFactory->fromAuthorizationRequest($authRequest)
             );
 
-            $authRequest->setUser($this->toLeagueUser($event->getUser()));
+            $authRequest->setUser($this->userConverter->toLeague($event->getUser()));
 
             if ($event->hasResponse()) {
                 return $event->getResponse();
@@ -66,16 +70,5 @@ final class AuthorizationController
         } catch (OAuthServerException $e) {
             return $e->generateHttpResponse($serverResponse);
         }
-    }
-
-    private function toLeagueUser(UserInterface $user = null): UserEntityInterface
-    {
-        $userEntity = new User();
-
-        if ($user instanceof UserInterface) {
-            $userEntity->setIdentifier($user->getUsername());
-        }
-
-        return $userEntity;
     }
 }

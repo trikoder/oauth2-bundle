@@ -28,6 +28,7 @@ use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository;
@@ -113,7 +114,8 @@ abstract class AbstractIntegrationTest extends TestCase
         $clientRepository = new ClientRepository($this->clientManager);
         $accessTokenRepository = new AccessTokenRepository($this->accessTokenManager, $this->clientManager, $scopeConverter);
         $refreshTokenRepository = new RefreshTokenRepository($this->refreshTokenManager, $this->accessTokenManager);
-        $userRepository = new UserRepository($this->clientManager, $this->eventDispatcher);
+        $userConverter = new UserConverter();
+        $userRepository = new UserRepository($this->clientManager, $this->eventDispatcher, $userConverter);
         $authCodeRepository = new AuthCodeRepository($this->authCodeManager, $this->clientManager, $scopeConverter);
 
         $this->authorizationServer = $this->createAuthorizationServer(

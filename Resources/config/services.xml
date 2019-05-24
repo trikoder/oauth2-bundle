@@ -81,6 +81,7 @@
         <service id="trikoder.oauth2.controller.authorization_controller" class="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="trikoder.oauth2.event.authorization_request_resolve_event_factory" />
             <tag name="controller.service_arguments" />
         </service>
 
@@ -121,5 +122,9 @@
 
         <!-- Utility services -->
         <service id="trikoder.oauth2.converter.scope_converter" class="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
+        <service id="trikoder.oauth2.event.authorization_request_resolve_event_factory" class="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory">
+            <argument type="service" id="trikoder.oauth2.converter.scope_converter" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+        </service>
     </services>
 </container>

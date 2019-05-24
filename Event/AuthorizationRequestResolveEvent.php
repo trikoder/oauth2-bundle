@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
-use League\OAuth2\Server\Entities\ClientEntityInterface;
-use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\Client;
+use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
 final class AuthorizationRequestResolveEvent extends Event
 {
@@ -21,6 +24,16 @@ final class AuthorizationRequestResolveEvent extends Event
      * @var AuthorizationRequest
      */
     private $authorizationRequest;
+
+    /**
+     * @var ScopeConverter
+     */
+    private $scopeConverter;
+
+    /**
+     * @var ClientManagerInterface
+     */
+    private $clientManager;
 
     /**
      * @var bool
@@ -37,9 +50,11 @@ final class AuthorizationRequestResolveEvent extends Event
      */
     private $user;
 
-    public function __construct(AuthorizationRequest $authorizationRequest)
+    public function __construct(AuthorizationRequest $authorizationRequest, ScopeConverter $scopeConverter, ClientManagerInterface $clientManager)
     {
         $this->authorizationRequest = $authorizationRequest;
+        $this->scopeConverter = $scopeConverter;
+        $this->clientManager = $clientManager;
     }
 
     public function getAuthorizationResolution(): bool
@@ -79,9 +94,16 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->authorizationRequest->getGrantTypeId();
     }
 
-    public function getClient(): ClientEntityInterface
+    public function getClient(): Client
     {
-        return $this->authorizationRequest->getClient();
+        $identifier = $this->authorizationRequest->getClient()->getIdentifier();
+        $client = $this->clientManager->find($identifier);
+
+        if (null === $client) {
+            throw new RuntimeException(sprintf('No client found for the given identifier "%s".', $identifier));
+        }
+
+        return $client;
     }
 
     public function getUser(): ?UserInterface
@@ -95,11 +117,13 @@ final class AuthorizationRequestResolveEvent extends Event
     }
 
     /**
-     * @return ScopeEntityInterface[]
+     * @return Scope[]
      */
     public function getScopes(): array
     {
-        return $this->authorizationRequest->getScopes();
+        return $this->scopeConverter->toDomainArray(
+            $this->authorizationRequest->getScopes()
+        );
     }
 
     public function isAuthorizationApproved(): bool

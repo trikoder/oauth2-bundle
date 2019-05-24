@@ -13,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
@@ -28,10 +29,16 @@ final class AuthorizationController
      */
     private $eventDispatcher;
 
-    public function __construct(AuthorizationServer $server, EventDispatcherInterface $eventDispatcher)
+    /**
+     * @var AuthorizationRequestResolveEventFactory
+     */
+    private $eventFactory;
+
+    public function __construct(AuthorizationServer $server, EventDispatcherInterface $eventDispatcher, AuthorizationRequestResolveEventFactory $eventFactory)
     {
         $this->server = $server;
         $this->eventDispatcher = $eventDispatcher;
+        $this->eventFactory = $eventFactory;
     }
 
     public function indexAction(ServerRequestInterface $serverRequest, ResponseFactoryInterface $responseFactory): ResponseInterface
@@ -44,7 +51,7 @@ final class AuthorizationController
             /** @var AuthorizationRequestResolveEvent $event */
             $event = $this->eventDispatcher->dispatch(
                 OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE,
-                new AuthorizationRequestResolveEvent($authRequest)
+                $this->eventFactory->fromAuthorizationRequest($authRequest)
             );
 
             $authRequest->setUser($this->toLeagueUser($event->getUser()));

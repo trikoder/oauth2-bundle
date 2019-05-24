@@ -6,11 +6,11 @@ namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
-use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 final class AuthorizationRequestResolveEvent extends Event
 {
@@ -23,18 +23,33 @@ final class AuthorizationRequestResolveEvent extends Event
     private $authorizationRequest;
 
     /**
+     * @var bool
+     */
+    private $authorizationResolution = self::AUTHORIZATION_DENIED;
+
+    /**
      * @var ResponseInterface|null
      */
     private $response;
+
+    /**
+     * @var UserInterface|null
+     */
+    private $user;
 
     public function __construct(AuthorizationRequest $authorizationRequest)
     {
         $this->authorizationRequest = $authorizationRequest;
     }
 
+    public function getAuthorizationResolution(): bool
+    {
+        return $this->authorizationResolution;
+    }
+
     public function resolveAuthorization(bool $authorizationResolution): void
     {
-        $this->authorizationRequest->setAuthorizationApproved($authorizationResolution);
+        $this->authorizationResolution = $authorizationResolution;
         $this->response = null;
         $this->stopPropagation();
     }
@@ -69,14 +84,14 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->authorizationRequest->getClient();
     }
 
-    public function getUser(): UserEntityInterface
+    public function getUser(): ?UserInterface
     {
-        return $this->authorizationRequest->getUser();
+        return $this->user;
     }
 
-    public function setUser(UserEntityInterface $user): void
+    public function setUser(UserInterface $user): void
     {
-        $this->authorizationRequest->setUser($user);
+        $this->user = $user;
     }
 
     /**

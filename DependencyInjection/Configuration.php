@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
@@ -59,6 +61,18 @@ final class Configuration implements ConfigurationInterface
                     ->info("How long the issued refresh token should be valid for.\nThe value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters")
                     ->cannotBeEmpty()
                     ->defaultValue('P1M')
+                ->end()
+                ->booleanNode('enable_client_credentials_grant')
+                    ->info('Whether to enable the client credentials grant')
+                    ->defaultTrue()
+                ->end()
+                ->booleanNode('enable_password_grant')
+                    ->info('Whether to enable the password grant')
+                    ->defaultTrue()
+                ->end()
+                ->booleanNode('enable_refresh_token_grant')
+                    ->info('Whether to enable the refresh token grant')
+                    ->defaultTrue()
                 ->end()
                 ->scalarNode('auth_code_ttl')
                     ->info("How long the issued auth code should be valid for.\nThe value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters")

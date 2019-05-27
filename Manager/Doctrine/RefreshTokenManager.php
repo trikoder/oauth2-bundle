@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
@@ -33,5 +36,15 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     {
         $this->entityManager->persist($refreshToken);
         $this->entityManager->flush();
+    }
+
+    public function clearExpired(): int
+    {
+        return $this->entityManager->createQueryBuilder()
+            ->delete(RefreshToken::class, 'rt')
+            ->where('rt.expiry < :expiry')
+            ->setParameter('expiry', new DateTime())
+            ->getQuery()
+            ->execute();
     }
 }

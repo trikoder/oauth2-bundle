@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\Converter;
 
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Scope as ScopeEntity;

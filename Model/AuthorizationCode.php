@@ -36,6 +36,9 @@ class AuthorizationCode
      */
     private $revoked = false;
 
+    /** @var string|null */
+    private $nonce;
+
     public function __construct(
         string $identifier,
         DateTime $expiry,
@@ -91,6 +94,20 @@ class AuthorizationCode
     public function revoke(): self
     {
         $this->revoked = true;
+
+        return $this;
+    }
+
+    public function getNonce(): ?string
+    {
+        return $this->nonce;
+    }
+
+    public function setNonce(string $nonce): self
+    {
+        if ($this->nonce === null) {
+            $this->nonce = $nonce;
+        }
 
         return $this;
     }

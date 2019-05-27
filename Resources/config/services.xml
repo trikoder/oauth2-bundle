@@ -71,7 +71,7 @@
         <service id="league.oauth2.server.grant.refresh_token_grant" class="League\OAuth2\Server\Grant\RefreshTokenGrant">
             <argument type="service" id="trikoder.oauth2.league.repository.refresh_token_repository" />
         </service>
-        <service id="league.oauth2.server.grant.auth_code_grant" class="League\OAuth2\Server\Grant\AuthCodeGrant" >
+        <service id="league.oauth2.server.grant.auth_code_grant" class="Trikoder\Bundle\OAuth2Bundle\Grant\AuthCodeGrant" >
             <argument type="service" id="trikoder.oauth2.league.repository.auth_code_repository" />
             <argument type="service" id="trikoder.oauth2.league.repository.refresh_token_repository" />
             <argument key="$authCodeTTL" />
@@ -136,7 +136,7 @@
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
         </service>
         <service id="openid_connect_server.claim_extractor" class="OpenIDConnectServer\ClaimExtractor" />
-        <service id="openid_connect_server.id_token_response" class="OpenIDConnectServer\IdTokenResponse">
+        <service id="openid_connect_server.id_token_response" class="Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\IdTokenResponse">
             <argument type="service" id="trikoder.oauth2.openid_connect.repository.identity_provider" />
             <argument type="service" id="openid_connect_server.claim_extractor" />
         </service>

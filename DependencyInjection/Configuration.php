@@ -126,7 +126,6 @@ final class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('entity_manager')
                             ->info('Name of the entity manager that you wish to use for managing clients and tokens.')
-                            ->isRequired()
                             ->cannotBeEmpty()
                             ->defaultValue('default')
                         ->end()

@@ -17,12 +17,12 @@ final class OAuth2Factory implements SecurityFactoryInterface
      */
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
-        $providerId = 'security.authentication.provider.oauth2. ' . $id;
+        $providerId = 'security.authentication.provider.oauth2.' . $id;
         $container
             ->setDefinition($providerId, new ChildDefinition('trikoder.oauth2.security.authentication.provider.oauth2_provider'))
             ->replaceArgument('$userProvider', new Reference($userProvider));
 
-        $listenerId = 'security.authentication.listener.oauth2. ' . $id;
+        $listenerId = 'security.authentication.listener.oauth2.' . $id;
         $container
             ->setDefinition($listenerId, new ChildDefinition('trikoder.oauth2.security.firewall.oauth2_listener'));
 

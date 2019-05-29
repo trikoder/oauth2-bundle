@@ -36,9 +36,7 @@ This package is currently in the active development.
     composer require trikoder/oauth2-bundle nyholm/psr7 --no-plugins --no-scripts
     ```
 
-    > **NOTE #1:** Due to required pre-configuration, this bundle is currently not compatible with [Symfony Flex](https://github.com/symfony/flex).
-
-    > **NOTE #2:** This bundle requires a PSR 7/17 implementation to operate. We recommend that you use [nyholm/psr7](https://github.com/Nyholm/psr7). Check out this [document](docs/psr-implementation-switching.md) if you wish to use a different implementation.
+    > **NOTE #1:** This bundle requires a PSR 7/17 implementation to operate. We recommend that you use [nyholm/psr7](https://github.com/Nyholm/psr7). Check out this [document](docs/psr-implementation-switching.md) if you wish to use a different implementation.
 
 2. Create the bundle configuration file under `config/packages/trikoder_oauth2.yaml`. Here is a reference configuration file:
 

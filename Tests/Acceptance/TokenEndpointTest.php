@@ -7,6 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 use DateTime;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
@@ -23,7 +24,8 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             $this->client->getContainer()->get(ScopeManagerInterface::class),
             $this->client->getContainer()->get(ClientManagerInterface::class),
             $this->client->getContainer()->get(AccessTokenManagerInterface::class),
-            $this->client->getContainer()->get(RefreshTokenManagerInterface::class)
+            $this->client->getContainer()->get(RefreshTokenManagerInterface::class),
+            $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class)
         );
     }
 
@@ -114,6 +116,37 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $this->assertSame(3600, $jsonResponse['expires_in']);
         $this->assertNotEmpty($jsonResponse['access_token']);
         $this->assertNotEmpty($jsonResponse['refresh_token']);
+    }
+
+    public function testSuccessfulAuthorizationCodeRequest()
+    {
+        $authCode = $this->client
+            ->getContainer()
+            ->get(AuthorizationCodeManagerInterface::class)
+            ->find(FixtureFactory::FIXTURE_AUTH_CODE);
+
+        timecop_freeze(new DateTime());
+
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
+            'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
+        ]);
+
+        timecop_return();
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('application/json; charset=UTF-8', $response->headers->get('Content-Type'));
+
+        $jsonResponse = json_decode($response->getContent(), true);
+
+        $this->assertSame('Bearer', $jsonResponse['token_type']);
+        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertNotEmpty($jsonResponse['access_token']);
     }
 
     public function testFailedTokenRequest()

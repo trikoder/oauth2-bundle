@@ -7,8 +7,8 @@ namespace Trikoder\Bundle\OAuth2Bundle\League\Repository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
-use Trikoder\Bundle\OAuth2Bundle\League\Entity\User as UserEntity;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant as GrantModel;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
@@ -25,10 +25,16 @@ final class UserRepository implements UserRepositoryInterface
      */
     private $eventDispatcher;
 
-    public function __construct(ClientManagerInterface $clientManager, EventDispatcherInterface $eventDispatcher)
+    /**
+     * @var UserConverter
+     */
+    private $userConverter;
+
+    public function __construct(ClientManagerInterface $clientManager, EventDispatcherInterface $eventDispatcher, UserConverter $userConverter)
     {
         $this->clientManager = $clientManager;
         $this->eventDispatcher = $eventDispatcher;
+        $this->userConverter = $userConverter;
     }
 
     /**
@@ -58,9 +64,6 @@ final class UserRepository implements UserRepositoryInterface
             return null;
         }
 
-        $userEntity = new UserEntity();
-        $userEntity->setIdentifier($user->getUsername());
-
-        return $userEntity;
+        return $this->userConverter->toLeague($user);
     }
 }

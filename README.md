@@ -75,6 +75,10 @@ This package is currently in the active development.
             # Whether to enable the refresh token grant
             enable_refresh_token_grant: true
 
+            # How long the issued auth code should be valid for.
+            # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
+            auth_code_ttl: PT10M
+
         resource_server:
 
             # Full path to the public key file
@@ -117,6 +121,16 @@ This package is currently in the active development.
     ```
 
 You can verify that everything is working by issuing a `GET` request to the `/token` endpoint.
+
+**❮ NOTE ❯** It is recommended to control the access to the authorization endpoint
+so that only logged in users can approve authorization requests.
+You should review your `security.yml` file. Here is a sample configuration:
+
+```yaml
+security:
+    access_control:
+        - { path: ^/authorize, roles: IS_AUTHENTICATED_REMEMBERED }
+```
 
 ## Configuration
 

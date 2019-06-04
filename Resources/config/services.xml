@@ -93,7 +93,7 @@
             <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="1024" />
         </service>
         <service id="trikoder.oauth2.event_listener.authorization.convert_to_response" class="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener">
-            <tag name="kernel.event_listener" event="kernel.exception" method="onException" priority="-10" />
+            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="10" />
         </service>
 
         <!-- Token controller -->

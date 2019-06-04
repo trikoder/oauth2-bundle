@@ -53,7 +53,6 @@ final class Configuration implements ConfigurationInterface
                     ->info("The type of value of 'encryption_key'")
                     ->values(['plain', 'defuse'])
                     ->defaultValue('plain')
-                    ->isRequired()
                 ->end()
                 ->scalarNode('access_token_ttl')
                     ->info("How long the issued access token should be valid for.\nThe value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters")

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\EventListener;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedException;
 
@@ -14,7 +14,7 @@ use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedEx
  */
 final class ConvertExceptionToResponseListener
 {
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
         if ($exception instanceof InsufficientScopesException || $exception instanceof Oauth2AuthenticationFailedException) {

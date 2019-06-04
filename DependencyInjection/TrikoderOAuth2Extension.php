@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use DateInterval;
+use Defuse\Crypto\Key;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use League\OAuth2\Server\CryptKey;
 use LogicException;
@@ -139,9 +140,22 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 $config['private_key'],
                 $config['private_key_passphrase'],
                 false,
-            ]))
-            ->replaceArgument('$encryptionKey', $config['encryption_key'])
-        ;
+            ]));
+
+        if ($config['encryption_key_type'] === 'plain') {
+            $authorizationServer->replaceArgument('$encryptionKey', $config['encryption_key']);
+        } elseif ($config['encryption_key_type'] === 'defuse') {
+            if (!class_exists(Key::class)) {
+                throw new \RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
+            }
+
+            $keyDefinition = (new Definition(Key::class))
+                ->setFactory([Key::class, 'loadFromAsciiSafeString'])
+                ->addArgument($config['encryption_key']);
+            $container->setDefinition('trikoder.oauth2.defuse_key', $keyDefinition);
+
+            $authorizationServer->replaceArgument('$encryptionKey', new Reference('trikoder.oauth2.defuse_key'));
+        }
 
         if ($config['enable_client_credentials_grant']) {
             $authorizationServer->addMethodCall('enableGrantType', [

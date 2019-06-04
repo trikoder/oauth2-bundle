@@ -142,9 +142,9 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 false,
             ]));
 
-        if ($config['encryption_key_type'] === 'plain') {
+        if ('plain' === $config['encryption_key_type']) {
             $authorizationServer->replaceArgument('$encryptionKey', $config['encryption_key']);
-        } elseif ($config['encryption_key_type'] === 'defuse') {
+        } elseif ('defuse' === $config['encryption_key_type']) {
             if (!class_exists(Key::class)) {
                 throw new \RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
             }

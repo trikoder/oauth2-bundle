@@ -99,6 +99,10 @@ This package is currently in the active development.
                 entity_manager: default # Required
 
             in_memory: ~
+         
+        # The priority of the event listener that converts an Exception to a Response
+        exception_event_listener_priority: 10 
+       
     ```
 
 3. Enable the bundle in `config/bundles.php` by adding it to the array:

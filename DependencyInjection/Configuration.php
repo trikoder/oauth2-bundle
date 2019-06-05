@@ -80,6 +80,10 @@ final class Configuration implements ConfigurationInterface
                     ->info('Whether to enable the authorization code grant')
                     ->defaultTrue()
                 ->end()
+                ->scalarNode('exception_event_listener_priority')
+                    ->info('The priority of the event listener that converts an Exception to a Response')
+                    ->defaultValue(10)
+                ->end()
             ->end()
         ;
 

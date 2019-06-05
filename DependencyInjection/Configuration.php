@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
+use Defuse\Crypto\Key;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -45,7 +46,7 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue(null)
                 ->end()
                 ->scalarNode('encryption_key')
-                    ->info("The plain string or the ascii safe string used to create a \Defuse\Crypto\Key to be used as an encryption key.\nHow to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password")
+                    ->info(sprintf("The plain string or the ascii safe string used to create a %s to be used as an encryption key.\nHow to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password", Key::class))
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()

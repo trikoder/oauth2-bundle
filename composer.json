@@ -44,7 +44,8 @@
     },
     "suggest": {
         "nelmio/cors-bundle": "For handling CORS requests",
-        "nyholm/psr7": "For a super lightweight PSR-7/17 implementation"
+        "nyholm/psr7": "For a super lightweight PSR-7/17 implementation",
+        "defuse/php-encryption": "For better performance when doing encryption"
     },
     "config": {
         "sort-packages": true

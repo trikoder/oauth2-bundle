@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
  */
 class InsufficientScopesException extends AuthenticationException
 {
-    public static function create(TokenInterface $token)
+    public static function create(TokenInterface $token): self
     {
         $exception = new self('The token has insufficient scopes.', 403);
         $exception->setToken($token);

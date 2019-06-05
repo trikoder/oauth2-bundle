@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
  */
 class Oauth2AuthenticationFailedException extends AuthenticationException
 {
-    public static function create(string $message)
+    public static function create(string $message): self
     {
         return new self($message, 401);
     }

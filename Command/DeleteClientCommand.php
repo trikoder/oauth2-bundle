@@ -23,6 +23,7 @@ final class DeleteClientCommand extends Command
     public function __construct(ClientManagerInterface $clientManager)
     {
         parent::__construct();
+
         $this->clientManager = $clientManager;
     }
 

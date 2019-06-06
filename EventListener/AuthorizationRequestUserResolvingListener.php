@@ -11,7 +11,7 @@ use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 /**
  * Listener sets currently authenticated user to authorization request context
  */
-class AuthorizationRequestUserResolvingListener
+final class AuthorizationRequestUserResolvingListener
 {
     /**
      * @var Security

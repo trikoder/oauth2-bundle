@@ -18,7 +18,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
 final class ListClientsCommand extends Command
 {
-    public const ALLOWED_COLUMNS = ['identifier', 'secret', 'scope', 'redirect uri', 'grant type'];
+    private const ALLOWED_COLUMNS = ['identifier', 'secret', 'scope', 'redirect uri', 'grant type'];
 
     protected static $defaultName = 'trikoder:oauth2:list-clients';
 
@@ -121,13 +121,11 @@ final class ListClientsCommand extends Command
 
     private function getColumns(InputInterface $input): array
     {
-        $allowedColumns = self::ALLOWED_COLUMNS;
-
         $requestedColumns = $input->getOption('columns');
         $requestedColumns = array_map(function (string $column): string {
             return strtolower(trim($column));
         }, $requestedColumns);
 
-        return array_intersect($requestedColumns, $allowedColumns);
+        return array_intersect($requestedColumns, self::ALLOWED_COLUMNS);
     }
 }

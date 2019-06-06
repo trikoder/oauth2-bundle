@@ -21,6 +21,10 @@ final class ListClientsCommand extends Command
     public const ALLOWED_COLUMNS = ['identifier', 'secret', 'scope', 'redirect uri', 'grant type'];
 
     protected static $defaultName = 'trikoder:oauth2:list-clients';
+
+    /**
+     * @var ClientManagerInterface
+     */
     private $clientManager;
 
     public function __construct(ClientManagerInterface $clientManager)

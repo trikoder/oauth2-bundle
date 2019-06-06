@@ -20,6 +20,9 @@ final class CreateClientCommand extends Command
 {
     protected static $defaultName = 'trikoder:oauth2:create-client';
 
+    /**
+     * @var ClientManagerInterface
+     */
     private $clientManager;
 
     public function __construct(ClientManagerInterface $clientManager)

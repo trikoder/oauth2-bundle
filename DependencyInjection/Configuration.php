@@ -94,6 +94,10 @@ final class Configuration implements ConfigurationInterface
                     ->info('Whether to enable the authorization code grant')
                     ->defaultTrue()
                 ->end()
+                ->booleanNode('enable_implicit_grant')
+                    ->info('Whether to enable the implicit grant')
+                    ->defaultTrue()
+                ->end()
             ->end()
         ;
 

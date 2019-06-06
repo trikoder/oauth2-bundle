@@ -77,6 +77,9 @@
             <argument type="service" id="trikoder.oauth2.league.repository.refresh_token_repository" />
             <argument key="$authCodeTTL" />
         </service>
+        <service id="league.oauth2.server.grant.implicit_grant" class="League\OAuth2\Server\Grant\ImplicitGrant" >
+            <argument key="$accessTokenTTL" />
+        </service>
 
         <!-- Authorization controller -->
         <service id="trikoder.oauth2.controller.authorization_controller" class="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">

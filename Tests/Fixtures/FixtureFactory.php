@@ -56,6 +56,7 @@ final class FixtureFactory
     public const FIXTURE_SCOPE_SECOND = 'rock';
 
     public const FIXTURE_USER = 'user';
+    public const FIXTURE_PASSWORD = 'password';
 
     public static function createUser(array $roles = []): User
     {

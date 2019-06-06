@@ -41,7 +41,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -50,8 +51,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'state' => 'foobar',
             ]
         );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -77,7 +79,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -86,8 +89,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'state' => 'foobar',
             ]
         );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -116,7 +120,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -127,8 +132,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'scope' => FixtureFactory::FIXTURE_SCOPE_FIRST . ' ' . FixtureFactory::FIXTURE_SCOPE_SECOND,
             ]
         );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -152,7 +158,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -161,8 +168,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'state' => 'foobar',
             ]
         );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -186,7 +194,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -195,8 +204,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'state' => 'foobar',
             ]
         );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -222,7 +232,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -232,8 +243,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'redirect_uri' => 'https://example.org/oauth2/malicious-uri',
             ]
         );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 

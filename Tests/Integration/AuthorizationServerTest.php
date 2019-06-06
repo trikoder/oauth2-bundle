@@ -170,9 +170,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -194,9 +196,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -225,9 +229,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -257,9 +263,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -294,9 +302,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);
@@ -375,9 +385,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);

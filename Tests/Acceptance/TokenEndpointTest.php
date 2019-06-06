@@ -33,13 +33,15 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
     {
         timecop_freeze(new DateTime());
 
-        $this->client->request('POST', '/token', [
-            'client_id' => 'foo',
-            'client_secret' => 'secret',
-            'grant_type' => 'client_credentials',
-        ]);
-
-        timecop_return();
+        try {
+            $this->client->request('POST', '/token', [
+                'client_id' => 'foo',
+                'client_secret' => 'secret',
+                'grant_type' => 'client_credentials',
+            ]);
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -64,15 +66,17 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
 
         timecop_freeze(new DateTime());
 
-        $this->client->request('POST', '/token', [
-            'client_id' => 'foo',
-            'client_secret' => 'secret',
-            'grant_type' => 'password',
-            'username' => 'user',
-            'password' => 'pass',
-        ]);
-
-        timecop_return();
+        try {
+            $this->client->request('POST', '/token', [
+                'client_id' => 'foo',
+                'client_secret' => 'secret',
+                'grant_type' => 'password',
+                'username' => 'user',
+                'password' => 'pass',
+            ]);
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -96,14 +100,16 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
 
         timecop_freeze(new DateTime());
 
-        $this->client->request('POST', '/token', [
-            'client_id' => 'foo',
-            'client_secret' => 'secret',
-            'grant_type' => 'refresh_token',
-            'refresh_token' => TestHelper::generateEncryptedPayload($refreshToken),
-        ]);
-
-        timecop_return();
+        try {
+            $this->client->request('POST', '/token', [
+                'client_id' => 'foo',
+                'client_secret' => 'secret',
+                'grant_type' => 'refresh_token',
+                'refresh_token' => TestHelper::generateEncryptedPayload($refreshToken),
+            ]);
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -127,15 +133,17 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
 
         timecop_freeze(new DateTime());
 
-        $this->client->request('POST', '/token', [
-            'client_id' => 'foo',
-            'client_secret' => 'secret',
-            'grant_type' => 'authorization_code',
-            'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
-            'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
-        ]);
-
-        timecop_return();
+        try {
+            $this->client->request('POST', '/token', [
+                'client_id' => 'foo',
+                'client_secret' => 'secret',
+                'grant_type' => 'authorization_code',
+                'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
+                'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
+            ]);
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 

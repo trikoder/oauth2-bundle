@@ -20,15 +20,17 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
 
         timecop_freeze(new DateTime());
 
-        $testData = $this->buildClearExpiredTestData();
+        try {
+            $testData = $this->buildClearExpiredTestData();
 
-        foreach ($testData['input'] as $token) {
-            $inMemoryRefreshTokenManager->save($token);
+            foreach ($testData['input'] as $token) {
+                $inMemoryRefreshTokenManager->save($token);
+            }
+
+            $this->assertSame(3, $inMemoryRefreshTokenManager->clearExpired());
+        } finally {
+            timecop_return();
         }
-
-        $this->assertSame(3, $inMemoryRefreshTokenManager->clearExpired());
-
-        timecop_return();
 
         $reflectionProperty = new ReflectionProperty(InMemoryRefreshTokenManager::class, 'refreshTokens');
         $reflectionProperty->setAccessible(true);

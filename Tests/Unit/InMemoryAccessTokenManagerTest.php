@@ -19,15 +19,17 @@ final class InMemoryAccessTokenManagerTest extends TestCase
 
         timecop_freeze(new DateTime());
 
-        $testData = $this->buildClearExpiredTestData();
+        try {
+            $testData = $this->buildClearExpiredTestData();
 
-        foreach ($testData['input'] as $token) {
-            $inMemoryAccessTokenManager->save($token);
+            foreach ($testData['input'] as $token) {
+                $inMemoryAccessTokenManager->save($token);
+            }
+
+            $this->assertSame(3, $inMemoryAccessTokenManager->clearExpired());
+        } finally {
+            timecop_return();
         }
-
-        $this->assertSame(3, $inMemoryAccessTokenManager->clearExpired());
-
-        timecop_return();
 
         $reflectionProperty = new ReflectionProperty(InMemoryAccessTokenManager::class, 'accessTokens');
         $reflectionProperty->setAccessible(true);

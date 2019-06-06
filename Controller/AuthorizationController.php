@@ -37,8 +37,12 @@ final class AuthorizationController
      */
     private $userConverter;
 
-    public function __construct(AuthorizationServer $server, EventDispatcherInterface $eventDispatcher, AuthorizationRequestResolveEventFactory $eventFactory, UserConverter $userConverter)
-    {
+    public function __construct(
+        AuthorizationServer $server,
+        EventDispatcherInterface $eventDispatcher,
+        AuthorizationRequestResolveEventFactory $eventFactory,
+        UserConverter $userConverter
+    ) {
         $this->server = $server;
         $this->eventDispatcher = $eventDispatcher;
         $this->eventFactory = $eventFactory;

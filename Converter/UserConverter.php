@@ -10,7 +10,7 @@ use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
 
 final class UserConverter
 {
-    public function toLeague(UserInterface $user = null): UserEntityInterface
+    public function toLeague(?UserInterface $user): UserEntityInterface
     {
         $userEntity = new User();
         if ($user instanceof UserInterface) {

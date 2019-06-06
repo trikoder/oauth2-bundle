@@ -14,7 +14,7 @@ use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedEx
  */
 final class ConvertExceptionToResponseListener
 {
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event): void
     {
         $exception = $event->getException();
         if ($exception instanceof InsufficientScopesException || $exception instanceof Oauth2AuthenticationFailedException) {

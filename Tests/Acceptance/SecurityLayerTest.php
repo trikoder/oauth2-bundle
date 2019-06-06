@@ -27,7 +27,7 @@ final class SecurityLayerTest extends AbstractAcceptanceTest
         );
     }
 
-    public function testAuthenticatedGuestRequest()
+    public function testAuthenticatedGuestRequest(): void
     {
         $accessToken = $this->client
             ->getContainer()
@@ -44,7 +44,7 @@ final class SecurityLayerTest extends AbstractAcceptanceTest
         $this->assertSame('Hello, guest', $response->getContent());
     }
 
-    public function testAuthenticatedGuestScopedRequest()
+    public function testAuthenticatedGuestScopedRequest(): void
     {
         $accessToken = $this->client
             ->getContainer()
@@ -61,7 +61,7 @@ final class SecurityLayerTest extends AbstractAcceptanceTest
         $this->assertSame('Only certain scopes should be able to access this action.', $response->getContent());
     }
 
-    public function testAuthenticatedUserRequest()
+    public function testAuthenticatedUserRequest(): void
     {
         $accessToken = $this->client
             ->getContainer()
@@ -78,7 +78,7 @@ final class SecurityLayerTest extends AbstractAcceptanceTest
         $this->assertSame('Hello, user', $response->getContent());
     }
 
-    public function testAuthenticatedUserRolesRequest()
+    public function testAuthenticatedUserRolesRequest(): void
     {
         $accessToken = $this->client
             ->getContainer()
@@ -95,7 +95,7 @@ final class SecurityLayerTest extends AbstractAcceptanceTest
         $this->assertSame('These are the roles I have currently assigned: ROLE_OAUTH2_FANCY, ROLE_USER', $response->getContent());
     }
 
-    public function testExpiredRequest()
+    public function testExpiredRequest(): void
     {
         $accessToken = $this->client
             ->getContainer()
@@ -111,7 +111,7 @@ final class SecurityLayerTest extends AbstractAcceptanceTest
         $this->assertSame(401, $response->getStatusCode());
     }
 
-    public function testRevokedRequest()
+    public function testRevokedRequest(): void
     {
         $accessToken = $this->client
             ->getContainer()
@@ -127,7 +127,7 @@ final class SecurityLayerTest extends AbstractAcceptanceTest
         $this->assertSame(401, $response->getStatusCode());
     }
 
-    public function testInsufficientScopeRequest()
+    public function testInsufficientScopeRequest(): void
     {
         $accessToken = $this->client
             ->getContainer()
@@ -143,7 +143,7 @@ final class SecurityLayerTest extends AbstractAcceptanceTest
         $this->assertSame(403, $response->getStatusCode());
     }
 
-    public function testInvalidRequest()
+    public function testInvalidRequest(): void
     {
         $this->client->request('GET', '/security-test');
 

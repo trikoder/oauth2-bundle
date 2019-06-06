@@ -30,18 +30,19 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         );
     }
 
-    public function testSuccessfulCodeRequest()
+    public function testSuccessfulCodeRequest(): void
     {
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -50,8 +51,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'state' => 'foobar',
             ]
         );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -66,18 +68,19 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertEquals('foobar', $query['state']);
     }
 
-    public function testSuccessfulTokenRequest()
+    public function testSuccessfulTokenRequest(): void
     {
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -86,8 +89,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'state' => 'foobar',
             ]
         );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -104,19 +108,20 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertEquals('foobar', $fragment['state']);
     }
 
-    public function testCodeRequestRedirectToResolutionUri()
+    public function testCodeRequestRedirectToResolutionUri(): void
     {
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
                 $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
                 $event->setResponse($response);
             });
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -127,42 +132,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'scope' => FixtureFactory::FIXTURE_SCOPE_FIRST . ' ' . FixtureFactory::FIXTURE_SCOPE_SECOND,
             ]
         );
-
-        timecop_return();
-
-        $response = $this->client->getResponse();
-
-        $this->assertSame(302, $response->getStatusCode());
-        $redirectUri = $response->headers->get('Location');
-        $this->assertEquals('/authorize/consent', $redirectUri);
-    }
-
-    public function testAuthorizationRequestEventIsStoppedAfterSettingAResponse()
-    {
-        $eventDispatcher = $this->client
-            ->getContainer()
-            ->get('event_dispatcher');
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
-            $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
-        }, 100);
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
-            $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
-            $event->setResponse($response);
-        }, 200);
-
-        timecop_freeze(new DateTime());
-
-        $this->client->request(
-            'GET',
-            '/authorize',
-            [
-                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                'response_type' => 'code',
-                'state' => 'foobar',
-            ]
-        );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -171,22 +143,23 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertEquals('/authorize/consent', $redirectUri);
     }
 
-    public function testAuthorizationRequestEventIsStoppedAfterResolution()
+    public function testAuthorizationRequestEventIsStoppedAfterSettingAResponse(): void
     {
         $eventDispatcher = $this->client
             ->getContainer()
             ->get('event_dispatcher');
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
             $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
-        }, 200);
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+        }, 100);
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
             $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
             $event->setResponse($response);
-        }, 100);
+        }, 200);
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -195,8 +168,45 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'state' => 'foobar',
             ]
         );
+        } finally {
+            timecop_return();
+        }
 
-        timecop_return();
+        $response = $this->client->getResponse();
+
+        $this->assertSame(302, $response->getStatusCode());
+        $redirectUri = $response->headers->get('Location');
+        $this->assertEquals('/authorize/consent', $redirectUri);
+    }
+
+    public function testAuthorizationRequestEventIsStoppedAfterResolution(): void
+    {
+        $eventDispatcher = $this->client
+            ->getContainer()
+            ->get('event_dispatcher');
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
+            $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+        }, 200);
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
+            $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
+            $event->setResponse($response);
+        }, 100);
+
+        timecop_freeze(new DateTime());
+
+        try {
+            $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+            ]
+        );
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -211,18 +221,19 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertEquals('foobar', $query['state']);
     }
 
-    public function testFailedCodeRequestRedirectWithFakedRedirectUri()
+    public function testFailedCodeRequestRedirectWithFakedRedirectUri(): void
     {
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event) {
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
         timecop_freeze(new DateTime());
 
-        $this->client->request(
+        try {
+            $this->client->request(
             'GET',
             '/authorize',
             [
@@ -232,8 +243,9 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 'redirect_uri' => 'https://example.org/oauth2/malicious-uri',
             ]
         );
-
-        timecop_return();
+        } finally {
+            timecop_return();
+        }
 
         $response = $this->client->getResponse();
 
@@ -246,7 +258,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertSame('Client authentication failed', $jsonResponse['message']);
     }
 
-    public function testFailedAuthorizeRequest()
+    public function testFailedAuthorizeRequest(): void
     {
         $this->client->request(
             'GET',

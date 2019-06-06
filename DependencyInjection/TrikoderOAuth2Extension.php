@@ -233,7 +233,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         ;
     }
 
-    private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config)
+    private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config): void
     {
         if (\count($config) > 1) {
             throw new LogicException('Only one persistence method can be configured at a time.');

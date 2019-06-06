@@ -24,7 +24,7 @@ final class Client implements ClientEntityInterface
     /**
      * @param string[] $redirectUri
      */
-    public function setRedirectUri(array $redirectUri)
+    public function setRedirectUri(array $redirectUri): void
     {
         $this->redirectUri = $redirectUri;
     }

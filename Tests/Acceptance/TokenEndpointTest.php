@@ -29,7 +29,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         );
     }
 
-    public function testSuccessfulClientCredentialsRequest()
+    public function testSuccessfulClientCredentialsRequest(): void
     {
         timecop_freeze(new DateTime());
 
@@ -53,12 +53,12 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $this->assertNotEmpty($jsonResponse['access_token']);
     }
 
-    public function testSuccessfulPasswordRequest()
+    public function testSuccessfulPasswordRequest(): void
     {
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event) {
+            ->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event): void {
                 $event->setUser(FixtureFactory::createUser());
             });
 
@@ -87,7 +87,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $this->assertNotEmpty($jsonResponse['refresh_token']);
     }
 
-    public function testSuccessfulRefreshTokenRequest()
+    public function testSuccessfulRefreshTokenRequest(): void
     {
         $refreshToken = $this->client
             ->getContainer()
@@ -118,7 +118,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $this->assertNotEmpty($jsonResponse['refresh_token']);
     }
 
-    public function testSuccessfulAuthorizationCodeRequest()
+    public function testSuccessfulAuthorizationCodeRequest(): void
     {
         $authCode = $this->client
             ->getContainer()
@@ -149,7 +149,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $this->assertNotEmpty($jsonResponse['access_token']);
     }
 
-    public function testFailedTokenRequest()
+    public function testFailedTokenRequest(): void
     {
         $this->client->request('GET', '/token');
 
@@ -165,7 +165,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $this->assertSame('Check that all required parameters have been provided', $jsonResponse['hint']);
     }
 
-    public function testFailedClientCredentialsTokenRequest()
+    public function testFailedClientCredentialsTokenRequest(): void
     {
         $this->client->request('POST', '/token', [
             'client_id' => 'foo',

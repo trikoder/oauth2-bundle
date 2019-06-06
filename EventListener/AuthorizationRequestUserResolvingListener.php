@@ -28,7 +28,7 @@ class AuthorizationRequestUserResolvingListener
         $this->security = $security;
     }
 
-    public function onAuthorizationRequest(AuthorizationRequestResolveEvent $event)
+    public function onAuthorizationRequest(AuthorizationRequestResolveEvent $event): void
     {
         $user = $this->security->getUser();
         if ($user instanceof UserInterface) {

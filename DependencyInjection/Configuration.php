@@ -24,6 +24,14 @@ final class Configuration implements ConfigurationInterface
         $rootNode->append($this->createScopesNode());
         $rootNode->append($this->createPersistenceNode());
 
+        $rootNode
+            ->children()
+                ->scalarNode('exception_event_listener_priority')
+                    ->info('The priority of the event listener that converts an Exception to a Response')
+                    ->defaultValue(10)
+                ->end()
+            ->end();
+
         return $treeBuilder;
     }
 

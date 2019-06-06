@@ -6,13 +6,14 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedException;
 
 final class OAuth2Listener implements ListenerInterface
 {
@@ -56,15 +57,11 @@ final class OAuth2Listener implements ListenerInterface
             /** @var OAuth2Token $authenticatedToken */
             $authenticatedToken = $this->authenticationManager->authenticate(new OAuth2Token($request, null));
         } catch (AuthenticationException $e) {
-            $event->setResponse(new Response($e->getMessage(), Response::HTTP_UNAUTHORIZED));
-
-            return;
+            throw Oauth2AuthenticationFailedException::create($e->getMessage());
         }
 
         if (!$this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {
-            $event->setResponse(new Response('The token has insufficient scopes.', Response::HTTP_FORBIDDEN));
-
-            return;
+            throw InsufficientScopesException::create($authenticatedToken);
         }
 
         $this->tokenStorage->setToken($authenticatedToken);

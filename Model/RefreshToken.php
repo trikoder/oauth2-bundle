@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
-use DateTime;
+use DateTimeInterface;
 
 class RefreshToken
 {
@@ -14,7 +14,7 @@ class RefreshToken
     private $identifier;
 
     /**
-     * @var DateTime
+     * @var DateTimeInterface
      */
     private $expiry;
 
@@ -28,7 +28,7 @@ class RefreshToken
      */
     private $revoked = false;
 
-    public function __construct(string $identifier, DateTime $expiry, AccessToken $accessToken)
+    public function __construct(string $identifier, DateTimeInterface $expiry, AccessToken $accessToken)
     {
         $this->identifier = $identifier;
         $this->expiry = $expiry;
@@ -45,7 +45,7 @@ class RefreshToken
         return $this->identifier;
     }
 
-    public function getExpiry(): DateTime
+    public function getExpiry(): DateTimeInterface
     {
         return $this->expiry;
     }

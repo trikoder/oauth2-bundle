@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
-use DateTime;
+use DateTimeInterface;
 
 class AuthorizationCode
 {
@@ -14,7 +14,7 @@ class AuthorizationCode
     private $identifier;
 
     /**
-     * @var DateTime
+     * @var DateTimeInterface
      */
     private $expiry;
 
@@ -40,7 +40,7 @@ class AuthorizationCode
 
     public function __construct(
         string $identifier,
-        DateTime $expiry,
+        DateTimeInterface $expiry,
         Client $client,
         ?string $userIdentifier,
         array $scopes)
@@ -62,7 +62,7 @@ class AuthorizationCode
         return $this->identifier;
     }
 
-    public function getExpiryDateTime(): DateTime
+    public function getExpiryDateTime(): DateTimeInterface
     {
         return $this->expiry;
     }

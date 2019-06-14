@@ -675,7 +675,14 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        $response = $this->handleTokenRequest($request);
+        timecop_freeze(new DateTime());
+
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
+
         $accessToken = $this->getAccessToken($response['access_token']);
 
         $this->assertSame('Bearer', $response['token_type']);

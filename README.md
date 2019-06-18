@@ -173,6 +173,16 @@ You can run the test suite using the following command:
 dev/bin/php composer test
 ```
 
+### Debugging
+
+You can run the debugger using the following command:
+
+```sh
+dev/bin/php-debug vendor/bin/phpunit
+```
+
+Make sure your IDE is setup properly, for more information check out the [dedicated documentation](docs/debugging.md).
+
 ### Code linting
 
 This bundle enforces the PSR-2 and Symfony code standards during development using the [PHP CS Fixer](https://cs.sensiolabs.org/) utility. Before committing any code, you can run the utility so it can fix any potential rule violations for you:

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+readonly BASE_DIR=$(cd "$(dirname "$0")"; pwd)
+
+${BASE_DIR}/docker-compose run --rm --no-deps -e PHP_IDE_CONFIG=serverName=${PHP_IDE_CONFIG:-oauth} \
+    php -d xdebug.remote_autostart=1 "$@"

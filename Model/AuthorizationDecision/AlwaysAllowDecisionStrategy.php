@@ -8,6 +8,6 @@ class AlwaysAllowDecisionStrategy implements AuthorizationDecisionStrategy
 {
     public function decide(AuthorizationRequestResolveEvent $event)
     {
-        $event->approveAuthorization();
+        $event->resolveAuthorization(true);
     }
 }

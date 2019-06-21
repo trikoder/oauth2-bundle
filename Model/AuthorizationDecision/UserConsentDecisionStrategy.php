@@ -79,7 +79,7 @@ class UserConsentDecisionStrategy implements AuthorizationDecisionStrategy
         // if the request carries approval result
         if ($this->canResolveAuthorizationRequest($event, $request)) {
             if ($this->isAuthorizationAllowed($request)) {
-                $event->approveAuthorization();
+                $event->resolveAuthorization(true);
             }
 
             // disapproved consent is handled by League component

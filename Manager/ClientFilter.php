@@ -11,15 +11,17 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 final class ClientFilter
 {
     /**
-     * @var array
+     * @var Grant[]
      */
     private $grants = [];
+
     /**
-     * @var array
+     * @var RedirectUri[]
      */
     private $redirectUris = [];
+
     /**
-     * @var array
+     * @var Scope[]
      */
     private $scopes = [];
 

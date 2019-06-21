@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
+use Defuse\Crypto\Key;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -24,6 +25,14 @@ final class Configuration implements ConfigurationInterface
         $rootNode->append($this->createScopesNode());
         $rootNode->append($this->createPersistenceNode());
         $rootNode->append($this->createOpenIDConnectNode());
+
+        $rootNode
+            ->children()
+                ->scalarNode('exception_event_listener_priority')
+                    ->info('The priority of the event listener that converts an Exception to a Response')
+                    ->defaultValue(10)
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }
@@ -48,9 +57,14 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue(null)
                 ->end()
                 ->scalarNode('encryption_key')
-                    ->info("The string used as an encryption key.\nHow to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password")
+                    ->info(sprintf("The plain string or the ascii safe string used to create a %s to be used as an encryption key.\nHow to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password", Key::class))
                     ->isRequired()
                     ->cannotBeEmpty()
+                ->end()
+                ->enumNode('encryption_key_type')
+                    ->info("The type of value of 'encryption_key'")
+                    ->values(['plain', 'defuse'])
+                    ->defaultValue('plain')
                 ->end()
                 ->scalarNode('access_token_ttl')
                     ->info("How long the issued access token should be valid for.\nThe value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters")
@@ -62,6 +76,11 @@ final class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->defaultValue('P1M')
                 ->end()
+                ->scalarNode('auth_code_ttl')
+                    ->info("How long the issued auth code should be valid for.\nThe value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters")
+                    ->cannotBeEmpty()
+                    ->defaultValue('PT10M')
+                ->end()
                 ->booleanNode('enable_client_credentials_grant')
                     ->info('Whether to enable the client credentials grant')
                     ->defaultTrue()
@@ -72,6 +91,14 @@ final class Configuration implements ConfigurationInterface
                 ->end()
                 ->booleanNode('enable_refresh_token_grant')
                     ->info('Whether to enable the refresh token grant')
+                    ->defaultTrue()
+                ->end()
+                ->booleanNode('enable_auth_code_grant')
+                    ->info('Whether to enable the authorization code grant')
+                    ->defaultTrue()
+                ->end()
+                ->booleanNode('enable_implicit_grant')
+                    ->info('Whether to enable the implicit grant')
                     ->defaultTrue()
                 ->end()
                 ->scalarNode('auth_code_ttl')
@@ -144,7 +171,6 @@ final class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('entity_manager')
                             ->info('Name of the entity manager that you wish to use for managing clients and tokens.')
-                            ->isRequired()
                             ->cannotBeEmpty()
                             ->defaultValue('default')
                         ->end()

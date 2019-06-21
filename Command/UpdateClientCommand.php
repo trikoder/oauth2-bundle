@@ -20,6 +20,9 @@ final class UpdateClientCommand extends Command
 {
     protected static $defaultName = 'trikoder:oauth2:update-client';
 
+    /**
+     * @var ClientManagerInterface
+     */
     private $clientManager;
 
     public function __construct(ClientManagerInterface $clientManager)

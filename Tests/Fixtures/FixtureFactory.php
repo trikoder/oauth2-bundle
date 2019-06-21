@@ -58,6 +58,7 @@ final class FixtureFactory
     public const FIXTURE_SCOPE_OPENID = 'openid';
 
     public const FIXTURE_USER = 'user';
+    public const FIXTURE_PASSWORD = 'password';
 
     public static function createUser(array $roles = []): User
     {
@@ -232,8 +233,8 @@ final class FixtureFactory
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             self::FIXTURE_USER,
             []
-        );
 
+        );
         $authCodes[] = new AuthCode(
             self::FIXTURE_AUTH_CODE_OPENID,
             new DateTime('+2 minute'),
@@ -241,6 +242,7 @@ final class FixtureFactory
             self::FIXTURE_USER,
             [new Scope(self::FIXTURE_SCOPE_OPENID)]
         );
+
 
         return $authorizationCodes;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\League\Entity;
 
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
@@ -9,5 +11,7 @@ use League\OAuth2\Server\Entities\Traits\TokenEntityTrait;
 
 final class AuthCode implements AuthCodeEntityInterface
 {
-    use AuthCodeTrait, EntityTrait, TokenEntityTrait;
+    use AuthCodeTrait;
+    use EntityTrait;
+    use TokenEntityTrait;
 }

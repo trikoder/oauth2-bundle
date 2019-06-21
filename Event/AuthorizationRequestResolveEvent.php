@@ -1,44 +1,82 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
-use League\OAuth2\Server\Entities\ClientEntityInterface;
-use League\OAuth2\Server\Entities\ScopeEntityInterface;
-use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\Event;
-use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\Client;
+use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
-/**
- * Class AuthorizationRequestResolveEvent
-
- * @package Trikoder\Bundle\OAuth2Bundle\Event
- */
 final class AuthorizationRequestResolveEvent extends Event
 {
+    public const AUTHORIZATION_APPROVED = true;
+    public const AUTHORIZATION_DENIED = false;
+
     /**
      * @var AuthorizationRequest
      */
     private $authorizationRequest;
 
     /**
-     * @var null|ResponseInterface
+     * @var ScopeConverter
+     */
+    private $scopeConverter;
+
+    /**
+     * @var ClientManagerInterface
+     */
+    private $clientManager;
+
+    /**
+     * @var bool
+     */
+    private $authorizationResolution = self::AUTHORIZATION_DENIED;
+
+    /**
+     * @var ResponseInterface|null
      */
     private $response;
 
-    public function __construct(AuthorizationRequest $authorizationRequest)
+    /**
+     * @var UserInterface|null
+     */
+    private $user;
+
+    public function __construct(AuthorizationRequest $authorizationRequest, ScopeConverter $scopeConverter, ClientManagerInterface $clientManager)
     {
         $this->authorizationRequest = $authorizationRequest;
+        $this->scopeConverter = $scopeConverter;
+        $this->clientManager = $clientManager;
+    }
+
+    public function getAuthorizationResolution(): bool
+    {
+        return $this->authorizationResolution;
+    }
+
+    public function resolveAuthorization(bool $authorizationResolution): self
+    {
+        $this->authorizationResolution = $authorizationResolution;
+        $this->response = null;
+        $this->stopPropagation();
+
+        return $this;
     }
 
     public function hasResponse(): bool
     {
-        return $this->response !== null;
+        return $this->response instanceof ResponseInterface;
     }
 
-    public function getResponse(): ?ResponseInterface
+    public function getResponse(): ResponseInterface
     {
         if (!$this->hasResponse()) {
             throw new LogicException('There is no response. You should call "hasResponse" to check if the response exists.');
@@ -47,9 +85,12 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->response;
     }
 
-    public function setResponse(ResponseInterface $response): void
+    public function setResponse(ResponseInterface $response): self
     {
         $this->response = $response;
+        $this->stopPropagation();
+
+        return $this;
     }
 
     public function getGrantTypeId(): string
@@ -57,37 +98,43 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->authorizationRequest->getGrantTypeId();
     }
 
-    public function getClient(): ClientEntityInterface
+    public function getClient(): Client
     {
-        return $this->authorizationRequest->getClient();
+        $identifier = $this->authorizationRequest->getClient()->getIdentifier();
+        $client = $this->clientManager->find($identifier);
+
+        if (null === $client) {
+            throw new RuntimeException(sprintf('No client found for the given identifier "%s".', $identifier));
+        }
+
+        return $client;
     }
 
-    public function getUser(): UserEntityInterface
+    public function getUser(): ?UserInterface
     {
-        return $this->authorizationRequest->getUser();
+        return $this->user;
     }
 
-    public function setUser(User $user): void
+    public function setUser(?UserInterface $user): self
     {
-        $this->authorizationRequest->setUser($user);
+        $this->user = $user;
+
+        return $this;
     }
 
     /**
-     * @return ScopeEntityInterface[]
+     * @return Scope[]
      */
     public function getScopes(): array
     {
-        return $this->authorizationRequest->getScopes();
+        return $this->scopeConverter->toDomainArray(
+            $this->authorizationRequest->getScopes()
+        );
     }
 
     public function isAuthorizationApproved(): bool
     {
         return $this->authorizationRequest->isAuthorizationApproved();
-    }
-
-    public function approveAuthorization():void
-    {
-        $this->authorizationRequest->setAuthorizationApproved(true);
     }
 
     public function getRedirectUri(): ?string

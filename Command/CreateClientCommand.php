@@ -20,6 +20,9 @@ final class CreateClientCommand extends Command
 {
     protected static $defaultName = 'trikoder:oauth2:create-client';
 
+    /**
+     * @var ClientManagerInterface
+     */
     private $clientManager;
 
     public function __construct(ClientManagerInterface $clientManager)
@@ -29,7 +32,7 @@ final class CreateClientCommand extends Command
         $this->clientManager = $clientManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Creates a new oAuth2 client')
@@ -67,7 +70,7 @@ final class CreateClientCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $client = $this->buildClientFromInput($input);

@@ -124,7 +124,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'fancy rock',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_scope', $response['error']);
@@ -169,9 +169,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -193,9 +195,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -224,9 +228,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleAuthorizationRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -256,9 +262,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleAuthorizationRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -281,7 +289,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
     public function testValidPasswordGrant(): void
     {
-        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event) {
+        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event): void {
             $event->setUser(FixtureFactory::createUser());
         });
 
@@ -293,9 +301,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);
@@ -315,7 +325,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
     public function testInvalidCredentialsPasswordGrant(): void
     {
-        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event) {
+        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event): void {
             $event->setUser(null);
         });
 
@@ -374,9 +384,11 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         timecop_freeze(new DateTime());
 
-        $response = $this->handleTokenRequest($request);
-
-        timecop_return();
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);
@@ -423,7 +435,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'refresh_token' => TestHelper::generateEncryptedPayload($existingRefreshToken),
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        $response = $this->handleTokenRequest($request);
 
         // Response assertions.
         $this->assertSame('invalid_scope', $response['error']);
@@ -580,7 +592,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         // Response assertions.
         $this->assertSame(401, $response->getStatusCode());
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
         $this->assertSame('invalid_client', $responseData['error']);
         $this->assertSame('Client authentication failed', $responseData['message']);
     }
@@ -615,7 +627,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         // Response assertions.
         $this->assertSame(401, $response->getStatusCode());
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
         $this->assertSame('invalid_client', $responseData['error']);
         $this->assertSame('Client authentication failed', $responseData['message']);
     }
@@ -631,7 +643,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         // Response assertions.
         $this->assertSame(401, $response->getStatusCode());
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
         $this->assertSame('invalid_client', $responseData['error']);
         $this->assertSame('Client authentication failed', $responseData['message']);
     }
@@ -647,7 +659,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         // Response assertions.
         $this->assertSame(401, $response->getStatusCode());
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = json_decode((string) $response->getBody(), true);
         $this->assertSame('invalid_client', $responseData['error']);
         $this->assertSame('Client authentication failed', $responseData['message']);
     }
@@ -662,7 +674,14 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        $response = $this->handleTokenRequest($request);
+        timecop_freeze(new DateTime());
+
+        try {
+            $response = $this->handleTokenRequest($request);
+        } finally {
+            timecop_return();
+        }
+
         $accessToken = $this->getAccessToken($response['access_token']);
 
         $this->assertSame('Bearer', $response['token_type']);
@@ -722,5 +741,170 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         // Response assertions.
         $this->assertSame('invalid_client', $response['error']);
         $this->assertSame('Client authentication failed', $response['message']);
+    }
+
+    public function testSuccessfulImplicitRequest(): void
+    {
+        $request = $this->createAuthorizeRequest('foo:secret', [
+            'response_type' => 'token',
+            'client_id' => 'foo',
+        ]);
+
+        $response = $this->handleAuthorizationRequest($request);
+        $this->assertSame(302, $response->getStatusCode());
+        $responseData = [];
+        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
+        $accessToken = $this->getAccessToken($responseData['access_token']);
+
+        // Response assertions.
+        $this->assertSame('Bearer', $responseData['token_type']);
+        $this->assertEquals(600, $responseData['expires_in']);
+        $this->assertInstanceOf(AccessToken::class, $accessToken);
+        $this->assertSame('foo', $accessToken->getClient()->getIdentifier());
+    }
+
+    public function testSuccessfulImplicitRequestWithState(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+                'response_type' => 'token',
+                'client_id' => 'foo',
+                'state' => 'quzbaz',
+            ]);
+
+        $response = $this->handleAuthorizationRequest($request);
+        $this->assertSame(302, $response->getStatusCode());
+        $responseData = [];
+        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
+        $accessToken = $this->getAccessToken($responseData['access_token']);
+
+        // Response assertions.
+        $this->assertSame('Bearer', $responseData['token_type']);
+        $this->assertEquals(600, $responseData['expires_in']);
+        $this->assertInstanceOf(AccessToken::class, $accessToken);
+        $this->assertSame('foo', $accessToken->getClient()->getIdentifier());
+        $this->assertSame('quzbaz', $responseData['state']);
+    }
+
+    public function testSuccessfulImplicitRequestRedirectUri(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+                'response_type' => 'token',
+                'client_id' => 'foo',
+                'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
+            ]);
+
+        $response = $this->handleAuthorizationRequest($request);
+        $this->assertSame(302, $response->getStatusCode());
+        $responseData = [];
+        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
+        $accessToken = $this->getAccessToken($responseData['access_token']);
+
+        // Response assertions.
+        $this->assertSame('Bearer', $responseData['token_type']);
+        $this->assertEquals(600, $responseData['expires_in']);
+        $this->assertInstanceOf(AccessToken::class, $accessToken);
+        $this->assertSame('foo', $accessToken->getClient()->getIdentifier());
+    }
+
+    public function testImplicitRequestWithInvalidScope(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+                'response_type' => 'token',
+                'client_id' => 'foo',
+                'scope' => 'non_existing',
+            ]);
+
+        $response = $this->handleAuthorizationRequest($request);
+        $this->assertSame(302, $response->getStatusCode());
+        $responseData = [];
+        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $responseData);
+
+        // Response assertions.
+        $this->assertSame('invalid_scope', $responseData['error']);
+        $this->assertSame('The requested scope is invalid, unknown, or malformed', $responseData['message']);
+        $this->assertSame('Check the `non_existing` scope', $responseData['hint']);
+    }
+
+    public function testImplicitRequestWithInvalidRedirectUri(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+                'response_type' => 'token',
+                'client_id' => 'foo',
+                'redirect_uri' => 'https://example.org/oauth2/other-uri',
+            ]);
+
+        $response = $this->handleAuthorizationRequest($request);
+        $this->assertSame(401, $response->getStatusCode());
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        // Response assertions.
+        $this->assertSame('invalid_client', $responseData['error']);
+        $this->assertSame('Client authentication failed', $responseData['message']);
+    }
+
+    public function testDeniedImplicitRequest(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+                'response_type' => 'token',
+                'client_id' => 'foo',
+            ]);
+
+        $response = $this->handleAuthorizationRequest($request, false);
+        $this->assertSame(302, $response->getStatusCode());
+        $responseData = [];
+        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $responseData);
+
+        // Response assertions.
+        $this->assertSame('access_denied', $responseData['error']);
+        $this->assertSame('The resource owner or authorization server denied the request.', $responseData['message']);
+        $this->assertSame('The user denied the request', $responseData['hint']);
+    }
+
+    public function testImplicitRequestWithMissingClient(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+                'response_type' => 'token',
+                'client_id' => 'yolo',
+            ]);
+
+        $response = $this->handleAuthorizationRequest($request, false);
+        $this->assertSame(401, $response->getStatusCode());
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        // Response assertions.
+        $this->assertSame('invalid_client', $responseData['error']);
+        $this->assertSame('Client authentication failed', $responseData['message']);
+    }
+
+    public function testImplicitRequestWithInactiveClient(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+                'response_type' => 'token',
+                'client_id' => 'baz_inactive',
+            ]);
+
+        $response = $this->handleAuthorizationRequest($request, false);
+        $this->assertSame(401, $response->getStatusCode());
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        // Response assertions.
+        $this->assertSame('invalid_client', $responseData['error']);
+        $this->assertSame('Client authentication failed', $responseData['message']);
+    }
+
+    public function testImplicitRequestWithRestrictedGrantClient(): void
+    {
+        $request = $this->createAuthorizeRequest(null, [
+                'response_type' => 'token',
+                'client_id' => 'qux_restricted',
+            ]);
+
+        $response = $this->handleAuthorizationRequest($request, false);
+        $this->assertSame(401, $response->getStatusCode());
+        $responseData = json_decode((string) $response->getBody(), true);
+
+        // Response assertions.
+        $this->assertSame('invalid_client', $responseData['error']);
+        $this->assertSame('Client authentication failed', $responseData['message']);
     }
 }

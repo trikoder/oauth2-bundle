@@ -57,6 +57,9 @@ This package is currently in the active development.
             # The string used as an encryption key.
             # How to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password
             encryption_key:    # Required
+            
+            # The type of encryption key. Is the key a plain value or a ascii safe string that should be passed to Defuse\Crypto\Key?
+            encryption_key_type: 'plain'   # Possible values: "plain", "defuse"
 
             # How long the issued access token should be valid for.
             # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
@@ -99,6 +102,10 @@ This package is currently in the active development.
                 entity_manager: default # Required
 
             in_memory: ~
+         
+        # The priority of the event listener that converts an Exception to a Response
+        exception_event_listener_priority: 10 
+       
     ```
 
 3. Enable the bundle in `config/bundles.php` by adding it to the array:

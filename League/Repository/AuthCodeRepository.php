@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\League\Repository;
 
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
@@ -60,26 +62,6 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
         $authorizationCode = $this->buildAuthorizationCode($authCode);
 
         $this->authorizationCodeManager->save($authorizationCode);
-    }
-
-    public function updateWithNonce(AuthCodeEntityInterface $authCode, string $nonce)
-    {
-        /** @var AuthorizationCode $authorizationCode */
-        $authorizationCode = $this->authorizationCodeManager->find($authCode->getIdentifier());
-
-        if (null === $authorizationCode) {
-            throw new \LogicException('You cant update code that wasnt\'t persisted');
-        }
-
-        $authorizationCode->setNonce($nonce);
-
-        $this->authorizationCodeManager->save($authorizationCode);
-    }
-
-    public function getNonce(string $authCodeIdentifier)
-    {
-        $authCode = $this->authorizationCodeManager->find($authCodeIdentifier);
-        return $authCode->getNonce();
     }
 
     /**

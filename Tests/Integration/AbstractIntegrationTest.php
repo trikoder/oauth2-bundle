@@ -14,6 +14,7 @@ use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
+use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
@@ -22,17 +23,18 @@ use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
-use League\OAuth2\Server\ResourceServer;
 use OpenIDConnectServer\ClaimExtractor;
 use OpenIDConnectServer\IdTokenResponse;
 use OpenIDConnectServer\Repositories\IdentityProviderInterface;
-use Psr\Http\Message\ResponseInterface;
+use League\OAuth2\Server\ResourceServer;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository;
@@ -50,10 +52,10 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
-use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
-use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 use Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\Repository\IdentityProvider;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
+use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
+use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 abstract class AbstractIntegrationTest extends TestCase
@@ -120,9 +122,10 @@ abstract class AbstractIntegrationTest extends TestCase
         $clientRepository = new ClientRepository($this->clientManager);
         $accessTokenRepository = new AccessTokenRepository($this->accessTokenManager, $this->clientManager, $scopeConverter);
         $refreshTokenRepository = new RefreshTokenRepository($this->refreshTokenManager, $this->accessTokenManager);
-        $userRepository = new UserRepository($this->clientManager, $this->eventDispatcher);
-        $authCodeRepository = new AuthCodeRepository($this->authCodeManager, $this->clientManager, $scopeConverter);
         $identityRepository = new IdentityProvider($this->eventDispatcher);
+        $userConverter = new UserConverter();
+        $userRepository = new UserRepository($this->clientManager, $this->eventDispatcher, $userConverter);
+        $authCodeRepository = new AuthCodeRepository($this->authCodeManager, $this->clientManager, $scopeConverter);
 
         $this->authorizationServer = $this->createAuthorizationServer(
             $scopeRepository,
@@ -157,18 +160,21 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getRefreshToken(string $encryptedPayload): ?RefreshToken
     {
         try {
-            $payload = Crypto::decryptWithPassword($encryptedPayload, TestHelper::ENCRYPTION_KEY);
-        } catch (CryptoException $e) {
-            return null;
         }
 
         $payload = json_decode($payload, true);
+            $payload = Crypto::decryptWithPassword($encryptedPayload, TestHelper::ENCRYPTION_KEY);
+        } catch (CryptoException $e) {
+            return null;
 
         return $this->refreshTokenManager->find(
             $payload['refresh_token_id']
         );
     }
 
+
+        return $this->refreshTokenManager->find(
+            $payload['refresh_token_id']
     protected function getIdToken(string $jwtToken): Token
     {
         return (new Parser())->parse($jwtToken);
@@ -200,11 +206,13 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function createAuthorizeRequest(?string $credentials, array $query = []): ServerRequestInterface
     {
-        $headers = [
-            'Authorization' => sprintf('Basic %s', base64_encode($credentials)),
-        ];
+        $serverRequest = $this
+            ->psrFactory
+            ->createServerRequest('', '')
+            ->withQueryParams($query)
+        ;
 
-        return new ServerRequest([], [], null, null, 'php://temp', $headers, [], $query, '');
+        return \is_string($credentials) ? $serverRequest->withHeader('Authorization', sprintf('Basic %s', base64_encode($credentials))) : $serverRequest;
     }
 
     protected function handleTokenRequest(ServerRequestInterface $serverRequest): array
@@ -233,7 +241,7 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function handleAuthorizationRequest(ServerRequestInterface $serverRequest, $approved = true): ResponseInterface
     {
-        $response = new Response();
+        $response = $this->psrFactory->createResponse();
 
         try {
             $authRequest = $this->authorizationServer->validateAuthorizationRequest($serverRequest);
@@ -252,7 +260,7 @@ abstract class AbstractIntegrationTest extends TestCase
 
     protected function extractQueryDataFromUri(string $uri): array
     {
-        $uriObject = new \Zend\Diactoros\Uri($uri);
+        $uriObject = $this->psrFactory->createUri($uri);
 
         $data = [];
         parse_str($uriObject->getQuery(), $data);
@@ -282,6 +290,7 @@ abstract class AbstractIntegrationTest extends TestCase
         $authorizationServer->enableGrantType(new RefreshTokenGrant($refreshTokenRepository));
         $authorizationServer->enableGrantType(new PasswordGrant($userRepository, $refreshTokenRepository));
         $authorizationServer->enableGrantType(new AuthCodeGrant($authCodeRepository, $refreshTokenRepository, new DateInterval('PT10M')));
+        $authorizationServer->enableGrantType(new ImplicitGrant(new DateInterval('PT10M')));
 
         return $authorizationServer;
     }

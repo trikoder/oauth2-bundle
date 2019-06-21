@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
-use DateTime;
+use DateTimeInterface;
 
 class AuthorizationCode
 {
@@ -12,7 +14,7 @@ class AuthorizationCode
     private $identifier;
 
     /**
-     * @var DateTime
+     * @var DateTimeInterface
      */
     private $expiry;
 
@@ -36,12 +38,9 @@ class AuthorizationCode
      */
     private $revoked = false;
 
-    /** @var string|null */
-    private $nonce;
-
     public function __construct(
         string $identifier,
-        DateTime $expiry,
+        DateTimeInterface $expiry,
         Client $client,
         ?string $userIdentifier,
         array $scopes)
@@ -63,7 +62,7 @@ class AuthorizationCode
         return $this->identifier;
     }
 
-    public function getExpiryDateTime(): DateTime
+    public function getExpiryDateTime(): DateTimeInterface
     {
         return $this->expiry;
     }
@@ -94,20 +93,6 @@ class AuthorizationCode
     public function revoke(): self
     {
         $this->revoked = true;
-
-        return $this;
-    }
-
-    public function getNonce(): ?string
-    {
-        return $this->nonce;
-    }
-
-    public function setNonce(string $nonce): self
-    {
-        if ($this->nonce === null) {
-            $this->nonce = $nonce;
-        }
 
         return $this;
     }

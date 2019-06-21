@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use DateInterval;
+use Defuse\Crypto\Key;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use League\OAuth2\Server\CryptKey;
 use LogicException;
@@ -24,6 +25,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
@@ -48,6 +50,13 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
         $this->configureOpenIDConnect($container, $config['openid_connect']);
+
+        $container->getDefinition('trikoder.oauth2.event_listener.authorization.convert_to_response')
+            ->addTag('kernel.event_listener', [
+                'event' => KernelEvents::EXCEPTION,
+                'method' => 'onKernelException',
+                'priority' => $config['exception_event_listener_priority'],
+            ]);
     }
 
     /**
@@ -142,9 +151,22 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 $config['private_key'],
                 $config['private_key_passphrase'],
                 false,
-            ]))
-            ->replaceArgument('$encryptionKey', $config['encryption_key'])
-        ;
+            ]));
+
+        if ('plain' === $config['encryption_key_type']) {
+            $authorizationServer->replaceArgument('$encryptionKey', $config['encryption_key']);
+        } elseif ('defuse' === $config['encryption_key_type']) {
+            if (!class_exists(Key::class)) {
+                throw new \RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
+            }
+
+            $keyDefinition = (new Definition(Key::class))
+                ->setFactory([Key::class, 'loadFromAsciiSafeString'])
+                ->addArgument($config['encryption_key']);
+            $container->setDefinition('trikoder.oauth2.defuse_key', $keyDefinition);
+
+            $authorizationServer->replaceArgument('$encryptionKey', new Reference('trikoder.oauth2.defuse_key'));
+        }
 
         if ($config['enable_client_credentials_grant']) {
             $authorizationServer->addMethodCall('enableGrantType', [
@@ -171,6 +193,20 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             new Reference('league.oauth2.server.grant.auth_code_grant'),
             new Definition(DateInterval::class, [$config['access_token_ttl']]),
         ]);
+
+        if ($config['enable_auth_code_grant']) {
+            $authorizationServer->addMethodCall('enableGrantType', [
+                new Reference('league.oauth2.server.grant.auth_code_grant'),
+                new Definition(DateInterval::class, [$config['access_token_ttl']]),
+            ]);
+        }
+
+        if ($config['enable_implicit_grant']) {
+            $authorizationServer->addMethodCall('enableGrantType', [
+                new Reference('league.oauth2.server.grant.implicit_grant'),
+                new Definition(DateInterval::class, [$config['access_token_ttl']]),
+            ]);
+        }
 
         $this->configureGrants($container, $config);
         $this->configureAuthorizationStrategy($container, $config['authorization_strategy'], $config['consent_route']);
@@ -199,9 +235,14 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 new Definition(DateInterval::class, [$config['refresh_token_ttl']]),
             ])
         ;
+
+        $container
+            ->getDefinition('league.oauth2.server.grant.implicit_grant')
+            ->replaceArgument('$accessTokenTTL', new Definition(DateInterval::class, [$config['access_token_ttl']]))
+        ;
     }
 
-    private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config)
+    private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config): void
     {
         if (\count($config) > 1) {
             throw new LogicException('Only one persistence method can be configured at a time.');
@@ -242,6 +283,11 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         $container
             ->getDefinition('trikoder.oauth2.manager.doctrine.refresh_token_manager')
+            ->replaceArgument('$entityManager', $entityManager)
+        ;
+
+        $container
+            ->getDefinition('trikoder.oauth2.manager.doctrine.authorization_code_manager')
             ->replaceArgument('$entityManager', $entityManager)
         ;
 

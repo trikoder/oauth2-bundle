@@ -276,7 +276,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
         ]);
     }
 
-    private function configureControllers(ContainerBuilder $container)
+    private function configureControllers(ContainerBuilder $container): void
     {
         $container
             ->register(SecurityTestController::class)

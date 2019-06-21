@@ -60,6 +60,14 @@ abstract class ImplodedArray extends TextType
         return parent::getSQLDeclaration($fieldDeclaration, $platform);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
+    }
+
     private function assertValueCanBeImploded($value): void
     {
         if (null === $value) {

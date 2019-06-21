@@ -12,7 +12,6 @@
         <field name="userIdentifier" type="string" length="128" nullable="true" />
         <field name="scopes" type="oauth2_scope" nullable="true" />
         <field name="revoked" type="boolean" />
-        <field name="nonce" type="string" nullable="true" />
         <many-to-one field="client" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\Client">
             <join-column name="client" referenced-column-name="identifier" nullable="false" />
         </many-to-one>

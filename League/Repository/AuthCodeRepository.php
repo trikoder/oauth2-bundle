@@ -64,6 +64,26 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
         $this->authorizationCodeManager->save($authorizationCode);
     }
 
+    public function updateWithNonce(AuthCodeEntityInterface $authCode, string $nonce)
+    {
+        /** @var AuthorizationCode $authorizationCode */
+        $authorizationCode = $this->authorizationCodeManager->find($authCode->getIdentifier());
+
+        if (null === $authorizationCode) {
+            throw new \LogicException('You cant update code that wasnt\'t persisted');
+        }
+
+        $authorizationCode->setNonce($nonce);
+
+        $this->authorizationCodeManager->save($authorizationCode);
+    }
+
+    public function getNonce(string $authCodeIdentifier)
+    {
+        $authCode = $this->authorizationCodeManager->find($authCodeIdentifier);
+        return $authCode->getNonce();
+    }
+
     /**
      * {@inheritdoc}
      */

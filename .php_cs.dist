@@ -1,4 +1,5 @@
 <?php
+
 use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 
 $finder = PhpCsFixer\Finder::create()

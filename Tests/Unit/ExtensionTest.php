@@ -42,23 +42,23 @@ final class ExtensionTest extends TestCase
     public function grantsProvider(): iterable
     {
         yield 'Client credentials grant can be enabled' => [
-                'league.oauth2.server.grant.client_credentials_grant', 'enable_client_credentials_grant', true,
-            ];
+            'league.oauth2.server.grant.client_credentials_grant', 'enable_client_credentials_grant', true,
+        ];
         yield 'Client credentials grant can be disabled' => [
-                'league.oauth2.server.grant.client_credentials_grant', 'enable_client_credentials_grant', false,
-            ];
+            'league.oauth2.server.grant.client_credentials_grant', 'enable_client_credentials_grant', false,
+        ];
         yield 'Password grant can be enabled' => [
-                'league.oauth2.server.grant.password_grant', 'enable_password_grant', true,
-            ];
+            'league.oauth2.server.grant.password_grant', 'enable_password_grant', true,
+        ];
         yield 'Password grant can be disabled' => [
-                'league.oauth2.server.grant.password_grant', 'enable_password_grant', false,
-            ];
+            'league.oauth2.server.grant.password_grant', 'enable_password_grant', false,
+        ];
         yield 'Refresh token grant can be enabled' => [
-                'league.oauth2.server.grant.refresh_token_grant', 'enable_refresh_token_grant', true,
-            ];
+            'league.oauth2.server.grant.refresh_token_grant', 'enable_refresh_token_grant', true,
+        ];
         yield 'Refresh token grant can be disabled' => [
-                'league.oauth2.server.grant.refresh_token_grant', 'enable_refresh_token_grant', false,
-            ];
+            'league.oauth2.server.grant.refresh_token_grant', 'enable_refresh_token_grant', false,
+        ];
     }
 
     private function getValidConfiguration(array $options): array

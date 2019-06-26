@@ -127,7 +127,7 @@ This package is currently in the active development.
         resource: '@TrikoderOAuth2Bundle/Resources/config/routes.xml'
     ```
 
-You can verify that everything is working by issuing a `GET` request to the `/token` endpoint.
+You can verify that everything is working by issuing a `POST` request to the `/token` endpoint.
 
 **❮ NOTE ❯** It is recommended to control the access to the authorization endpoint
 so that only logged in users can approve authorization requests.

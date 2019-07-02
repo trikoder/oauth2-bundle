@@ -4,7 +4,10 @@
     <services>
         <!-- The league interfaces -->
         <service id="League\OAuth2\Server\AuthorizationServer" alias="league.oauth2.server.authorization_server" />
+        <service id="league.oauth2.server.authorization_server" alias="League\OAuth2\Server\AuthorizationServer"/>
+
         <service id="League\OAuth2\Server\ResourceServer" alias="league.oauth2.server.resource_server" />
+        <service id="league.oauth2.server.resource_server" alias="League\OAuth2\Server\ResourceServer" />
 
         <!-- The league repositories -->
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository">
@@ -20,7 +23,7 @@
         </service>
         <service id="trikoder.oauth2.league.repository.access_token_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository" />
 
-        <service class="Trikoder\Bundle\OAuth2Bundle\League\Repository\RefreshTokenRepository">
+        <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\RefreshTokenRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
         </service>
@@ -39,7 +42,7 @@
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <argument type="service" id="trikoder.oauth2.converter.user_converter" />
         </service>
-        <service id="trikoder.oauth2.league.repository.user_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository">
+        <service id="trikoder.oauth2.league.repository.user_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" />
@@ -53,7 +56,7 @@
             <argument key="$userProvider" />
             <argument key="$resourceServer" type="service" id="League\OAuth2\Server\ResourceServer" />
         </service>
-        <service id="trikoder.oauth2.security.authentication.provider.oauth2_provider" alias="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider">
+        <service id="trikoder.oauth2.security.authentication.provider.oauth2_provider" alias="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Security\EntryPoint\OAuth2EntryPoint" />
         <service id="trikoder.oauth2.security.entry_point.oauth2_entry_point" alias="Trikoder\Bundle\OAuth2Bundle\Security\EntryPoint\OAuth2EntryPoint" />

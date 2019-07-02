@@ -35,6 +35,11 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
+use Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener;
+use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager;
+use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager;
+use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager;
+use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 
@@ -55,7 +60,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
 
-        $container->getDefinition('Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener')
+        $container->getDefinition(ConvertExceptionToResponseListener::class)
             ->addTag('kernel.event_listener', [
                 'event' => KernelEvents::EXCEPTION,
                 'method' => 'onKernelException',
@@ -202,7 +207,6 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         if ($config['enable_implicit_grant']) {
             $authorizationServer->addMethodCall('enableGrantType', [
-                new Reference('League\OAuth2\Server\Grant\ImplicitGrant'),
                 new Reference(ImplicitGrant::class),
                 new Definition(DateInterval::class, [$config['access_token_ttl']]),
             ]);
@@ -271,22 +275,22 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         );
 
         $container
-            ->getDefinition('trikoder.oauth2.manager.doctrine.access_token_manager')
+            ->getDefinition(AccessTokenManager::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 
         $container
-            ->getDefinition('trikoder.oauth2.manager.doctrine.client_manager')
+            ->getDefinition(ClientManager::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 
         $container
-            ->getDefinition('trikoder.oauth2.manager.doctrine.refresh_token_manager')
+            ->getDefinition(RefreshTokenManager::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 
         $container
-            ->getDefinition('trikoder.oauth2.manager.doctrine.authorization_code_manager')
+            ->getDefinition(AuthorizationCodeManager::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 

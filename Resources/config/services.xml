@@ -2,12 +2,6 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <!-- The league interfaces -->
-        <service id="League\OAuth2\Server\AuthorizationServer" alias="league.oauth2.server.authorization_server" />
-        <service id="league.oauth2.server.authorization_server" alias="League\OAuth2\Server\AuthorizationServer" />
-
-        <service id="League\OAuth2\Server\ResourceServer" alias="league.oauth2.server.resource_server" />
-        <service id="league.oauth2.server.resource_server" alias="League\OAuth2\Server\ResourceServer" />
 
         <!-- The league repositories -->
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository">

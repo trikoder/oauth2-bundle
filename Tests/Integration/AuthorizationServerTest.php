@@ -751,7 +751,14 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'foo',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        timecop_freeze(new DateTime());
+
+        try {
+            $response = $this->handleAuthorizationRequest($request);
+        } finally {
+            timecop_return();
+        }
+
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
         parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
@@ -767,12 +774,19 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     public function testSuccessfulImplicitRequestWithState(): void
     {
         $request = $this->createAuthorizeRequest(null, [
-                'response_type' => 'token',
-                'client_id' => 'foo',
-                'state' => 'quzbaz',
-            ]);
+            'response_type' => 'token',
+            'client_id' => 'foo',
+            'state' => 'quzbaz',
+        ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        timecop_freeze(new DateTime());
+
+        try {
+            $response = $this->handleAuthorizationRequest($request);
+        } finally {
+            timecop_return();
+        }
+
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
         parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
@@ -789,12 +803,19 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     public function testSuccessfulImplicitRequestRedirectUri(): void
     {
         $request = $this->createAuthorizeRequest(null, [
-                'response_type' => 'token',
-                'client_id' => 'foo',
-                'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
-            ]);
+            'response_type' => 'token',
+            'client_id' => 'foo',
+            'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
+        ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        timecop_freeze(new DateTime());
+
+        try {
+            $response = $this->handleAuthorizationRequest($request);
+        } finally {
+            timecop_return();
+        }
+
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
         parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
@@ -810,10 +831,10 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     public function testImplicitRequestWithInvalidScope(): void
     {
         $request = $this->createAuthorizeRequest(null, [
-                'response_type' => 'token',
-                'client_id' => 'foo',
-                'scope' => 'non_existing',
-            ]);
+            'response_type' => 'token',
+            'client_id' => 'foo',
+            'scope' => 'non_existing',
+        ]);
 
         $response = $this->handleAuthorizationRequest($request);
         $this->assertSame(302, $response->getStatusCode());
@@ -829,10 +850,10 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     public function testImplicitRequestWithInvalidRedirectUri(): void
     {
         $request = $this->createAuthorizeRequest(null, [
-                'response_type' => 'token',
-                'client_id' => 'foo',
-                'redirect_uri' => 'https://example.org/oauth2/other-uri',
-            ]);
+            'response_type' => 'token',
+            'client_id' => 'foo',
+            'redirect_uri' => 'https://example.org/oauth2/other-uri',
+        ]);
 
         $response = $this->handleAuthorizationRequest($request);
         $this->assertSame(401, $response->getStatusCode());
@@ -846,9 +867,9 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     public function testDeniedImplicitRequest(): void
     {
         $request = $this->createAuthorizeRequest(null, [
-                'response_type' => 'token',
-                'client_id' => 'foo',
-            ]);
+            'response_type' => 'token',
+            'client_id' => 'foo',
+        ]);
 
         $response = $this->handleAuthorizationRequest($request, false);
         $this->assertSame(302, $response->getStatusCode());
@@ -864,9 +885,9 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     public function testImplicitRequestWithMissingClient(): void
     {
         $request = $this->createAuthorizeRequest(null, [
-                'response_type' => 'token',
-                'client_id' => 'yolo',
-            ]);
+            'response_type' => 'token',
+            'client_id' => 'yolo',
+        ]);
 
         $response = $this->handleAuthorizationRequest($request, false);
         $this->assertSame(401, $response->getStatusCode());
@@ -880,9 +901,9 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     public function testImplicitRequestWithInactiveClient(): void
     {
         $request = $this->createAuthorizeRequest(null, [
-                'response_type' => 'token',
-                'client_id' => 'baz_inactive',
-            ]);
+            'response_type' => 'token',
+            'client_id' => 'baz_inactive',
+        ]);
 
         $response = $this->handleAuthorizationRequest($request, false);
         $this->assertSame(401, $response->getStatusCode());
@@ -896,9 +917,9 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     public function testImplicitRequestWithRestrictedGrantClient(): void
     {
         $request = $this->createAuthorizeRequest(null, [
-                'response_type' => 'token',
-                'client_id' => 'qux_restricted',
-            ]);
+            'response_type' => 'token',
+            'client_id' => 'qux_restricted',
+        ]);
 
         $response = $this->handleAuthorizationRequest($request, false);
         $this->assertSame(401, $response->getStatusCode());

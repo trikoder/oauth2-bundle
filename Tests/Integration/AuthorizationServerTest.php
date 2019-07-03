@@ -751,7 +751,14 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'foo',
         ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        timecop_freeze(new DateTime());
+
+        try {
+            $response = $this->handleAuthorizationRequest($request);
+        } finally {
+            timecop_return();
+        }
+
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
         parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
@@ -772,7 +779,14 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
                 'state' => 'quzbaz',
             ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        timecop_freeze(new DateTime());
+
+        try {
+            $response = $this->handleAuthorizationRequest($request);
+        } finally {
+            timecop_return();
+        }
+
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
         parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
@@ -794,7 +808,14 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
                 'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
             ]);
 
-        $response = $this->handleAuthorizationRequest($request);
+        timecop_freeze(new DateTime());
+
+        try {
+            $response = $this->handleAuthorizationRequest($request);
+        } finally {
+            timecop_return();
+        }
+
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
         parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);

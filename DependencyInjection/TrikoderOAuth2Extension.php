@@ -275,22 +275,22 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         );
 
         $container
-            ->getDefinition('trikoder.oauth2.manager.doctrine.access_token_manager')
+            ->getDefinition(AccessTokenManager::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 
         $container
-            ->getDefinition('trikoder.oauth2.manager.doctrine.client_manager')
+            ->getDefinition(ClientManager::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 
         $container
-            ->getDefinition('trikoder.oauth2.manager.doctrine.refresh_token_manager')
+            ->getDefinition(RefreshTokenManager::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 
         $container
-            ->getDefinition('trikoder.oauth2.manager.doctrine.authorization_code_manager')
+            ->getDefinition(AuthorizationCodeManager::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 

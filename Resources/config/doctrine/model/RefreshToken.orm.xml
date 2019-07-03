@@ -11,7 +11,7 @@
         <field name="expiry" type="datetime" />
         <field name="revoked" type="boolean" />
         <many-to-one field="accessToken" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\AccessToken">
-            <join-column name="access_token" referenced-column-name="identifier" nullable="false" />
+            <join-column name="access_token" referenced-column-name="identifier" on-delete="SET NULL" />
         </many-to-one>
     </entity>
 </doctrine-mapping>

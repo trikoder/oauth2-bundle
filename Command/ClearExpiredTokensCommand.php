@@ -74,7 +74,7 @@ final class ClearExpiredTokensCommand extends Command
                 'Cleared %d expired access token%s.',
                 $numOfClearedAccessTokens,
                 1 === $numOfClearedAccessTokens ? '' : 's'
-                ));
+            ));
         }
 
         if (true === $clearExpiredRefreshTokens) {

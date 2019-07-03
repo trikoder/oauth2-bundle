@@ -43,14 +43,14 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         try {
             $this->client->request(
-            'GET',
-            '/authorize',
-            [
-                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                'response_type' => 'code',
-                'state' => 'foobar',
-            ]
-        );
+                'GET',
+                '/authorize',
+                [
+                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                    'response_type' => 'code',
+                    'state' => 'foobar',
+                ]
+            );
         } finally {
             timecop_return();
         }
@@ -81,14 +81,14 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         try {
             $this->client->request(
-            'GET',
-            '/authorize',
-            [
-                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                'response_type' => 'token',
-                'state' => 'foobar',
-            ]
-        );
+                'GET',
+                '/authorize',
+                [
+                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                    'response_type' => 'token',
+                    'state' => 'foobar',
+                ]
+            );
         } finally {
             timecop_return();
         }
@@ -122,16 +122,16 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         try {
             $this->client->request(
-            'GET',
-            '/authorize',
-            [
-                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                'response_type' => 'code',
-                'state' => 'foobar',
-                'redirect_uri' => FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI,
-                'scope' => FixtureFactory::FIXTURE_SCOPE_FIRST . ' ' . FixtureFactory::FIXTURE_SCOPE_SECOND,
-            ]
-        );
+                'GET',
+                '/authorize',
+                [
+                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                    'response_type' => 'code',
+                    'state' => 'foobar',
+                    'redirect_uri' => FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI,
+                    'scope' => FixtureFactory::FIXTURE_SCOPE_FIRST . ' ' . FixtureFactory::FIXTURE_SCOPE_SECOND,
+                ]
+            );
         } finally {
             timecop_return();
         }
@@ -160,14 +160,14 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         try {
             $this->client->request(
-            'GET',
-            '/authorize',
-            [
-                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                'response_type' => 'code',
-                'state' => 'foobar',
-            ]
-        );
+                'GET',
+                '/authorize',
+                [
+                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                    'response_type' => 'code',
+                    'state' => 'foobar',
+                ]
+            );
         } finally {
             timecop_return();
         }
@@ -196,14 +196,14 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         try {
             $this->client->request(
-            'GET',
-            '/authorize',
-            [
-                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                'response_type' => 'code',
-                'state' => 'foobar',
-            ]
-        );
+                'GET',
+                '/authorize',
+                [
+                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                    'response_type' => 'code',
+                    'state' => 'foobar',
+                ]
+            );
         } finally {
             timecop_return();
         }
@@ -234,15 +234,15 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         try {
             $this->client->request(
-            'GET',
-            '/authorize',
-            [
-                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                'response_type' => 'code',
-                'state' => 'foobar',
-                'redirect_uri' => 'https://example.org/oauth2/malicious-uri',
-            ]
-        );
+                'GET',
+                '/authorize',
+                [
+                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                    'response_type' => 'code',
+                    'state' => 'foobar',
+                    'redirect_uri' => 'https://example.org/oauth2/malicious-uri',
+                ]
+            );
         } finally {
             timecop_return();
         }

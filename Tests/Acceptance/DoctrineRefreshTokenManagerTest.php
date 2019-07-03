@@ -37,6 +37,8 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
                 $doctrineRefreshTokenManager->save($token);
             }
 
+            $em->flush();
+
             $this->assertSame(3, $doctrineRefreshTokenManager->clearExpired());
         } finally {
             timecop_return();

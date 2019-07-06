@@ -31,10 +31,8 @@ install:
     - dev/bin/docker-compose build --build-arg PHP_VERSION=${PHP_VERSION} php
 
 before_script:
-    # Install to get dependencies. Latest version of all Symfony/* pacakges
-    - dev/bin/php composer update --ansi --prefer-dist
     # Install symfony/flex to make sure SYMFONY_REQUIRE is working
-    - dev/bin/php composer require symfony/flex --ansi
+    - dev/bin/php composer global require symfony/flex --ansi
     - dev/bin/php composer update --ansi --prefer-dist
 
 script:

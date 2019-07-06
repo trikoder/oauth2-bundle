@@ -47,7 +47,7 @@ RUN curl --show-error https://getcomposer.org/installer | php -- \
 RUN useradd -ms /bin/sh app
 
 # Enable parallel package installation for Composer
-RUN su-exec app composer global require hirak/prestissimo
+RUN su-exec app composer global require symfony/flex
 
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint
 

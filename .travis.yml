@@ -33,7 +33,7 @@ install:
 before_script:
     - dev/bin/php composer require symfony/flex --ansi --no-update
     - dev/bin/php composer config extra.symfony.require "${SYMFONY_VERSION}"
-    - dev/bin/php composer install --ansi --prefer-dist
+    - dev/bin/php composer install --ansi --prefer-dist --no-scripts
 
 script:
     - dev/bin/php composer test -- --colors=always --coverage-clover=coverage.xml --debug

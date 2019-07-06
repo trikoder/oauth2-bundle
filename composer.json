@@ -16,8 +16,10 @@
         "doctrine/doctrine-bundle": "^1.8",
         "doctrine/orm": "^2.6",
         "league/oauth2-server": "^7.2",
+        "psr/event-dispatcher": "^1.0",
         "psr/http-factory": "^1.0",
         "sensio/framework-extra-bundle": "^5.3",
+        "symfony/event-dispatcher-contracts": "^1.1",
         "symfony/framework-bundle": "^3.4|^4.2",
         "symfony/psr-http-message-bridge": "^1.2",
         "symfony/security-bundle": "^3.4|^4.2"

@@ -27,7 +27,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
 use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;

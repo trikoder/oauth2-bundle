@@ -31,14 +31,13 @@ install:
     - dev/bin/docker-compose build --build-arg PHP_VERSION=${PHP_VERSION} php
 
 before_script:
-    # Install symfony/flex to make sure SYMFONY_VERSION is working
-    - composer global require symfony/flex --ansi
-    - composer config extra.symfony.require "${SYMFONY_VERSION}"
-    - composer update --ansi --prefer-dist
+    # Our docker image has symfony/flex installed to make sure SYMFONY_VERSION is working
+    - dev/bin/php composer config extra.symfony.require "${SYMFONY_VERSION}"
+    - dev/bin/php composer update --ansi --prefer-dist
 
 script:
-    - composer test -- --colors=always --coverage-clover=coverage.xml --debug
-    - composer lint -- --ansi --diff --dry-run --using-cache=no --verbose
+    - dev/bin/php composer test -- --colors=always --coverage-clover=coverage.xml --debug
+    - dev/bin/php composer lint -- --ansi --diff --dry-run --using-cache=no --verbose
 
 after_script:
     - dev/bin/docker-compose down --volumes

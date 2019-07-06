@@ -12,32 +12,33 @@ addons:
 
 env:
     # PHP 7.2
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_REQUIRE=3.4.*
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_REQUIRE=4.2.*
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_REQUIRE=4.3.*
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_REQUIRE=3.4.*
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_REQUIRE=4.2.*
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_REQUIRE=4.3.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=3.4.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.2.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.3.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=3.4.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.2.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.3.*
 
     # PHP 7.3
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_REQUIRE=3.4.*
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_REQUIRE=4.2.*
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_REQUIRE=4.3.*
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_REQUIRE=3.4.*
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_REQUIRE=4.2.*
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_REQUIRE=4.3.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=3.4.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.2.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.3.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=3.4.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.2.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.3.*
 
 install:
     - dev/bin/docker-compose build --build-arg PHP_VERSION=${PHP_VERSION} php
 
 before_script:
-    # Install symfony/flex to make sure SYMFONY_REQUIRE is working
-    - dev/bin/php composer global require symfony/flex --ansi
-    - dev/bin/php composer update --ansi --prefer-dist
+    # Install symfony/flex to make sure SYMFONY_VERSION is working
+    - composer global require symfony/flex --ansi
+    - composer config extra.symfony.require "${SYMFONY_VERSION}"
+    - composer update --ansi --prefer-dist
 
 script:
-    - dev/bin/php composer test -- --colors=always --coverage-clover=coverage.xml --debug
-    - dev/bin/php composer lint -- --ansi --diff --dry-run --using-cache=no --verbose
+    - composer test -- --colors=always --coverage-clover=coverage.xml --debug
+    - composer lint -- --ansi --diff --dry-run --using-cache=no --verbose
 
 after_script:
     - dev/bin/docker-compose down --volumes

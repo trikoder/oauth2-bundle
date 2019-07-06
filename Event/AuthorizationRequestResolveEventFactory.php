@@ -26,7 +26,7 @@ class AuthorizationRequestResolveEventFactory
         $this->clientManager = $clientManager;
     }
 
-    public function fromAuthorizationRequest(AuthorizationRequest $authorizationRequest): AuthorizationRequestResolveEvent
+    public function fromAuthorizationRequest(AuthorizationRequest $authorizationRequest): AuthorizationRequestResolveEventInterface
     {
         return new AuthorizationRequestResolveEvent($authorizationRequest, $this->scopeConverter, $this->clientManager);
     }

@@ -10,11 +10,11 @@ It's possible to alter issued access token's scopes by subscribing to the `triko
 
 namespace App\EventListener;
 
-use Trikoder\Bundle\OAuth2Bundle\Event\ScopeResolveEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\ScopeResolveEventInterface;
 
 final class ScopeResolveListener
 {
-    public function onScopeResolve(ScopeResolveEvent $event): void
+    public function onScopeResolve(ScopeResolveEventInterface $event): void
     {
         $requestedScopes = $event->getScopes();
 

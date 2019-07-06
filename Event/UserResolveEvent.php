@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant;
 
-final class UserResolveEvent extends Event
+final class UserResolveEvent extends Event implements UserResolveEventInterface
 {
     /**
      * @var string
@@ -69,10 +69,8 @@ final class UserResolveEvent extends Event
         return $this->user;
     }
 
-    public function setUser(?UserInterface $user): self
+    public function setUser(?UserInterface $user): void
     {
         $this->user = $user;
-
-        return $this;
     }
 }

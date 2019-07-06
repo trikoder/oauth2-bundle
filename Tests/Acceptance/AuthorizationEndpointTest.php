@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTime;
-use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
@@ -35,8 +35,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
-                $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEventInterface $event): void {
+                $event->resolveAuthorization(AuthorizationRequestResolveEventInterface::AUTHORIZATION_APPROVED);
             });
 
         timecop_freeze(new DateTime());
@@ -73,8 +73,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
-                $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEventInterface $event): void {
+                $event->resolveAuthorization(AuthorizationRequestResolveEventInterface::AUTHORIZATION_APPROVED);
             });
 
         timecop_freeze(new DateTime());
@@ -113,7 +113,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEventInterface $event): void {
                 $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
                 $event->setResponse($response);
             });
@@ -148,10 +148,10 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $eventDispatcher = $this->client
             ->getContainer()
             ->get('event_dispatcher');
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
-            $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEventInterface $event): void {
+            $event->resolveAuthorization(AuthorizationRequestResolveEventInterface::AUTHORIZATION_APPROVED);
         }, 100);
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEventInterface $event): void {
             $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
             $event->setResponse($response);
         }, 200);
@@ -184,10 +184,10 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $eventDispatcher = $this->client
             ->getContainer()
             ->get('event_dispatcher');
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
-            $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEventInterface $event): void {
+            $event->resolveAuthorization(AuthorizationRequestResolveEventInterface::AUTHORIZATION_APPROVED);
         }, 200);
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEventInterface $event): void {
             $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
             $event->setResponse($response);
         }, 100);
@@ -226,8 +226,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
-                $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEventInterface $event): void {
+                $event->resolveAuthorization(AuthorizationRequestResolveEventInterface::AUTHORIZATION_APPROVED);
             });
 
         timecop_freeze(new DateTime());

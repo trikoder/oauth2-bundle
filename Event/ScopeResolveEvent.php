@@ -9,7 +9,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
-final class ScopeResolveEvent extends Event
+final class ScopeResolveEvent extends Event implements ScopeResolveEventInterface
 {
     /**
      * @var Scope[]
@@ -39,19 +39,14 @@ final class ScopeResolveEvent extends Event
         $this->userIdentifier = $userIdentifier;
     }
 
-    /**
-     * @return Scope[]
-     */
     public function getScopes(): array
     {
         return $this->scopes;
     }
 
-    public function setScopes(Scope ...$scopes): self
+    public function setScopes(Scope ...$scopes): void
     {
         $this->scopes = $scopes;
-
-        return $this;
     }
 
     public function getGrant(): Grant

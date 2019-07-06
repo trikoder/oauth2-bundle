@@ -13,13 +13,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
-use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
-final class AuthorizationRequestResolveEvent extends Event
+final class AuthorizationRequestResolveEvent extends Event implements AuthorizationRequestResolveEventInterface
 {
-    public const AUTHORIZATION_APPROVED = true;
-    public const AUTHORIZATION_DENIED = false;
-
     /**
      * @var AuthorizationRequest
      */
@@ -38,7 +34,7 @@ final class AuthorizationRequestResolveEvent extends Event
     /**
      * @var bool
      */
-    private $authorizationResolution = self::AUTHORIZATION_DENIED;
+    private $authorizationResolution = AuthorizationRequestResolveEventInterface::AUTHORIZATION_DENIED;
 
     /**
      * @var ResponseInterface|null
@@ -62,13 +58,11 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->authorizationResolution;
     }
 
-    public function resolveAuthorization(bool $authorizationResolution): self
+    public function resolveAuthorization(bool $authorizationResolution): void
     {
         $this->authorizationResolution = $authorizationResolution;
         $this->response = null;
         $this->stopPropagation();
-
-        return $this;
     }
 
     public function hasResponse(): bool
@@ -85,12 +79,10 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->response;
     }
 
-    public function setResponse(ResponseInterface $response): self
+    public function setResponse(ResponseInterface $response): void
     {
         $this->response = $response;
         $this->stopPropagation();
-
-        return $this;
     }
 
     public function getGrantTypeId(): string
@@ -115,16 +107,11 @@ final class AuthorizationRequestResolveEvent extends Event
         return $this->user;
     }
 
-    public function setUser(?UserInterface $user): self
+    public function setUser(?UserInterface $user): void
     {
         $this->user = $user;
-
-        return $this;
     }
 
-    /**
-     * @return Scope[]
-     */
     public function getScopes(): array
     {
         return $this->scopeConverter->toDomainArray(

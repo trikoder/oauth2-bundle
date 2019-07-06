@@ -7,7 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle;
 final class OAuth2Events
 {
     /**
-     * The USER_RESOLVE event occurrs when the client requests a "password"
+     * The USER_RESOLVE event occurs when the client requests a "password"
      * grant type from the authorization server.
      *
      * You should set a valid user here if applicable.
@@ -15,7 +15,7 @@ final class OAuth2Events
     public const USER_RESOLVE = 'trikoder.oauth2.user_resolve';
 
     /**
-     * The SCOPE_RESOLVE event occurrs right before the user obtains their
+     * The SCOPE_RESOLVE event occurs right before the user obtains their
      * valid access token.
      *
      * You could alter the access token's scope here.
@@ -23,7 +23,7 @@ final class OAuth2Events
     public const SCOPE_RESOLVE = 'trikoder.oauth2.scope_resolve';
 
     /**
-     * The AUTHORIZATION_REQUEST_RESOLVE event occurrs right before the system
+     * The AUTHORIZATION_REQUEST_RESOLVE event occurs right before the system
      * complete the authorization request.
      *
      * You could approve or deny the authorization request, or set the uri where

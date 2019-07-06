@@ -11,8 +11,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter;
-use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventInterface;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
 final class AuthorizationController
@@ -56,7 +56,7 @@ final class AuthorizationController
         try {
             $authRequest = $this->server->validateAuthorizationRequest($serverRequest);
 
-            /** @var AuthorizationRequestResolveEvent $event */
+            /** @var AuthorizationRequestResolveEventInterface $event */
             $event = $this->eventDispatcher->dispatch(
                 OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE,
                 $this->eventFactory->fromAuthorizationRequest($authRequest)

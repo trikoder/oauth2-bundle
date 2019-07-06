@@ -6,7 +6,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\EventListener;
 
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventInterface;
 
 /**
  * Listener sets currently authenticated user to authorization request context
@@ -23,7 +23,7 @@ final class AuthorizationRequestUserResolvingListener
         $this->security = $security;
     }
 
-    public function onAuthorizationRequest(AuthorizationRequestResolveEvent $event): void
+    public function onAuthorizationRequest(AuthorizationRequestResolveEventInterface $event): void
     {
         $user = $this->security->getUser();
         if ($user instanceof UserInterface) {

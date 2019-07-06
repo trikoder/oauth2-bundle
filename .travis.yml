@@ -12,27 +12,28 @@ addons:
 
 env:
     # PHP 7.2
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=3.4.0
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.2.0
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.3.0
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=3.4.0
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.2.0
-    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.3.0
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=3.4.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.2.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.3.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=3.4.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.2.*
+    - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.3.*
 
     # PHP 7.3
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=3.4.0
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.2.0
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.3.0
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=3.4.0
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.2.0
-    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.3.0
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=3.4.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.2.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=4.3.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=3.4.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.2.*
+    - PHP_VERSION=7.3 PSR_HTTP_PROVIDER=zendframework SYMFONY_VERSION=4.3.*
 
 install:
     - dev/bin/docker-compose build --build-arg PHP_VERSION=${PHP_VERSION} php
 
 before_script:
-    - dev/bin/php composer require symfony/symfony:~${SYMFONY_VERSION} --ansi --no-update
-    - dev/bin/php composer install --ansi --prefer-dist
+    - dev/bin/php composer require symfony/flex --ansi --no-update
+    - dev/bin/php composer config extra.symfony.require "${SYMFONY_VERSION}"
+    - dev/bin/php composer install --ansi --prefer-dist --no-scripts
 
 script:
     - dev/bin/php composer test -- --colors=always --coverage-clover=coverage.xml --debug

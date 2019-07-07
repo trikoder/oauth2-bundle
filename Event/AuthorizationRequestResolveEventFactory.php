@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
-use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 

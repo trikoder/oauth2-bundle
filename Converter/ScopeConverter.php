@@ -15,7 +15,7 @@ final class ScopeConverter implements ScopeConverterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toDomainArray(array $scopes): array
     {
@@ -33,7 +33,7 @@ final class ScopeConverter implements ScopeConverterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toLeagueArray(array $scopes): array
     {

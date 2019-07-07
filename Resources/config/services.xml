@@ -167,9 +167,11 @@
         <!-- Utility services -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
         <service id="trikoder.oauth2.converter.user_converter" alias="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface" alias="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
         <service id="trikoder.oauth2.converter.scope_converter" alias="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface" alias="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />

@@ -7,7 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Converter;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Scope as ScopeEntity;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 
-final class ScopeConverter
+final class ScopeConverter implements ScopeConverterInterface
 {
     public function toDomain(ScopeEntity $scope): ScopeModel
     {
@@ -15,9 +15,7 @@ final class ScopeConverter
     }
 
     /**
-     * @param ScopeEntity[] $scopes
-     *
-     * @return ScopeModel[]
+     * {@inheritDoc}
      */
     public function toDomainArray(array $scopes): array
     {
@@ -35,9 +33,7 @@ final class ScopeConverter
     }
 
     /**
-     * @param ScopeModel[] $scopes
-     *
-     * @return ScopeEntity[]
+     * {@inheritDoc}
      */
     public function toLeagueArray(array $scopes): array
     {

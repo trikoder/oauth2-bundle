@@ -6,12 +6,13 @@ namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 
 class AuthorizationRequestResolveEventFactory
 {
     /**
-     * @var ScopeConverter
+     * @var ScopeConverterInterface
      */
     private $scopeConverter;
 
@@ -20,7 +21,7 @@ class AuthorizationRequestResolveEventFactory
      */
     private $clientManager;
 
-    public function __construct(ScopeConverter $scopeConverter, ClientManagerInterface $clientManager)
+    public function __construct(ScopeConverterInterface $scopeConverter, ClientManagerInterface $clientManager)
     {
         $this->scopeConverter = $scopeConverter;
         $this->clientManager = $clientManager;

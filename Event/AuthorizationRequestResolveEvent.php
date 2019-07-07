@@ -11,6 +11,7 @@ use RuntimeException;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
@@ -26,7 +27,7 @@ final class AuthorizationRequestResolveEvent extends Event
     private $authorizationRequest;
 
     /**
-     * @var ScopeConverter
+     * @var ScopeConverterInterface
      */
     private $scopeConverter;
 
@@ -50,7 +51,7 @@ final class AuthorizationRequestResolveEvent extends Event
      */
     private $user;
 
-    public function __construct(AuthorizationRequest $authorizationRequest, ScopeConverter $scopeConverter, ClientManagerInterface $clientManager)
+    public function __construct(AuthorizationRequest $authorizationRequest, ScopeConverterInterface $scopeConverter, ClientManagerInterface $clientManager)
     {
         $this->authorizationRequest = $authorizationRequest;
         $this->scopeConverter = $scopeConverter;

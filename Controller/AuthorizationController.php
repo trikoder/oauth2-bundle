@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter;
+use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
@@ -33,7 +34,7 @@ final class AuthorizationController
     private $eventFactory;
 
     /**
-     * @var UserConverter
+     * @var UserConverterInterface
      */
     private $userConverter;
 
@@ -41,7 +42,7 @@ final class AuthorizationController
         AuthorizationServer $server,
         EventDispatcherInterface $eventDispatcher,
         AuthorizationRequestResolveEventFactory $eventFactory,
-        UserConverter $userConverter
+        UserConverterInterface $userConverter
     ) {
         $this->server = $server;
         $this->eventDispatcher = $eventDispatcher;

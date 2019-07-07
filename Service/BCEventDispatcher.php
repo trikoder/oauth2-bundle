@@ -31,4 +31,9 @@ class BCEventDispatcher implements ContractsEventDispatcher
 
         return $this->eventDispatcher->dispatch($eventName, $event);
     }
+
+    public function addListener($eventName, $listener, $priority = 0)
+    {
+        return $this->eventDispatcher->addListener($eventName, $listener, $priority);
+    }
 }

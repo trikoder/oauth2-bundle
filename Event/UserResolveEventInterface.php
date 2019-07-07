@@ -9,7 +9,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant;
 
 /**
- * Thi event occurs when the client requests a "password"
+ * This event occurs when the client requests a "password"
  * grant type from the authorization server.
  *
  * You should set a valid user here if applicable.

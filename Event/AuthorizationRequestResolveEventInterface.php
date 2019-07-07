@@ -11,7 +11,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
 /**
  * This event occurs right before the system
- * complete the authorization request.
+ * completes the authorization request.
  *
  * You could approve or deny the authorization request, or set the uri where
  * must be redirected to resolve the authorization request.

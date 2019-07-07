@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTime;
-use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEventInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
@@ -60,7 +60,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event): void {
+            ->addListener('trikoder.oauth2.user_resolve', function (UserResolveEventInterface $event): void {
                 $event->setUser(FixtureFactory::createUser());
             });
 

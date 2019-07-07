@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 
 use DateTime;
-use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEventInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
@@ -290,7 +290,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
     public function testValidPasswordGrant(): void
     {
-        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event): void {
+        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEventInterface $event): void {
             $event->setUser(FixtureFactory::createUser());
         });
 
@@ -326,7 +326,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
     public function testInvalidCredentialsPasswordGrant(): void
     {
-        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event): void {
+        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEventInterface $event): void {
             $event->setUser(null);
         });
 

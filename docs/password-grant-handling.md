@@ -17,7 +17,7 @@ namespace App\EventListener;
 
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEventInterface;
 
 final class UserResolveListener
 {
@@ -41,10 +41,7 @@ final class UserResolveListener
         $this->userPasswordEncoder = $userPasswordEncoder;
     }
 
-    /**
-     * @param UserResolveEvent $event
-     */
-    public function onUserResolve(UserResolveEvent $event): void
+    public function onUserResolve(UserResolveEventInterface $event): void
     {
         $user = $this->userProvider->loadUserByUsername($event->getUsername());
 

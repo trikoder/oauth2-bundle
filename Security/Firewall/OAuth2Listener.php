@@ -43,9 +43,14 @@ final class OAuth2Listener implements ListenerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * BC layer for Symfony < 4.3
      */
     public function handle(GetResponseEvent $event)
+    {
+        $this->__invoke($event);
+    }
+
+    public function __invoke(GetResponseEvent $event)
     {
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
 

@@ -28,7 +28,7 @@
         "friendsofphp/php-cs-fixer": "^2.15",
         "nyholm/psr7": "^1.1",
         "phpunit/phpunit": "~8.2.0",
-        "symfony/browser-kit": "^3.4|^4.3",
+        "symfony/browser-kit": "^3.4|^4.2",
         "symfony/phpunit-bridge": "^3.4|^4.3",
         "zendframework/zend-diactoros": "^2.1"
     },

@@ -3,7 +3,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Aliases -->
-        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager"/>
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager" />
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager" />
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager" />
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
@@ -18,7 +18,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager">
             <argument key="$entityManager" />
         </service>
-        <service id="trikoder.oauth2.manager.doctrine.access_token_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager"/>
+        <service id="trikoder.oauth2.manager.doctrine.access_token_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager">
             <argument key="$entityManager" />

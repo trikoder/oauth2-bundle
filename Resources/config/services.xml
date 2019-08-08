@@ -2,7 +2,6 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-
         <!-- The league repositories -->
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
@@ -99,14 +98,14 @@
         </service>
         <service id="league.oauth2.server.grant.refresh_token_grant" alias="League\OAuth2\Server\Grant\RefreshTokenGrant" />
 
-        <service id="League\OAuth2\Server\Grant\AuthCodeGrant" >
+        <service id="League\OAuth2\Server\Grant\AuthCodeGrant">
             <argument type="service" id="League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface" />
             <argument type="service" id="League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface" />
             <argument key="$authCodeTTL" />
         </service>
         <service id="league.oauth2.server.grant.auth_code_grant" alias="League\OAuth2\Server\Grant\AuthCodeGrant" />
 
-        <service id="League\OAuth2\Server\Grant\ImplicitGrant" >
+        <service id="League\OAuth2\Server\Grant\ImplicitGrant">
             <argument key="$accessTokenTTL" />
         </service>
         <service id="league.oauth2.server.grant.implicit_grant" alias="League\OAuth2\Server\Grant\ImplicitGrant" />

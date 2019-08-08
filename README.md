@@ -44,68 +44,69 @@ This package is currently in the active development.
 
     ```yaml
     trikoder_oauth2:
-
-        authorization_server:
+        authorization_server: # Required
 
             # Full path to the private key file.
             # How to generate a private key: https://oauth2.thephpleague.com/installation/#generating-public-and-private-keys
-            private_key:    # Required, Example: /var/oauth/private.key
+            private_key:          ~ # Required, Example: /var/oauth/private.key
 
-            # Passphrase of the private key, if any.
-            private_key_passphrase: ~  # Optional, default null
+            # Passphrase of the private key, if any
+            private_key_passphrase: null
 
-            # The string used as an encryption key.
+            # The plain string or the ascii safe string used to create a Defuse\Crypto\Key to be used as an encryption key.
             # How to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password
-            encryption_key:    # Required
-            
-            # The type of encryption key. Is the key a plain value or a ascii safe string that should be passed to Defuse\Crypto\Key?
-            encryption_key_type: 'plain'   # Possible values: "plain", "defuse"
+            encryption_key:       ~ # Required
+
+            # The type of value of 'encryption_key'
+            encryption_key_type:  plain # One of "plain"; "defuse"
 
             # How long the issued access token should be valid for.
             # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
-            access_token_ttl: PT1H
+            access_token_ttl:     PT1H
 
             # How long the issued refresh token should be valid for.
             # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
-            refresh_token_ttl: P1M
-         
-            # Whether to enable the client credentials grant
-            enable_client_credentials_grant: true
-         
-            # Whether to enable the password grant
-            enable_password_grant: true
-         
-            # Whether to enable the refresh token grant
-            enable_refresh_token_grant: true
+            refresh_token_ttl:    P1M
 
             # How long the issued auth code should be valid for.
             # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
-            auth_code_ttl: PT10M
+            auth_code_ttl:        PT10M
 
-        resource_server:
+            # Whether to enable the client credentials grant
+            enable_client_credentials_grant: true
+
+            # Whether to enable the password grant
+            enable_password_grant: true
+
+            # Whether to enable the refresh token grant
+            enable_refresh_token_grant: true
+
+            # Whether to enable the authorization code grant
+            enable_auth_code_grant: true
+
+            # Whether to enable the implicit grant
+            enable_implicit_grant: true
+        resource_server:      # Required
 
             # Full path to the public key file
             # How to generate a public key: https://oauth2.thephpleague.com/installation/#generating-public-and-private-keys
-            public_key:    # Required, Example: /var/oauth/public.key
+            public_key:           ~ # Required, Example: /var/oauth/public.key
 
         # Scopes that you wish to utilize in your application.
         # This should be a simple array of strings.
-        scopes: []
+        scopes:               []
 
         # Configures different persistence methods that can be used by the bundle for saving client and token data.
         # Only one persistence method can be configured at a time.
-        persistence:
-
+        persistence:          # Required
             doctrine:
 
                 # Name of the entity manager that you wish to use for managing clients and tokens.
-                entity_manager: default # Required
+                entity_manager:       default
+            in_memory:            ~
 
-            in_memory: ~
-         
         # The priority of the event listener that converts an Exception to a Response
-        exception_event_listener_priority: 10 
-       
+        exception_event_listener_priority: 10
     ```
 
 3. Enable the bundle in `config/bundles.php` by adding it to the array:

@@ -26,10 +26,16 @@ final class OAuth2Provider implements AuthenticationProviderInterface
      */
     private $resourceServer;
 
-    public function __construct(UserProviderInterface $userProvider, ResourceServer $resourceServer)
+    /**
+     * @var string
+     */
+    private $rolePrefix;
+
+    public function __construct(UserProviderInterface $userProvider, ResourceServer $resourceServer, string $rolePrefix = null)
     {
         $this->userProvider = $userProvider;
         $this->resourceServer = $resourceServer;
+        $this->rolePrefix = $rolePrefix;
     }
 
     /**
@@ -58,7 +64,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
             $request->getAttribute('oauth_user_id')
         );
 
-        $token = new OAuth2Token($request, $user);
+        $token = new OAuth2Token($request, $user, $this->rolePrefix);
         $token->setAuthenticated(true);
 
         return $token;

@@ -32,14 +32,21 @@ final class OAuth2Listener implements ListenerInterface
      */
     private $httpMessageFactory;
 
+    /**
+     * @var string
+     */
+    private $rolePrefix;
+
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
-        HttpMessageFactoryInterface $httpMessageFactory
+        HttpMessageFactoryInterface $httpMessageFactory,
+        ?string $rolePrefix = null
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->httpMessageFactory = $httpMessageFactory;
+        $this->rolePrefix = $rolePrefix;
     }
 
     /**
@@ -60,7 +67,7 @@ final class OAuth2Listener implements ListenerInterface
 
         try {
             /** @var OAuth2Token $authenticatedToken */
-            $authenticatedToken = $this->authenticationManager->authenticate(new OAuth2Token($request, null));
+            $authenticatedToken = $this->authenticationManager->authenticate(new OAuth2Token($request, null, $this->rolePrefix));
         } catch (AuthenticationException $e) {
             throw Oauth2AuthenticationFailedException::create($e->getMessage());
         }

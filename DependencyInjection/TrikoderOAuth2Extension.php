@@ -38,6 +38,8 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
+use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider;
+use Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
@@ -55,6 +57,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureAuthorizationServer($container, $config['authorization_server']);
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
+        $this->configureCustomRole($container, $config['custom_role'] ?? null);
 
         $container->getDefinition(ConvertExceptionToResponseListener::class)
             ->addTag('kernel.event_listener', [
@@ -288,5 +291,14 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 new Definition(ScopeModel::class, [$scope]),
             ]);
         }
+    }
+
+    private function configureCustomRole(ContainerBuilder $container, string $customRole = null)
+    {
+        $container->getDefinition(OAuth2Listener::class)
+            ->setArgument('$rolePrefix', $customRole);
+
+        $container->getDefinition(OAuth2Provider::class)
+            ->setArgument('$rolePrefix', $customRole);
     }
 }

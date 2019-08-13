@@ -16,10 +16,6 @@ use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
 use LogicException;
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\UploadedFileFactoryInterface;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\FileLocator;
@@ -99,7 +95,6 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     public function process(ContainerBuilder $container)
     {
         $this->assertRequiredBundlesAreEnabled($container);
-        $this->assertPsrHttpAliasesExist($container);
     }
 
     private function assertRequiredBundlesAreEnabled(ContainerBuilder $container): void
@@ -116,36 +111,6 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                     sprintf(
                         'Bundle \'%s\' needs to be enabled in your application kernel.',
                         $requiredBundle
-                    )
-                );
-            }
-        }
-    }
-
-    private function assertPsrHttpAliasesExist(ContainerBuilder $container): void
-    {
-        $requiredAliases = [
-            ServerRequestFactoryInterface::class,
-            StreamFactoryInterface::class,
-            UploadedFileFactoryInterface::class,
-            ResponseFactoryInterface::class,
-        ];
-
-        foreach ($requiredAliases as $requiredAlias) {
-            $definition = $container
-                ->getDefinition(
-                    $container->getAlias($requiredAlias)
-                )
-            ;
-
-            $aliasedClass = $definition->getClass();
-
-            if (!class_exists($aliasedClass)) {
-                throw new LogicException(
-                    sprintf(
-                        'Alias \'%s\' points to a non-existing class \'%s\'. Did you configure a PSR-7/17 compatible library?',
-                        $requiredAlias,
-                        $aliasedClass
                     )
                 );
             }

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2019-08-13
+### Removed
+- PSR-7/17 alias check during the container compile process ([0847ea3](https://github.com/trikoder/oauth2-bundle/commit/0847ea3034cc433c9c8f92ec46fedbdace259e3d))
+
 ## [2.0.0] - 2019-08-08
 ### Added
 - Ability to specify a [Defuse](https://github.com/defuse/php-encryption/blob/master/docs/classes/Key.md) key as the encryption key ([d83fefe](https://github.com/trikoder/oauth2-bundle/commit/d83fefe149c1add841d4225ebc2a32aa9333308d))

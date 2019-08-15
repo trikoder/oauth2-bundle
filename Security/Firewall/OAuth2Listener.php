@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
+use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedException;
 
@@ -33,20 +34,20 @@ final class OAuth2Listener implements ListenerInterface
     private $httpMessageFactory;
 
     /**
-     * @var string
+     * @var OAuth2TokenFactory
      */
-    private $rolePrefix;
+    private $oauth2TokenFactory;
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
         HttpMessageFactoryInterface $httpMessageFactory,
-        ?string $rolePrefix = null
+        OAuth2TokenFactory $oauth2TokenFactory
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->httpMessageFactory = $httpMessageFactory;
-        $this->rolePrefix = $rolePrefix;
+        $this->oauth2TokenFactory = $oauth2TokenFactory;
     }
 
     /**
@@ -67,7 +68,7 @@ final class OAuth2Listener implements ListenerInterface
 
         try {
             /** @var OAuth2Token $authenticatedToken */
-            $authenticatedToken = $this->authenticationManager->authenticate(new OAuth2Token($request, null, $this->rolePrefix));
+            $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null));
         } catch (AuthenticationException $e) {
             throw Oauth2AuthenticationFailedException::create($e->getMessage());
         }

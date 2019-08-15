@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
+use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 
 final class OAuth2Provider implements AuthenticationProviderInterface
 {
@@ -27,15 +28,20 @@ final class OAuth2Provider implements AuthenticationProviderInterface
     private $resourceServer;
 
     /**
+     * @var OAuth2TokenFactory
+     */
+    private $oauth2TokenFactory;
+
+    /**
      * @var string
      */
     private $rolePrefix;
 
-    public function __construct(UserProviderInterface $userProvider, ResourceServer $resourceServer, string $rolePrefix = null)
+    public function __construct(UserProviderInterface $userProvider, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory)
     {
         $this->userProvider = $userProvider;
         $this->resourceServer = $resourceServer;
-        $this->rolePrefix = $rolePrefix;
+        $this->oauth2TokenFactory = $oauth2TokenFactory;
     }
 
     /**
@@ -64,7 +70,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
             $request->getAttribute('oauth_user_id')
         );
 
-        $token = new OAuth2Token($request, $user, $this->rolePrefix);
+        $token = $this->oauth2TokenFactory->createOAuth2Token($request, $user);
         $token->setAuthenticated(true);
 
         return $token;

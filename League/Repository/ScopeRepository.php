@@ -8,7 +8,7 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\ScopeResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
@@ -30,7 +30,7 @@ final class ScopeRepository implements ScopeRepositoryInterface
     private $clientManager;
 
     /**
-     * @var ScopeConverter
+     * @var ScopeConverterInterface
      */
     private $scopeConverter;
 
@@ -42,7 +42,7 @@ final class ScopeRepository implements ScopeRepositoryInterface
     public function __construct(
         ScopeManagerInterface $scopeManager,
         ClientManagerInterface $clientManager,
-        ScopeConverter $scopeConverter,
+        ScopeConverterInterface $scopeConverter,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->scopeManager = $scopeManager;

@@ -34,14 +34,14 @@ This package is currently in the active development.
 1. Require the bundle and a PSR 7/17 implementation with Composer:
 
     ```sh
-    composer require trikoder/oauth2-bundle nyholm/psr7 --no-plugins --no-scripts
+    composer require trikoder/oauth2-bundle nyholm/psr7
     ```
 
-    > **NOTE #1:** Due to required pre-configuration, this bundle is currently not compatible with [Symfony Flex](https://github.com/symfony/flex).
+    If your project is managed using [Symfony Flex](https://github.com/symfony/flex), the rest of the steps are not required. Just follow the post-installation instructions instead! :tada:
 
-    > **NOTE #2:** This bundle requires a PSR 7/17 implementation to operate. We recommend that you use [nyholm/psr7](https://github.com/Nyholm/psr7). Check out this [document](docs/psr-implementation-switching.md) if you wish to use a different implementation.
+    > **NOTE:** This bundle requires a PSR 7/17 implementation to operate. We recommend that you use [nyholm/psr7](https://github.com/Nyholm/psr7). Check out this [document](docs/psr-implementation-switching.md) if you wish to use a different implementation.
 
-2. Create the bundle configuration file under `config/packages/trikoder_oauth2.yaml`. Here is a reference configuration file:
+1. Create the bundle configuration file under `config/packages/trikoder_oauth2.yaml`. Here is a reference configuration file:
 
     ```yaml
     trikoder_oauth2:
@@ -110,19 +110,19 @@ This package is currently in the active development.
         exception_event_listener_priority: 10
     ```
 
-3. Enable the bundle in `config/bundles.php` by adding it to the array:
+1. Enable the bundle in `config/bundles.php` by adding it to the array:
 
     ```php
     Trikoder\Bundle\OAuth2Bundle\TrikoderOAuth2Bundle::class => ['all' => true]
     ```
 
-4. Update the database so bundle entities can be persisted using Doctrine:
+1. Update the database so bundle entities can be persisted using Doctrine:
 
     ```sh
     bin/console doctrine:schema:update --force
     ```
 
-5. Import the routes inside your `config/routes.yaml` file:
+1. Import the routes inside your `config/routes.yaml` file:
 
     ```yaml
     oauth2:

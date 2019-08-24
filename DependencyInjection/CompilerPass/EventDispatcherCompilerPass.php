@@ -9,6 +9,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController;
+use Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository;
+use Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository;
 use Trikoder\Bundle\OAuth2Bundle\Service\BCEventDispatcher;
 
 class EventDispatcherCompilerPass implements CompilerPassInterface
@@ -25,11 +28,11 @@ class EventDispatcherCompilerPass implements CompilerPassInterface
         $container->setDefinition(BCEventDispatcher::class, $definition);
 
         // Use our new service
-        $container->getDefinition('trikoder.oauth2.league.repository.scope_repository')
+        $container->getDefinition(ScopeRepository::class)
             ->replaceArgument(3, new Reference(BCEventDispatcher::class));
-        $container->getDefinition('trikoder.oauth2.league.repository.user_repository')
+        $container->getDefinition(UserRepository::class)
             ->replaceArgument(1, new Reference(BCEventDispatcher::class));
-        $container->getDefinition('trikoder.oauth2.controller.authorization_controller')
+        $container->getDefinition(AuthorizationController::class)
             ->replaceArgument(1, new Reference(BCEventDispatcher::class));
     }
 }

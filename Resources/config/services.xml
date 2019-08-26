@@ -53,7 +53,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider">
             <argument key="$userProvider" />
             <argument key="$resourceServer" type="service" id="League\OAuth2\Server\ResourceServer" />
-            <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory"
+            <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
         <service id="trikoder.oauth2.security.authentication.provider.oauth2_provider" alias="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider" />
 

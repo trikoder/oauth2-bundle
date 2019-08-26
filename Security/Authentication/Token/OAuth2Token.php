@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class OAuth2Token extends AbstractToken
 {
-    public function __construct(ServerRequestInterface $serverRequest, ?UserInterface $user, ?string $rolePrefix)
+    public function __construct(ServerRequestInterface $serverRequest, ?UserInterface $user, string $rolePrefix)
     {
         $this->setAttribute('server_request', $serverRequest);
         $this->setAttribute('role_prefix', $rolePrefix);
@@ -39,8 +39,8 @@ final class OAuth2Token extends AbstractToken
     {
         $roles = [];
 
-        foreach ($this->getAttribute('server_request')->getAttribute('oauth2_scopes', []) as $scope) {
-            $roles[] = sprintf($this->getAttribute('role_prefix') . '%s', trim(strtoupper($scope)));
+        foreach ($this->getAttribute('server_request')->getAttribute('oauth_scopes', []) as $scope) {
+            $roles[] = $this->getAttribute('role_prefix') . trim(strtoupper($scope));
         }
 
         return $roles;

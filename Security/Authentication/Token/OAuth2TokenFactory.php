@@ -7,16 +7,13 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class OAuth2TokenFactory
+final class OAuth2TokenFactory
 {
     /**
      * @var string
      */
     private $rolePrefix;
 
-    /**
-     * OAuth2TokenFactory constructor.
-     */
     public function __construct(string $rolePrefix)
     {
         $this->rolePrefix = $rolePrefix;

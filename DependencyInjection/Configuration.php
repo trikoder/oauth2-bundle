@@ -30,7 +30,7 @@ final class Configuration implements ConfigurationInterface
                     ->info('The priority of the event listener that converts an Exception to a Response')
                     ->defaultValue(10)
                 ->end()
-                ->scalarNode('custom_role')
+                ->scalarNode('role_prefix')
                     ->defaultValue('ROLE_OAUTH2_')
                     ->info('Custom role that replaces \'ROLE_OAUTH2_\' role prefix')
                 ->end()

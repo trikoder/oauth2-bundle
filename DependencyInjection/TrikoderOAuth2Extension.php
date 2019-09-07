@@ -31,6 +31,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
+use Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationListener;
 use Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager;
@@ -38,6 +39,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
+use Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\IdTokenResponse;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
@@ -262,11 +264,6 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         ;
 
         $container
-            ->getDefinition('trikoder.oauth2.manager.doctrine.authorization_code_manager')
-            ->replaceArgument('$entityManager', $entityManager)
-        ;
-
-        $container
             ->getDefinition(AuthorizationCodeManager::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
@@ -319,11 +316,11 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         if (isset($openid_connect['enabled']) && $openid_connect['enabled']) {
             $container
-                ->getDefinition('league.oauth2.server.authorization_server')
-                ->setArgument(5, new Reference('openid_connect_server.id_token_response'))
+                ->getDefinition(AuthorizationServer::class)
+                ->setArgument(5, new Reference(IdTokenResponse::class))
             ;
             $container
-                ->getDefinition('trikoder.oauth2.event_listener.authorization.authentication')
+                ->getDefinition(AuthorizationRequestAuthenticationListener::class)
                 ->setArgument(5, $openid_connect['login_route'])
             ;
         }

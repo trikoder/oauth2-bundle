@@ -3,17 +3,26 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Aliases -->
-        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" alias="trikoder.oauth2.manager.in_memory.client_manager" />
-        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" alias="trikoder.oauth2.manager.in_memory.access_token_manager" />
-        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" alias="trikoder.oauth2.manager.in_memory.refresh_token_manager" />
-        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface" alias="trikoder.oauth2.manager.in_memory.scope_manager" />
-        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" alias="trikoder.oauth2.manager.in_memory.authorization_code_manager" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ClientManager" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager" />
 
         <!-- Services -->
-        <service id="trikoder.oauth2.manager.in_memory.client_manager" class="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ClientManager" />
-        <service id="trikoder.oauth2.manager.in_memory.access_token_manager" class="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager" />
-        <service id="trikoder.oauth2.manager.in_memory.refresh_token_manager" class="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager" />
-        <service id="trikoder.oauth2.manager.in_memory.scope_manager" class="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
-        <service id="trikoder.oauth2.manager.in_memory.authorization_code_manager" class="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ClientManager" />
+        <service id="trikoder.oauth2.manager.in_memory.client_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ClientManager" />
+
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager" />
+        <service id="trikoder.oauth2.manager.in_memory.access_token_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager" />
+
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager" />
+        <service id="trikoder.oauth2.manager.in_memory.refresh_token_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager" />
+
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
+        <service id="trikoder.oauth2.manager.in_memory.scope_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
+
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager" />
+        <service id="trikoder.oauth2.manager.in_memory.authorization_code_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager" />
     </services>
 </container>

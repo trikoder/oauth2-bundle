@@ -7,8 +7,8 @@ namespace Trikoder\Bundle\OAuth2Bundle\League\Repository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\ScopeResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
@@ -30,7 +30,7 @@ final class ScopeRepository implements ScopeRepositoryInterface
     private $clientManager;
 
     /**
-     * @var ScopeConverter
+     * @var ScopeConverterInterface
      */
     private $scopeConverter;
 
@@ -42,7 +42,7 @@ final class ScopeRepository implements ScopeRepositoryInterface
     public function __construct(
         ScopeManagerInterface $scopeManager,
         ClientManagerInterface $clientManager,
-        ScopeConverter $scopeConverter,
+        ScopeConverterInterface $scopeConverter,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->scopeManager = $scopeManager;
@@ -79,13 +79,8 @@ final class ScopeRepository implements ScopeRepositoryInterface
         $scopes = $this->setupScopes($client, $this->scopeConverter->toDomainArray($scopes));
 
         $event = $this->eventDispatcher->dispatch(
-            OAuth2Events::SCOPE_RESOLVE,
-            new ScopeResolveEvent(
-                $scopes,
-                new GrantModel($grantType),
-                $client,
-                $userIdentifier
-            )
+            new ScopeResolveEvent($scopes, new GrantModel($grantType), $client, $userIdentifier),
+            OAuth2Events::SCOPE_RESOLVE
         );
 
         return $this->scopeConverter->toLeagueArray($event->getScopes());

@@ -9,8 +9,8 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
@@ -33,7 +33,7 @@ final class AuthorizationController
     private $eventFactory;
 
     /**
-     * @var UserConverter
+     * @var UserConverterInterface
      */
     private $userConverter;
 
@@ -41,7 +41,7 @@ final class AuthorizationController
         AuthorizationServer $server,
         EventDispatcherInterface $eventDispatcher,
         AuthorizationRequestResolveEventFactory $eventFactory,
-        UserConverter $userConverter
+        UserConverterInterface $userConverter
     ) {
         $this->server = $server;
         $this->eventDispatcher = $eventDispatcher;
@@ -58,8 +58,8 @@ final class AuthorizationController
 
             /** @var AuthorizationRequestResolveEvent $event */
             $event = $this->eventDispatcher->dispatch(
-                OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE,
-                $this->eventFactory->fromAuthorizationRequest($authRequest)
+                $this->eventFactory->fromAuthorizationRequest($authRequest),
+                OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE
             );
 
             $authRequest->setUser($this->userConverter->toLeague($event->getUser()));

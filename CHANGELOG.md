@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2019-08-13
+### Removed
+- PSR-7/17 alias check during the container compile process ([0847ea3](https://github.com/trikoder/oauth2-bundle/commit/0847ea3034cc433c9c8f92ec46fedbdace259e3d))
+
+## [2.0.0] - 2019-08-08
+### Added
+- Ability to specify a [Defuse](https://github.com/defuse/php-encryption/blob/master/docs/classes/Key.md) key as the encryption key ([d83fefe](https://github.com/trikoder/oauth2-bundle/commit/d83fefe149c1add841d4225ebc2a32aa9333308d))
+- Ability to use different PSR-7/17 HTTP transport implementations ([4973e1c](https://github.com/trikoder/oauth2-bundle/commit/4973e1c7ddfc4afcca85989bde1b8d28dcd7fd4a))
+- Allow configuration of the private key passphrase ([f16ec67](https://github.com/trikoder/oauth2-bundle/commit/f16ec67f2fa8dbf8fedd78488d625cef2db5b90d))
+- Checks if dependent bundles are enabled in the application kernel ([38f6641](https://github.com/trikoder/oauth2-bundle/commit/38f66418b5f28b8666d5bbde1e36a45cfc166afa))
+- Console command for clearing expired access and refresh tokens ([de3e338](https://github.com/trikoder/oauth2-bundle/commit/de3e338a24e0b03ab634c4982c46034715635379))
+- Console commands for client management ([2425b3d](https://github.com/trikoder/oauth2-bundle/commit/2425b3d149cadb1706eb70b321491bf894114784), [56aafba](https://github.com/trikoder/oauth2-bundle/commit/56aafba995f06e45fd6521735be780c327e67d65))
+- Server grant types can now be enabled/disabled through bundle configuration ([baffa92](https://github.com/trikoder/oauth2-bundle/commit/baffa928d9f489bd642fff7ae2bc88ce93badcbf))
+- Support for the "authorization_code" server grant type ([a61114a](https://github.com/trikoder/oauth2-bundle/commit/a61114a7f2449bdb28b0779b0a4a7d21b9fff2c2))
+- Support for the "implicit" server grant type ([91b3d75](https://github.com/trikoder/oauth2-bundle/commit/91b3d7583e269d5151927f24fbaec9d2fc4cea3d))
+- Support for Symfony 4.3 ([e4cf668](https://github.com/trikoder/oauth2-bundle/commit/e4cf6680ddfb7d1327b2c83ed22f46c0db56c67a))
+- The bundle is now additionally tested against PHP 7.3 ([9f5937b](https://github.com/trikoder/oauth2-bundle/commit/9f5937bda2a112337a9b375ed3923918bcc06370))
+
+### Changed
+- Authentication exceptions are now thrown instead of setting the response object ([8a505f6](https://github.com/trikoder/oauth2-bundle/commit/8a505f61f52d6ce924ab7119a411a17efdf1bbef))
+- Modernize bundle service definitions ([fc1f855](https://github.com/trikoder/oauth2-bundle/commit/fc1f8556c180ba961bd6f2c973d36ff7439cbf34), [ef2f557](https://github.com/trikoder/oauth2-bundle/commit/ef2f557f357de8cf39bd87da3499cb38563ad82f))
+- Previously [documented](https://github.com/trikoder/oauth2-bundle/blob/v1.1.0/docs/controlling-token-scopes.md) client scope inheriting and restricting is now the new default behavior ([af9bffc](https://github.com/trikoder/oauth2-bundle/commit/af9bffcbcab7b02036c36ba0e1bc7d7b6921280))
+- Relaxed the [league/oauth2-server](https://github.com/thephpleague/oauth2-server) package version constraint to allow non-braking changes ([26d9c0b](https://github.com/trikoder/oauth2-bundle/commit/26d9c0b14a4d31e3fd5f620facfa374795f9adeb))
+- Use `DateTimeInterface` instead of `DateTime` whenever possible ([4549252](https://github.com/trikoder/oauth2-bundle/commit/454925249bfba1b6fd5c8e07fd64a4e87039759e))
+
+### Fixed
+- [DoctrineBundle](https://github.com/doctrine/DoctrineBundle) related deprecation notices ([fbde15b](https://github.com/trikoder/oauth2-bundle/commit/fbde15bfd2295b10563136701f668c839dcc1e5e))
+- Not being able to override the "persistence" config tree from other configuration files ([b62b331](https://github.com/trikoder/oauth2-bundle/commit/b62b331834c77609893a1b70633ef7683ada7edc))
+- [Symfony](https://github.com/symfony/symfony) related deprecation notices ([601d482](https://github.com/trikoder/oauth2-bundle/commit/601d482351e67d3d22b6ca600e26ed1da7f33866))
+
+### Removed
+- Redundant configuration node options ([5fa60ef](https://github.com/trikoder/oauth2-bundle/commit/5fa60efb81fddea79989e502f67bc7aca1bcac16))
+- Support for Symfony 4.1 ([4973e1c](https://github.com/trikoder/oauth2-bundle/commit/4973e1c7ddfc4afcca85989bde1b8d28dcd7fd4a))
+- Unsupported HTTP verbs on the `/authorize` and `/token` endpoints ([51ef5ae](https://github.com/trikoder/oauth2-bundle/commit/51ef5ae7e659afaf63c024e7da070464d318fd67))
+
 ## [1.1.0] - 2019-01-07
 ### Added
 - The bundle is now compatible with Symfony 3.4 ([0ba9cb3](https://github.com/trikoder/oauth2-bundle/commit/0ba9cb306157a9ad89691eb3d20054a6803af472))

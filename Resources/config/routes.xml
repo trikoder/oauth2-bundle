@@ -3,7 +3,7 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="oauth2_authorize" path="/authorize" controller="trikoder.oauth2.controller.authorization_controller:indexAction" methods="GET|POST" />
-    <route id="oauth2_token" path="/token" controller="trikoder.oauth2.controller.token_controller:indexAction" methods="GET|POST" />
+    <route id="oauth2_authorize" path="/authorize" controller="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController::indexAction" methods="GET" />
+    <route id="oauth2_token" path="/token" controller="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController::indexAction" methods="POST" />
     <route id="oauth2_user_info" path="/userinfo" controller="trikoder.oauth2.controller.user_info_controller:indexAction" methods="GET|POST" />
 </routes>

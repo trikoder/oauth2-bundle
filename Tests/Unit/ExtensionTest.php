@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
+use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Grant\ClientCredentialsGrant;
+use League\OAuth2\Server\Grant\PasswordGrant;
+use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Trikoder\Bundle\OAuth2Bundle\DependencyInjection\TrikoderOAuth2Extension;
@@ -25,7 +29,7 @@ final class ExtensionTest extends TestCase
 
         $extension->load($this->getValidConfiguration([$grantKey => $shouldTheGrantBeEnabled]), $container);
 
-        $authorizationServer = $container->getDefinition('league.oauth2.server.authorization_server');
+        $authorizationServer = $container->getDefinition(AuthorizationServer::class);
         $methodCalls = $authorizationServer->getMethodCalls();
         $isGrantEnabled = false;
 
@@ -42,23 +46,23 @@ final class ExtensionTest extends TestCase
     public function grantsProvider(): iterable
     {
         yield 'Client credentials grant can be enabled' => [
-                'league.oauth2.server.grant.client_credentials_grant', 'enable_client_credentials_grant', true,
-            ];
+            ClientCredentialsGrant::class, 'enable_client_credentials_grant', true,
+        ];
         yield 'Client credentials grant can be disabled' => [
-                'league.oauth2.server.grant.client_credentials_grant', 'enable_client_credentials_grant', false,
-            ];
+            ClientCredentialsGrant::class, 'enable_client_credentials_grant', false,
+        ];
         yield 'Password grant can be enabled' => [
-                'league.oauth2.server.grant.password_grant', 'enable_password_grant', true,
-            ];
+            PasswordGrant::class, 'enable_password_grant', true,
+        ];
         yield 'Password grant can be disabled' => [
-                'league.oauth2.server.grant.password_grant', 'enable_password_grant', false,
-            ];
+            PasswordGrant::class, 'enable_password_grant', false,
+        ];
         yield 'Refresh token grant can be enabled' => [
-                'league.oauth2.server.grant.refresh_token_grant', 'enable_refresh_token_grant', true,
-            ];
+            RefreshTokenGrant::class, 'enable_refresh_token_grant', true,
+        ];
         yield 'Refresh token grant can be disabled' => [
-                'league.oauth2.server.grant.refresh_token_grant', 'enable_refresh_token_grant', false,
-            ];
+            RefreshTokenGrant::class, 'enable_refresh_token_grant', false,
+        ];
     }
 
     private function getValidConfiguration(array $options): array

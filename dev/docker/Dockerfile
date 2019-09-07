@@ -17,12 +17,17 @@ RUN apk add --update --no-cache --virtual .build-deps \
         xml \
         zip \
     && pecl install \
-        xdebug-2.7.0RC1 \
+        xdebug \
         timecop-beta \
     && docker-php-ext-enable \
         xdebug \
         timecop \
     && apk del --purge .build-deps
+
+RUN echo '[xdebug]' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo 'xdebug.remote_enable = 1' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo 'xdebug.remote_connect_back = 0' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo 'xdebug.remote_host = %XDEBUG_REMOTE_HOST%' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
 
 # Utilities needed to run this image
 RUN apk add --update --no-cache \
@@ -36,13 +41,13 @@ RUN apk add --update --no-cache \
 RUN curl --show-error https://getcomposer.org/installer | php -- \
         --install-dir=/app/bin \
         --filename=composer \
-        --version=1.8.3
+        --version=1.8.6
 
 # Create the user that's going to run our application
 RUN useradd -ms /bin/sh app
 
 # Enable parallel package installation for Composer
-RUN su-exec app composer global require hirak/prestissimo
+RUN su-exec app composer global require symfony/flex
 
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint
 

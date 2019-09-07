@@ -8,7 +8,7 @@ use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Exception\UniqueTokenIdentifierConstraintViolationException;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
-use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\AccessToken as AccessTokenEntity;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
@@ -27,14 +27,14 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     private $clientManager;
 
     /**
-     * @var ScopeConverter
+     * @var ScopeConverterInterface
      */
     private $scopeConverter;
 
     public function __construct(
         AccessTokenManagerInterface $accessTokenManager,
         ClientManagerInterface $clientManager,
-        ScopeConverter $scopeConverter
+        ScopeConverterInterface $scopeConverter
     ) {
         $this->accessTokenManager = $accessTokenManager;
         $this->clientManager = $clientManager;

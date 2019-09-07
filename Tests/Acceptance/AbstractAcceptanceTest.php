@@ -28,5 +28,11 @@ abstract class AbstractAcceptanceTest extends WebTestCase
         $this->application = new Application($this->client->getKernel());
 
         TestHelper::initializeDoctrineSchema($this->application);
+
+        $connection = $this->client->getContainer()->get('database_connection');
+        if ('sqlite' === $connection->getDatabasePlatform()->getName()) {
+            // https://www.sqlite.org/foreignkeys.html
+            $connection->executeQuery('PRAGMA foreign_keys = ON');
+        }
     }
 }

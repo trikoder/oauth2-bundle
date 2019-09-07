@@ -19,7 +19,7 @@ class RefreshToken
     private $expiry;
 
     /**
-     * @var AccessToken
+     * @var AccessToken|null
      */
     private $accessToken;
 
@@ -28,7 +28,7 @@ class RefreshToken
      */
     private $revoked = false;
 
-    public function __construct(string $identifier, DateTimeInterface $expiry, AccessToken $accessToken)
+    public function __construct(string $identifier, DateTimeInterface $expiry, ?AccessToken $accessToken = null)
     {
         $this->identifier = $identifier;
         $this->expiry = $expiry;
@@ -50,7 +50,7 @@ class RefreshToken
         return $this->expiry;
     }
 
-    public function getAccessToken(): AccessToken
+    public function getAccessToken(): ?AccessToken
     {
         return $this->accessToken;
     }

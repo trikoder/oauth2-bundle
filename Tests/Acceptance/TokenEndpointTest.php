@@ -191,7 +191,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
 
     public function testFailedTokenRequest()
     {
-        $this->client->request('GET', '/token');
+        $this->client->request('POST', '/token');
 
         $response = $this->client->getResponse();
 

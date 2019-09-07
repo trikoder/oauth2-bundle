@@ -7,7 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\League\Repository;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Exception\UniqueTokenIdentifierConstraintViolationException;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
-use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
+use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\AuthCode;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
@@ -26,14 +26,14 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     private $clientManager;
 
     /**
-     * @var ScopeConverter
+     * @var ScopeConverterInterface
      */
     private $scopeConverter;
 
     public function __construct(
         AuthorizationCodeManagerInterface $authorizationCodeManager,
         ClientManagerInterface $clientManager,
-        ScopeConverter $scopeConverter
+        ScopeConverterInterface $scopeConverter
     ) {
         $this->authorizationCodeManager = $authorizationCodeManager;
         $this->clientManager = $clientManager;

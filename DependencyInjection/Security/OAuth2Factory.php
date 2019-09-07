@@ -9,6 +9,9 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider;
+use Trikoder\Bundle\OAuth2Bundle\Security\EntryPoint\OAuth2EntryPoint;
+use Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener;
 
 final class OAuth2Factory implements SecurityFactoryInterface
 {
@@ -19,14 +22,14 @@ final class OAuth2Factory implements SecurityFactoryInterface
     {
         $providerId = 'security.authentication.provider.oauth2.' . $id;
         $container
-            ->setDefinition($providerId, new ChildDefinition('trikoder.oauth2.security.authentication.provider.oauth2_provider'))
+            ->setDefinition($providerId, new ChildDefinition(OAuth2Provider::class))
             ->replaceArgument('$userProvider', new Reference($userProvider));
 
         $listenerId = 'security.authentication.listener.oauth2.' . $id;
         $container
-            ->setDefinition($listenerId, new ChildDefinition('trikoder.oauth2.security.firewall.oauth2_listener'));
+            ->setDefinition($listenerId, new ChildDefinition(OAuth2Listener::class));
 
-        return [$providerId, $listenerId, 'trikoder.oauth2.security.entry_point.oauth2_entry_point'];
+        return [$providerId, $listenerId, OAuth2EntryPoint::class];
     }
 
     /**

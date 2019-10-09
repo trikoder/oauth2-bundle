@@ -161,21 +161,16 @@ abstract class AbstractIntegrationTest extends TestCase
     protected function getRefreshToken(string $encryptedPayload): ?RefreshToken
     {
         try {
-        }
-
-        $payload = json_decode($payload, true);
             $payload = Crypto::decryptWithPassword($encryptedPayload, TestHelper::ENCRYPTION_KEY);
         } catch (CryptoException $e) {
             return null;
-
+        }
+        $payload = json_decode($payload, true);
         return $this->refreshTokenManager->find(
             $payload['refresh_token_id']
         );
     }
 
-
-        return $this->refreshTokenManager->find(
-            $payload['refresh_token_id']
     protected function getIdToken(string $jwtToken): Token
     {
         return (new Parser())->parse($jwtToken);

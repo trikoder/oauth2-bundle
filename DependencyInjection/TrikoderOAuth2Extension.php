@@ -31,7 +31,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
-use Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationListener;
+use Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationResolvingListener;
+use Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestDecisionResolvingListener;
 use Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager;
@@ -165,11 +166,6 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 new Definition(DateInterval::class, [$config['access_token_ttl']]),
             ]);
         }
-
-        $authorizationServer->addMethodCall('enableGrantType', [
-            new Reference('league.oauth2.server.grant.auth_code_grant'),
-            new Definition(DateInterval::class, [$config['access_token_ttl']]),
-        ]);
 
         if ($config['enable_auth_code_grant']) {
             $authorizationServer->addMethodCall('enableGrantType', [
@@ -308,7 +304,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $container->getDefinition('trikoder.oauth2.authorization_decision_strategy.user_consent')->replaceArgument(3, $consentRoute);
         $container
-            ->getDefinition('trikoder.oauth2.event_listener.authorization.decision')
+            ->getDefinition(AuthorizationRequestDecisionResolvingListener::class)
             ->replaceArgument(0, new Reference($authorizationStrategy));
     }
 
@@ -320,7 +316,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 ->setArgument(5, new Reference(IdTokenResponse::class))
             ;
             $container
-                ->getDefinition(AuthorizationRequestAuthenticationListener::class)
+                ->getDefinition(AuthorizationRequestAuthenticationResolvingListener::class)
                 ->setArgument(5, $openid_connect['login_route'])
             ;
         }

@@ -1,6 +1,8 @@
 <?php
 
-namespace Trikoder\Bundle\OAuth2Bundle\Event\Listener;
+declare(strict_types=1);
+
+namespace Trikoder\Bundle\OAuth2Bundle\EventListener;
 
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -12,14 +14,10 @@ use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Zend\Diactoros\Response\RedirectResponse;
 
 /**
- * Class AuthorizationRequestAuthenticationListener
- *
  * Listener that redirects anonymous users to login screen.
  * Enabled automatically with OpenId Connect
- *
- * @package Trikoder\Bundle\OAuth2Bundle\Event\Listener
  */
-class AuthorizationRequestAuthenticationListener implements AuthorizationEventListener
+final class AuthorizationRequestAuthenticationResolvingListener
 {
     use TargetPathTrait;
 

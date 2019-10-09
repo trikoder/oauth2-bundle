@@ -1,18 +1,16 @@
 <?php
 
-namespace Trikoder\Bundle\OAuth2Bundle\Event\Listener;
+declare(strict_types=1);
+
+namespace Trikoder\Bundle\OAuth2Bundle\EventListener;
 
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\AuthorizationDecisionStrategy;
 
 /**
- * Class AuthorizationRequestDecisionListener
- *
  * Listener delegates to configured authorization strategy (redirect to consent screen, auto-approve)
- *
- * @package Trikoder\Bundle\OAuth2Bundle\Event\Listener
  */
-class AuthorizationRequestDecisionListener implements AuthorizationEventListener
+final class AuthorizationRequestDecisionResolvingListener
 {
     /**
      * @var AuthorizationDecisionStrategy

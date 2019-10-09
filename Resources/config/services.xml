@@ -129,12 +129,8 @@
 
         <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener" />
         <service id="trikoder.oauth2.event_listener.authorization.convert_to_response" alias="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener" />
-        <service id="trikoder.oauth2.event_listener.authorization.decision" class="Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestDecisionListener">
-            <argument />
-            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="100" />
-        </service>
 
-        <service id="Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationListener">
+        <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestAuthenticationResolvingListener">
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="session" />
             <argument type="service" id="request_stack" />
@@ -142,6 +138,11 @@
             <argument type="service" id="security.firewall.map" />
             <argument type="string" />
             <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="300" />
+        </service>
+
+        <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestDecisionResolvingListener">
+            <argument />
+            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="100" />
         </service>
 
         <!-- Authorization decision strategies -->

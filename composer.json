@@ -18,9 +18,10 @@
         "league/oauth2-server": "^8.0",
         "psr/http-factory": "^1.0",
         "sensio/framework-extra-bundle": "^5.3",
-        "symfony/framework-bundle": "^3.4|^4.2",
+        "symfony/event-dispatcher-contracts": "^1.1",
+        "symfony/framework-bundle": "^3.4|^4.2|^5.0",
         "symfony/psr-http-message-bridge": "^1.2",
-        "symfony/security-bundle": "^3.4|^4.2"
+        "symfony/security-bundle": "^3.4|^4.2|^5.0"
     },
     "require-dev": {
         "ext-timecop": "*",
@@ -28,8 +29,8 @@
         "friendsofphp/php-cs-fixer": "2.16.0",
         "nyholm/psr7": "^1.1",
         "phpunit/phpunit": "^8.4",
-        "symfony/browser-kit": "^3.4|^4.2",
-        "symfony/phpunit-bridge": "^3.4|^4.4",
+        "symfony/browser-kit": "^3.4|^4.2|^5.0",
+        "symfony/phpunit-bridge": "^3.4|^4.4|^5.0",
         "zendframework/zend-diactoros": "^2.1"
     },
     "autoload": {

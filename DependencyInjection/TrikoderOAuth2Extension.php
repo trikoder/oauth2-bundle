@@ -58,7 +58,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureScopes($container, $config['scopes']);
 
         $container->getDefinition(OAuth2TokenFactory::class)
-            ->setArgument(0, $config['custom_role']);
+            ->setArgument(0, $config['role_prefix']);
 
         $container->getDefinition(ConvertExceptionToResponseListener::class)
             ->addTag('kernel.event_listener', [

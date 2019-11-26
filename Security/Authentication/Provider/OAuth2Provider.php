@@ -32,11 +32,6 @@ final class OAuth2Provider implements AuthenticationProviderInterface
      */
     private $oauth2TokenFactory;
 
-    /**
-     * @var string
-     */
-    private $rolePrefix;
-
     public function __construct(UserProviderInterface $userProvider, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory)
     {
         $this->userProvider = $userProvider;

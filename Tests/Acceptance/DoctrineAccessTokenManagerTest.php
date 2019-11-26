@@ -102,7 +102,11 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
 
             $em->flush();
 
+            $this->assertCount(count($testData['input']), $em->getRepository(RefreshToken::class)->findAll());
+
             $this->assertSame(3, $doctrineAccessTokenManager->clearExpired());
+
+            $this->assertCount(count($testData['output']), $em->getRepository(RefreshToken::class)->findAll());
         } finally {
             timecop_return();
         }

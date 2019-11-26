@@ -19,7 +19,7 @@ final class OAuth2TokenFactory
         $this->rolePrefix = $rolePrefix;
     }
 
-    public function createOAuth2Token(ServerRequestInterface $serverRequest, UserInterface $user): OAuth2Token
+    public function createOAuth2Token(ServerRequestInterface $serverRequest, ?UserInterface $user): OAuth2Token
     {
         return new OAuth2Token($serverRequest, $user, $this->rolePrefix);
     }

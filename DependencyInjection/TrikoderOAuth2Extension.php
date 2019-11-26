@@ -283,7 +283,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
     private function configureScopes(ContainerBuilder $container, array $scopes): void
     {
-        $scopeManagerClass = (string)$container->getAlias(ScopeManagerInterface::class);
+        $scopeManagerClass = (string) $container->getAlias(ScopeManagerInterface::class);
         $scopeManagerDefinition = $container->getDefinition($scopeManagerClass);
 
         foreach ($scopes as $scope) {

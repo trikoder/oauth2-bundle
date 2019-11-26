@@ -20,7 +20,7 @@
         <service id="trikoder.oauth2.manager.in_memory.refresh_token_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
-        <service id="trikoder.oauth2.manager.in_memory.scope_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
+        <service id="trikoder.oauth2.manager.in_memory.scope_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManagerInterface" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager" />
         <service id="trikoder.oauth2.manager.in_memory.authorization_code_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager" />

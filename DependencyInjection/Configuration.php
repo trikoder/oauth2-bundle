@@ -34,6 +34,7 @@ final class Configuration implements ConfigurationInterface
                 ->scalarNode('role_prefix')
                     ->info('Custom role that replaces \'ROLE_OAUTH2_\' role prefix')
                     ->defaultValue('ROLE_OAUTH2_')
+                    ->cannotBeEmpty()
                 ->end()
             ->end();
 

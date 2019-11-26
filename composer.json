@@ -19,7 +19,7 @@
         "psr/event-dispatcher": "^1.0",
         "psr/http-factory": "^1.0",
         "sensio/framework-extra-bundle": "^5.3",
-        "symfony/event-dispatcher-contracts": "^1.1",
+        "symfony/event-dispatcher-contracts": "^1.1|^2.0",
         "symfony/framework-bundle": "^4.3|^5.0",
         "symfony/psr-http-message-bridge": "^1.2",
         "symfony/security-bundle": "^4.3|^5.0"

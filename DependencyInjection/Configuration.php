@@ -17,6 +17,7 @@ final class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = $this->getWrappedTreeBuilder('trikoder_oauth2');
+        /** @var NodeDefinition $rootNode */
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode->append($this->createAuthorizationServerNode());
@@ -31,8 +32,8 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue(10)
                 ->end()
                 ->scalarNode('role_prefix')
-                    ->defaultValue('ROLE_OAUTH2_')
                     ->info('Custom role that replaces \'ROLE_OAUTH2_\' role prefix')
+                    ->defaultValue('ROLE_OAUTH2_')
                 ->end()
             ->end();
 

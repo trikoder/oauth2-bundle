@@ -38,12 +38,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
     public function authenticate(TokenInterface $token)
     {
         if (!$this->supports($token)) {
-            throw new RuntimeException(
-                sprintf(
-                    'This authentication provider can only handle tokes of type \'%s\'.',
-                    OAuth2Token::class
-                )
-            );
+            throw new RuntimeException(sprintf('This authentication provider can only handle tokes of type \'%s\'.', OAuth2Token::class));
         }
 
         try {

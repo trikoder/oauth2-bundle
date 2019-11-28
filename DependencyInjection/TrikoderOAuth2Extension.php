@@ -107,12 +107,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         foreach ($requiredBundles as $bundleAlias => $requiredBundle) {
             if (!$container->hasExtension($bundleAlias)) {
-                throw new LogicException(
-                    sprintf(
-                        'Bundle \'%s\' needs to be enabled in your application kernel.',
-                        $requiredBundle
-                    )
-                );
+                throw new LogicException(sprintf('Bundle \'%s\' needs to be enabled in your application kernel.', $requiredBundle));
             }
         }
     }

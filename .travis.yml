@@ -7,11 +7,6 @@ language: bash
 services:
     - docker
 
-addons:
-    apt:
-        packages:
-            - docker-ce
-
 env:
     # PHP 7.2
     - PHP_VERSION=7.2 PSR_HTTP_PROVIDER=nyholm SYMFONY_VERSION=3.4.*

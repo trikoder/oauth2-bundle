@@ -17,7 +17,7 @@ RUN apk add --update --no-cache --virtual .build-deps \
         xml \
         zip \
     && pecl install \
-        xdebug \
+        xdebug-2.7.2 \
         timecop-beta \
     && docker-php-ext-enable \
         xdebug \

@@ -24,6 +24,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
+use Trikoder\Bundle\OAuth2Bundle\Tests\Support\SqlitePlatform;
 use Zend\Diactoros as ZendFramework;
 
 final class TestKernel extends Kernel implements CompilerPassInterface
@@ -131,6 +132,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                     'charset' => 'utf8mb4',
                     'utf8mb4_unicode_ci' => 'utf8mb4_unicode_ci',
                 ],
+                'platform_service' => SqlitePlatform::class,
             ],
             'orm' => null,
         ]);
@@ -187,6 +189,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $this->configureControllers($container);
         $this->configurePsrHttpFactory($container);
+        $this->configureDatabaseServices($container);
     }
 
     private function exposeManagerServices(ContainerBuilder $container): void
@@ -275,6 +278,15 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         $container
             ->register(SecurityTestController::class)
+            ->setAutoconfigured(true)
+            ->setAutowired(true)
+        ;
+    }
+
+    private function configureDatabaseServices(ContainerBuilder $container): void
+    {
+        $container
+            ->register(SqlitePlatform::class)
             ->setAutoconfigured(true)
             ->setAutowired(true)
         ;

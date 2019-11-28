@@ -1,14 +1,11 @@
+dist: bionic
+
 sudo: required
 
 language: bash
 
 services:
     - docker
-
-addons:
-    apt:
-        packages:
-            - docker-ce
 
 env:
     # PHP 7.2

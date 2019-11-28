@@ -129,7 +129,8 @@ oauth2_restricted:
 
 ## Security roles
 
-Once the user gets past the `oauth2` firewall, they will be granted additional roles based on their granted [token scopes](controlling-token-scopes.md). The roles are named in the following format:
+Once the user gets past the `oauth2` firewall, they will be granted additional roles based on their granted [token scopes](controlling-token-scopes.md).
+By default, the roles are named in the following format:
 
 ```
 ROLE_OAUTH2_<scope>
@@ -146,6 +147,8 @@ public function indexAction()
     // ...
 }
 ```
+
+> **NOTE:** You can change the `ROLE_OAUTH2_` prefix via the `role_prefix` configuration option described in [Installation section](../README.md#installation)
 
 ## Auth
 

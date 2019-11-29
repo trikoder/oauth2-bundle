@@ -1,6 +1,6 @@
-ARG PHP_VERSION=7.3
+ARG PHP_VERSION=7.4
 
-FROM php:${PHP_VERSION}-cli-alpine3.8
+FROM php:${PHP_VERSION}-cli-alpine3.10
 LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"
 
 # This is where we're going to store all of our non-project specific binaries

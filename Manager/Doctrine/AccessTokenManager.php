@@ -32,7 +32,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function save(AccessToken $accessToken): void
+    public function save($accessToken): void
     {
         $this->entityManager->persist($accessToken);
         $this->entityManager->flush();

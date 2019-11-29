@@ -7,11 +7,8 @@ namespace Trikoder\Bundle\OAuth2Bundle\Event;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface;
-use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
 
@@ -26,14 +23,14 @@ final class AuthorizationRequestResolveEvent extends Event
     private $authorizationRequest;
 
     /**
-     * @var ScopeConverterInterface
+     * @var Scope[]
      */
-    private $scopeConverter;
+    private $scopes;
 
     /**
-     * @var ClientManagerInterface
+     * @var Client
      */
-    private $clientManager;
+    private $client;
 
     /**
      * @var bool
@@ -50,11 +47,14 @@ final class AuthorizationRequestResolveEvent extends Event
      */
     private $user;
 
-    public function __construct(AuthorizationRequest $authorizationRequest, ScopeConverterInterface $scopeConverter, ClientManagerInterface $clientManager)
+    /**
+     * @param Scope[] $scopes
+     */
+    public function __construct(AuthorizationRequest $authorizationRequest, array $scopes, Client $client)
     {
         $this->authorizationRequest = $authorizationRequest;
-        $this->scopeConverter = $scopeConverter;
-        $this->clientManager = $clientManager;
+        $this->scopes = $scopes;
+        $this->client = $client;
     }
 
     public function getAuthorizationResolution(): bool
@@ -100,14 +100,7 @@ final class AuthorizationRequestResolveEvent extends Event
 
     public function getClient(): Client
     {
-        $identifier = $this->authorizationRequest->getClient()->getIdentifier();
-        $client = $this->clientManager->find($identifier);
-
-        if (null === $client) {
-            throw new RuntimeException(sprintf('No client found for the given identifier "%s".', $identifier));
-        }
-
-        return $client;
+        return $this->client;
     }
 
     public function getUser(): ?UserInterface
@@ -127,9 +120,7 @@ final class AuthorizationRequestResolveEvent extends Event
      */
     public function getScopes(): array
     {
-        return $this->scopeConverter->toDomainArray(
-            $this->authorizationRequest->getScopes()
-        );
+        return $this->scopes;
     }
 
     public function isAuthorizationApproved(): bool

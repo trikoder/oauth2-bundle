@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
-use DateTime;
+use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager as DoctrineAccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
@@ -12,7 +12,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance\AbstractAcceptanceTest;
 
 /**
- * @TODO This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ * TODO: This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
  */
 final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
 {
@@ -26,7 +26,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $testData = $this->buildClearExpiredTestData($client);
@@ -72,7 +72,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     {
         return new AccessToken(
             $identifier,
-            (new DateTime())->modify($modify),
+            new DateTimeImmutable($modify),
             $client,
             null,
             []
@@ -89,7 +89,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $testData = $this->buildClearExpiredTestDataWithRefreshToken($client);
@@ -138,10 +138,10 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     {
         return new RefreshToken(
             $identifier,
-            (new DateTime('+1 day')),
+            new DateTimeImmutable('+1 day'),
             new AccessToken(
                 $identifier,
-                (new DateTime())->modify($modify),
+                new DateTimeImmutable($modify),
                 $client,
                 null,
                 []

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTime;
+use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
@@ -31,7 +31,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
 
     public function testSuccessfulClientCredentialsRequest(): void
     {
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $this->client->request('POST', '/token', [
@@ -64,7 +64,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 $event->setUser(FixtureFactory::createUser());
             });
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $this->client->request('POST', '/token', [
@@ -98,7 +98,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(RefreshTokenManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_REFRESH_TOKEN);
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $this->client->request('POST', '/token', [
@@ -131,7 +131,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(AuthorizationCodeManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_AUTH_CODE);
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $this->client->request('POST', '/token', [

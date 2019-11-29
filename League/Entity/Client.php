@@ -13,6 +13,12 @@ final class Client implements ClientEntityInterface
     use EntityTrait;
     use ClientTrait;
 
+    public function __construct()
+    {
+        // TODO: Add support for confidential clients
+        $this->isConfidential = true;
+    }
+
     /**
      * {@inheritdoc}
      */

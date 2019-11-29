@@ -16,6 +16,7 @@ use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
 use LogicException;
+use RuntimeException;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\FileLocator;
@@ -126,7 +127,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             $authorizationServer->replaceArgument('$encryptionKey', $config['encryption_key']);
         } elseif ('defuse' === $config['encryption_key_type']) {
             if (!class_exists(Key::class)) {
-                throw new \RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
+                throw new RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
             }
 
             $keyDefinition = (new Definition(Key::class))
@@ -194,6 +195,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $container
             ->getDefinition(AuthCodeGrant::class)
             ->replaceArgument('$authCodeTTL', new Definition(DateInterval::class, [$config['auth_code_ttl']]))
+            ->addMethodCall('disableRequireCodeChallengeForPublicClients') // TODO: Make this grant option configurable
             ->addMethodCall('setRefreshTokenTTL', [
                 new Definition(DateInterval::class, [$config['refresh_token_ttl']]),
             ])

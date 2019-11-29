@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTime;
+use DateTimeImmutable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
@@ -20,7 +20,7 @@ final class ClearExpiredTokensCommandTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         FixtureFactory::initializeFixtures(
             $this->client->getContainer()->get(ScopeManagerInterface::class),

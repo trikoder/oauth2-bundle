@@ -8,7 +8,7 @@ use Doctrine\DBAL\Platforms\SqlitePlatform as DoctrineSqlitePlatform;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 
 /**
- * @TODO Remove this once this issue is resolved: https://github.com/doctrine/orm/issues/7930
+ * TODO: Remove this once this issue is resolved: https://github.com/doctrine/orm/issues/7930
  */
 final class SqlitePlatform extends DoctrineSqlitePlatform
 {

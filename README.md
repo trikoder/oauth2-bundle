@@ -27,7 +27,7 @@ This package is currently in the active development.
 
 * [PHP 7.2](http://php.net/releases/7_2_0.php) or greater
 * [Symfony 4.2](https://symfony.com/roadmap/4.2) or [Symfony 3.4](https://symfony.com/roadmap/3.4)
-* [league/oauth2-server (versions >=7.2.0 <8.0)](https://packagist.org/packages/league/oauth2-server)
+* [league/oauth2-server (version 8.x)](https://packagist.org/packages/league/oauth2-server)
 
 ## Installation
 

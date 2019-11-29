@@ -46,7 +46,15 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
-        return new AccessTokenEntity();
+        $accessToken = new AccessTokenEntity();
+        $accessToken->setClient($clientEntity);
+        $accessToken->setUserIdentifier($userIdentifier);
+
+        foreach ($scopes as $scope) {
+            $accessToken->addScope($scope);
+        }
+
+        return $accessToken;
     }
 
     /**

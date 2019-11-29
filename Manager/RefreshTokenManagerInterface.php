@@ -6,11 +6,12 @@ namespace Trikoder\Bundle\OAuth2Bundle\Manager;
 
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
-interface RefreshTokenManagerInterface
+interface RefreshTokenManagerInterface extends TokenManagerInterface
 {
     public function find(string $identifier): ?RefreshToken;
 
-    public function save(RefreshToken $refreshToken): void;
-
-    public function clearExpired(): int;
+    /**
+     * @param RefreshToken $refreshToken
+     */
+    public function save(/* RefreshToken */ $refreshToken): void;
 }

@@ -26,7 +26,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function save(RefreshToken $refreshToken): void
+    public function save($refreshToken): void
     {
         $this->refreshTokens[$refreshToken->getIdentifier()] = $refreshToken;
     }

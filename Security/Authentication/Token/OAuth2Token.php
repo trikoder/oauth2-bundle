@@ -37,10 +37,11 @@ final class OAuth2Token extends AbstractToken
 
     private function buildRolesFromScopes(): array
     {
+        $prefix = $this->getAttribute('role_prefix');
         $roles = [];
 
         foreach ($this->getAttribute('server_request')->getAttribute('oauth_scopes', []) as $scope) {
-            $roles[] = $this->getAttribute('role_prefix') . trim(strtoupper($scope));
+            $roles[] = trim(strtoupper($prefix . $scope));
         }
 
         return $roles;

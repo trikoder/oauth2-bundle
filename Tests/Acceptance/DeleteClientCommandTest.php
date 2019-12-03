@@ -9,8 +9,10 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
+use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
 /**
  * @covers \Trikoder\Bundle\OAuth2Bundle\Command\DeleteClientCommand
@@ -66,6 +68,44 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
         $this->assertNull($accessToken);
     }
 
+    public function testDeleteClientWithAccessAndRefreshTokens(): void
+    {
+        $client = $this->fakeAClient('foobar');
+        $this->getClientManager()->save($client);
+
+        $accessToken = $this->fakeAnAccessToken(
+            'bazqux',
+            'xyzzy',
+            $client
+        );
+        $this->getAccessTokenManager()->save($accessToken);
+
+        $refreshToken = $this->fakeARefreshToken('killroy', $accessToken);
+        $this->getRefreshTokenManager()->save($refreshToken);
+
+        $command = $this->command();
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
+            'command' => $command->getName(),
+            'identifier' => $client->getIdentifier(),
+        ]);
+
+        $this->clearEM();
+
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Given oAuth2 client deleted successfully', $output);
+
+        $client = $this->findClient($client->getIdentifier());
+        $this->assertNull($client);
+
+        $accessToken = $this->findAccessToken($accessToken->getIdentifier());
+        $this->assertNull($accessToken);
+
+        $refreshToken = $this->findRefreshToken($refreshToken->getIdentifier());
+        $this->assertNotNull($refreshToken);
+        $this->assertNull($refreshToken->getAccessToken());
+    }
+
     public function testDeleteNonExistentClient(): void
     {
         $identifierName = 'invalid identifier';
@@ -101,6 +141,17 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
             ;
     }
 
+    private function findRefreshToken(string $identifier): ?RefreshToken
+    {
+        return
+            $this
+                ->client
+                ->getContainer()
+                ->get(RefreshTokenManagerInterface::class)
+                ->find($identifier)
+            ;
+    }
+
     private function fakeAClient(string $identifier): Client
     {
         return new Client($identifier, 'quzbaz');
@@ -122,6 +173,15 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
         );
     }
 
+    private function fakeARefreshToken(string $identifier, AccessToken $accessToken, string $timeModifier = '+1 day')
+    {
+        return new RefreshToken(
+            $identifier,
+            (new DateTime('now'))->modify($timeModifier),
+            $accessToken
+        );
+    }
+
     private function getClientManager(): ClientManagerInterface
     {
         return $this->client
@@ -137,6 +197,16 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
                 ->client
                 ->getContainer()
                 ->get(AccessTokenManagerInterface::class)
+            ;
+    }
+
+    private function getRefreshTokenManager(): RefreshTokenManagerInterface
+    {
+        return
+            $this
+                ->client
+                ->getContainer()
+                ->get(RefreshTokenManagerInterface::class)
             ;
     }
 

@@ -9,7 +9,6 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager as Doctrine
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
-use Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance\AbstractAcceptanceTest;
 
 /**
  * @TODO This should be in the Integration tests folder but the current tests infrastructure would need improvements first.

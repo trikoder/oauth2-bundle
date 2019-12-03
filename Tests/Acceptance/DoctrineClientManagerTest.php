@@ -113,6 +113,8 @@ class DoctrineClientManagerTest extends AbstractAcceptanceTest
                 )
         );
 
+        // The entity manager has to be cleared manually
+        // because it doesn't process deep integrity constraints
         $em->clear();
 
         /** @var $refreshToken RefreshToken */

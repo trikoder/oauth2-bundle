@@ -123,9 +123,7 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
     {
         return
             $this
-                ->client
-                ->getContainer()
-                ->get(ClientManagerInterface::class)
+                ->getClientManager()
                 ->find($identifier)
             ;
     }
@@ -134,9 +132,7 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
     {
         return
             $this
-                ->client
-                ->getContainer()
-                ->get(AccessTokenManagerInterface::class)
+                ->getAccessTokenManager()
                 ->find($identifier)
             ;
     }
@@ -145,9 +141,7 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
     {
         return
             $this
-                ->client
-                ->getContainer()
-                ->get(RefreshTokenManagerInterface::class)
+                ->getRefreshTokenManager()
                 ->find($identifier)
             ;
     }
@@ -184,9 +178,11 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
 
     private function getClientManager(): ClientManagerInterface
     {
-        return $this->client
-            ->getContainer()
-            ->get(ClientManagerInterface::class)
+        return
+            $this
+                ->client
+                ->getContainer()
+                ->get(ClientManagerInterface::class)
             ;
     }
 

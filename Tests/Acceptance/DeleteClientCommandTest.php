@@ -53,11 +53,17 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
             'command' => $command->getName(),
             'identifier' => $client->getIdentifier(),
         ]);
+
+        $this->clearEM();
+
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Given oAuth2 client deleted successfully', $output);
 
         $client = $this->findClient($client->getIdentifier());
         $this->assertNull($client);
+
+        $accessToken = $this->findAccessToken($accessToken->getIdentifier());
+        $this->assertNull($accessToken);
     }
 
     public function testDeleteNonExistentClient(): void
@@ -80,6 +86,17 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
                 ->client
                 ->getContainer()
                 ->get(ClientManagerInterface::class)
+                ->find($identifier)
+            ;
+    }
+
+    private function findAccessToken(string $identifier): ?AccessToken
+    {
+        return
+            $this
+                ->client
+                ->getContainer()
+                ->get(AccessTokenManagerInterface::class)
                 ->find($identifier)
             ;
     }
@@ -126,5 +143,16 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
     private function command(): Command
     {
         return $this->application->find('trikoder:oauth2:delete-client');
+    }
+
+    private function clearEM()
+    {
+        $this
+            ->client
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager()
+            ->clear()
+        ;
     }
 }

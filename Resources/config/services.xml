@@ -189,6 +189,5 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory">
             <argument type="string" />
         </service>
-        <service id="trikoder.oauth2.security.authentication.token.oauth2_token_factory" alias="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
     </services>
 </container>

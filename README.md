@@ -96,10 +96,6 @@ This package is currently in the active development.
         # Scopes that you wish to utilize in your application.
         # This should be a simple array of strings.
         scopes:               []
-   
-        # The default role prefix for OAUTH roles that
-        # are generated from the set scopes
-        role_prefix:          'ROLE_OAUTH2_'
 
         # Configures different persistence methods that can be used by the bundle for saving client and token data.
         # Only one persistence method can be configured at a time.
@@ -112,6 +108,9 @@ This package is currently in the active development.
 
         # The priority of the event listener that converts an Exception to a Response
         exception_event_listener_priority: 10
+
+        # Custom role that replaces 'ROLE_OAUTH2_' role prefix
+        role_prefix:          ROLE_OAUTH2_
     ```
 
 1. Enable the bundle in `config/bundles.php` by adding it to the array:

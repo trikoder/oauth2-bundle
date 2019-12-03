@@ -17,13 +17,13 @@ class DoctrineClientManagerTest extends AbstractAcceptanceTest
     {
         /** @var $em EntityManagerInterface */
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $doctrineAccessTokenManager = new DoctrineClientManager($em);
+        $doctrineClientManager = new DoctrineClientManager($em);
 
         $client = new Client('client', 'secret');
         $em->persist($client);
         $em->flush();
 
-        $doctrineAccessTokenManager->remove($client);
+        $doctrineClientManager->remove($client);
 
         $this->assertNull(
             $em
@@ -40,103 +40,91 @@ class DoctrineClientManagerTest extends AbstractAcceptanceTest
     {
         /** @var $em EntityManagerInterface */
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $doctrineAccessTokenManager = new DoctrineClientManager($em);
+        $doctrineClientManager = new DoctrineClientManager($em);
 
         $client = new Client('client', 'secret');
         $em->persist($client);
         $em->flush();
 
-        timecop_freeze(new DateTime());
+        $accessToken = new AccessToken('access token', (new DateTime())->modify('+1 day'), $client, $client->getIdentifier(), []);
+        $em->persist($accessToken);
+        $em->flush();
 
-        try {
-            $accessToken = new AccessToken('access token', (new DateTime())->modify('+1 day'), $client, $client->getIdentifier(), []);
-            $em->persist($accessToken);
-            $em->flush();
+        $doctrineClientManager->remove($client);
 
-            $doctrineAccessTokenManager->remove($client);
+        $this->assertNull(
+            $em
+                ->getRepository(Client::class)
+                ->findOneBy(
+                    [
+                        'identifier' => $client->getIdentifier(),
+                    ]
+                )
+        );
 
-            $this->assertNull(
-                $em
-                    ->getRepository(Client::class)
-                    ->findOneBy(
-                        [
-                            'identifier' => $client->getIdentifier(),
-                        ]
-                    )
-            );
-
-            $this->assertNull(
-                $em
-                    ->getRepository(AccessToken::class)
-                    ->findOneBy(
-                        [
-                            'identifier' => $accessToken->getIdentifier(),
-                        ]
-                    )
-            );
-        } finally {
-            timecop_return();
-        }
+        $this->assertNull(
+            $em
+                ->getRepository(AccessToken::class)
+                ->findOneBy(
+                    [
+                        'identifier' => $accessToken->getIdentifier(),
+                    ]
+                )
+        );
     }
 
     public function testClientDeleteCascadesToAccessTokensAndRefreshTokens(): void
     {
         /** @var $em EntityManagerInterface */
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $doctrineAccessTokenManager = new DoctrineClientManager($em);
+        $doctrineClientManager = new DoctrineClientManager($em);
 
         $client = new Client('client', 'secret');
         $em->persist($client);
         $em->flush();
 
-        timecop_freeze(new DateTime());
+        $accessToken = new AccessToken('access token', (new DateTime())->modify('+1 day'), $client, $client->getIdentifier(), []);
+        $em->persist($accessToken);
+        $em->flush();
 
-        try {
-            $accessToken = new AccessToken('access token', (new DateTime())->modify('+1 day'), $client, $client->getIdentifier(), []);
-            $em->persist($accessToken);
-            $em->flush();
+        $refreshToken = new RefreshToken('refresh token', (new DateTime())->modify('+1 day'), $accessToken);
+        $em->persist($refreshToken);
+        $em->flush();
 
-            $refreshToken = new RefreshToken('refresh token', (new DateTime())->modify('+1 day'), $accessToken);
-            $em->persist($refreshToken);
-            $em->flush();
+        $doctrineClientManager->remove($client);
 
-            $doctrineAccessTokenManager->remove($client);
-
-            $this->assertNull(
-                $em
-                    ->getRepository(Client::class)
-                    ->findOneBy(
-                        [
-                            'identifier' => $client->getIdentifier(),
-                        ]
-                    )
-            );
-
-            $this->assertNull(
-                $em
-                    ->getRepository(AccessToken::class)
-                    ->findOneBy(
-                        [
-                            'identifier' => $accessToken->getIdentifier(),
-                        ]
-                    )
-            );
-
-            $em->clear();
-
-            /** @var $refreshToken RefreshToken */
-            $refreshToken = $em
-                ->getRepository(RefreshToken::class)
+        $this->assertNull(
+            $em
+                ->getRepository(Client::class)
                 ->findOneBy(
                     [
-                        'identifier' => $refreshToken->getIdentifier(),
+                        'identifier' => $client->getIdentifier(),
                     ]
                 )
-            ;
-            $this->assertNotNull($refreshToken);
-            $this->assertNull($refreshToken->getAccessToken());
-        } finally {
-            timecop_return();
-        }
+        );
+
+        $this->assertNull(
+            $em
+                ->getRepository(AccessToken::class)
+                ->findOneBy(
+                    [
+                        'identifier' => $accessToken->getIdentifier(),
+                    ]
+                )
+        );
+
+        $em->clear();
+
+        /** @var $refreshToken RefreshToken */
+        $refreshToken = $em
+            ->getRepository(RefreshToken::class)
+            ->findOneBy(
+                [
+                    'identifier' => $refreshToken->getIdentifier(),
+                ]
+            )
+        ;
+        $this->assertNotNull($refreshToken);
+        $this->assertNull($refreshToken->getAccessToken());
     }
 }

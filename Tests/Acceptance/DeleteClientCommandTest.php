@@ -206,11 +206,6 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
             ;
     }
 
-    private function command(): Command
-    {
-        return $this->application->find('trikoder:oauth2:delete-client');
-    }
-
     private function clearEM()
     {
         $this
@@ -220,5 +215,10 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
             ->getManager()
             ->clear()
         ;
+    }
+
+    private function command(): Command
+    {
+        return $this->application->find('trikoder:oauth2:delete-client');
     }
 }

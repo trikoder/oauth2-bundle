@@ -53,6 +53,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider">
             <argument key="$userProvider" />
             <argument key="$resourceServer" type="service" id="League\OAuth2\Server\ResourceServer" />
+            <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
         <service id="trikoder.oauth2.security.authentication.provider.oauth2_provider" alias="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider" />
 
@@ -63,6 +64,7 @@
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="sensio_framework_extra.psr7.http_message_factory" />
+            <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
         <service id="trikoder.oauth2.security.firewall.oauth2_listener" alias="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener" />
 
@@ -183,5 +185,9 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
         </service>
         <service id="trikoder.oauth2.event.authorization_request_resolve_event_factory" alias="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory" />
+
+        <service id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory">
+            <argument type="string" />
+        </service>
     </services>
 </container>

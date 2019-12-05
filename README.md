@@ -108,6 +108,9 @@ This package is currently in the active development.
 
         # The priority of the event listener that converts an Exception to a Response
         exception_event_listener_priority: 10
+
+        # Set a custom prefix that replaces the default 'ROLE_OAUTH2_' role prefix
+        role_prefix:          ROLE_OAUTH2_
     ```
 
 1. Enable the bundle in `config/bundles.php` by adding it to the array:

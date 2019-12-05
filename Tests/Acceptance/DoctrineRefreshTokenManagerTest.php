@@ -11,7 +11,8 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
 /**
- * @TODO This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ * @TODO   This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ * @covers \Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager
  */
 final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
 {

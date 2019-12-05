@@ -14,10 +14,9 @@ final class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = $this->getWrappedTreeBuilder('trikoder_oauth2');
-        /** @var NodeDefinition $rootNode */
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode->append($this->createAuthorizationServerNode());
@@ -173,7 +172,7 @@ final class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    private function getWrappedTreeBuilder(string $name): object
+    private function getWrappedTreeBuilder(string $name): TreeBuilder
     {
         return new class($name) extends TreeBuilder {
             public function __construct(string $name)

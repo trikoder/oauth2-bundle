@@ -7,7 +7,7 @@ ARG COMPOSER_VERSION=1.9.1
 ARG FLEX_VERSION=1.4.8
 ARG PHP_CS_FIXER_VERSION=2.16.1
 ARG TIMECOP_VERSION=1.2.10
-ARG XDEBUG_VERSION=2.8.0
+ARG XDEBUG_VERSION=2.9.2
 
 # This is where we're going to store all of our non-project specific binaries
 RUN mkdir -p /app/bin

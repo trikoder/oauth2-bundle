@@ -109,7 +109,7 @@ This package is currently in the active development.
         # The priority of the event listener that converts an Exception to a Response
         exception_event_listener_priority: 10
 
-        # Custom role that replaces 'ROLE_OAUTH2_' role prefix
+        # Set a custom prefix that replaces the default 'ROLE_OAUTH2_' role prefix
         role_prefix:          ROLE_OAUTH2_
     ```
 

@@ -9,6 +9,9 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
+/**
+ * @covers \Trikoder\Bundle\OAuth2Bundle\Command\DeleteClientCommand
+ */
 final class DeleteClientCommandTest extends AbstractAcceptanceTest
 {
     public function testDeleteClient(): void
@@ -42,27 +45,27 @@ final class DeleteClientCommandTest extends AbstractAcceptanceTest
         $this->assertStringContainsString(sprintf('oAuth2 client identified as "%s" does not exist', $identifierName), $output);
     }
 
-    private function findClient($identifier): ?Client
+    private function findClient(string $identifier): ?Client
     {
         return
             $this
-                ->client
-                ->getContainer()
-                ->get(ClientManagerInterface::class)
+                ->getClientManager()
                 ->find($identifier)
             ;
     }
 
-    private function fakeAClient($identifier): Client
+    private function fakeAClient(string $identifier): Client
     {
         return new Client($identifier, 'quzbaz');
     }
 
     private function getClientManager(): ClientManagerInterface
     {
-        return $this->client
-            ->getContainer()
-            ->get(ClientManagerInterface::class)
+        return
+            $this
+                ->client
+                ->getContainer()
+                ->get(ClientManagerInterface::class)
             ;
     }
 

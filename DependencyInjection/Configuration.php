@@ -8,6 +8,7 @@ use Defuse\Crypto\Key;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\UserConsentDecisionStrategy;
 
 final class Configuration implements ConfigurationInterface
 {
@@ -23,6 +24,7 @@ final class Configuration implements ConfigurationInterface
         $rootNode->append($this->createResourceServerNode());
         $rootNode->append($this->createScopesNode());
         $rootNode->append($this->createPersistenceNode());
+        $rootNode->append($this->createOpenIDConnectNode());
 
         $rootNode
             ->children()
@@ -37,6 +39,7 @@ final class Configuration implements ConfigurationInterface
 
     private function createAuthorizationServerNode(): NodeDefinition
     {
+        /** @var TreeBuilder $treeBuilder */
         $treeBuilder = $this->getWrappedTreeBuilder('authorization_server');
         $node = $treeBuilder->getRootNode();
 
@@ -97,6 +100,16 @@ final class Configuration implements ConfigurationInterface
                 ->booleanNode('enable_implicit_grant')
                     ->info('Whether to enable the implicit grant')
                     ->defaultTrue()
+                ->end()
+                ->scalarNode('authorization_strategy')
+                    ->isRequired()
+                    ->info("What strategy should be used to authorize user.\nService must implement AuthorizationDecisionStrategy interface")
+                    ->defaultValue(UserConsentDecisionStrategy::class)
+                ->end()
+                ->scalarNode('consent_route')
+                    ->isRequired()
+                    ->info('The route to redirect the user to when the user consent is required for authorization')
+                    ->defaultValue('oauth2_consent')
                 ->end()
             ->end()
         ;
@@ -160,6 +173,31 @@ final class Configuration implements ConfigurationInterface
                 ->end()
                 // In-memory persistence
                 ->scalarNode('in_memory')
+                ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    private function createOpenIDConnectNode(): NodeDefinition
+    {
+        /** @var TreeBuilder $treeBuilder */
+        $treeBuilder = $this->getWrappedTreeBuilder('openid_connect');
+        $node = $treeBuilder->getRootNode();
+
+        $node
+            ->info('Adds OpenID Connect Provider capabilities.')
+            ->treatFalseLike(['enabled' => false])
+            ->treatTrueLike(['enabled' => true])
+            ->treatNullLike(['enabled' => false])
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->booleanNode('enabled')->defaultNull()->end()
+                ->scalarNode('login_route')
+                    ->isRequired()
+                    ->info('Login route to redirect to unauthenticated users')
+                    ->defaultValue('app_login')
                 ->end()
             ->end()
         ;

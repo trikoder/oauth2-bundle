@@ -22,7 +22,8 @@
         "symfony/event-dispatcher-contracts": "^1.1",
         "symfony/framework-bundle": "^3.4|^4.2",
         "symfony/psr-http-message-bridge": "^1.2",
-        "symfony/security-bundle": "^3.4|^4.2"
+        "symfony/security-bundle": "^3.4|^4.2",
+        "steverhoades/oauth2-openid-connect-server": "^1.0"
     },
     "require-dev": {
         "ext-timecop": "*",
@@ -47,6 +48,7 @@
     "suggest": {
         "nelmio/cors-bundle": "For handling CORS requests",
         "nyholm/psr7": "For a super lightweight PSR-7/17 implementation",
+        "steverhoades/oauth2-openid-connect-server": "For OpenID Connect Provider capabilities",
         "defuse/php-encryption": "For better performance when doing encryption"
     },
     "config": {

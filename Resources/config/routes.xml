@@ -5,4 +5,5 @@
 
     <route id="oauth2_authorize" path="/authorize" controller="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController::indexAction" methods="GET" />
     <route id="oauth2_token" path="/token" controller="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController::indexAction" methods="POST" />
+    <route id="oauth2_user_info" path="/userinfo" controller="trikoder.oauth2.controller.user_info_controller:indexAction" methods="GET|POST" />
 </routes>

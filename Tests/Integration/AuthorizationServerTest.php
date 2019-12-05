@@ -21,8 +21,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             $this->scopeManager,
             $this->clientManager,
             $this->accessTokenManager,
-            $this->refreshTokenManager,
-            $this->authCodeManager
+            $this->refreshTokenManager
         );
     }
 

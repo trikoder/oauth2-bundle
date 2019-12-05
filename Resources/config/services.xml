@@ -130,12 +130,57 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener" />
         <service id="trikoder.oauth2.event_listener.authorization.convert_to_response" alias="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener" />
 
+        <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestAuthenticationResolvingListener">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="session" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="router" />
+            <argument type="service" id="security.firewall.map" />
+            <argument type="string" />
+            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="300" />
+        </service>
+
+        <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestDecisionResolvingListener">
+            <argument />
+            <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="100" />
+        </service>
+
+        <!-- Authorization decision strategies -->
+        <service id="trikoder.oauth2.authorization_decision_strategy.always_allow" class="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\AlwaysAllowDecisionStrategy" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\AlwaysAllowDecisionStrategy" alias="trikoder.oauth2.authorization_decision_strategy.always_allow" />
+
+        <service id="trikoder.oauth2.authorization_decision_strategy.user_consent" class="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\UserConsentDecisionStrategy">
+            <argument type="service" id="uri_signer" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="router" />
+            <argument />
+        </service>
+        <service id="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\UserConsentDecisionStrategy" alias="trikoder.oauth2.authorization_decision_strategy.user_consent" />
+
         <!-- Token controller -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
             <tag name="controller.service_arguments" />
         </service>
         <service id="trikoder.oauth2.controller.token_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController" />
+
+        <!-- User info controller -->
+        <service id="Trikoder\Bundle\OAuth2Bundle\Controller\UserInfoController">
+            <argument type="service" id="League\OAuth2\Server\ResourceServer" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\Repository\IdentityProvider" />
+            <argument type="service" id="OpenIDConnectServer\ClaimExtractor" />
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <!-- OpenID Connect Provider -->
+        <service id="Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\Repository\IdentityProvider">
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+        </service>
+        <service id="OpenIDConnectServer\ClaimExtractor" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\IdTokenResponse">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\Repository\IdentityProvider" />
+            <argument type="service" id="OpenIDConnectServer\ClaimExtractor" />
+        </service>
 
         <!-- Commands -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Command\CreateClientCommand">

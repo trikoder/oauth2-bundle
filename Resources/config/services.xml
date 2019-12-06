@@ -28,14 +28,14 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
-            <argument type="service" id="Symfony\Contracts\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
         </service>
         <service id="trikoder.oauth2.league.repository.scope_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository" />
         <service id="League\OAuth2\Server\Repositories\ScopeRepositoryInterface" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
-            <argument type="service" id="Symfony\Contracts\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
         </service>
         <service id="trikoder.oauth2.league.repository.user_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository" />
@@ -115,7 +115,7 @@
         <!-- Authorization controller -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
-            <argument type="service" id="Symfony\Contracts\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
             <tag name="controller.service_arguments" />

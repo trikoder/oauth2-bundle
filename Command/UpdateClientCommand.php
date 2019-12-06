@@ -63,6 +63,13 @@ final class UpdateClientCommand extends Command
                 InputOption::VALUE_NONE,
                 'If provided, it will deactivate the given client.'
             )
+            ->addOption(
+                'confidential',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Set confidentiali for client. Use this option with value 0 to set public client.',
+                true
+            )
             ->addArgument(
                 'identifier',
                 InputArgument::REQUIRED,
@@ -91,6 +98,10 @@ final class UpdateClientCommand extends Command
     private function updateClientFromInput(Client $client, InputInterface $input): Client
     {
         $client->setActive(!$input->getOption('deactivated'));
+
+        if ($input->hasOption('confidential')) {
+            $client->setConfidential((bool) $input->getOption('confidential'));
+        }
 
         $redirectUris = array_map(
             function (string $redirectUri): RedirectUri { return new RedirectUri($redirectUri); },

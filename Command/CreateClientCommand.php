@@ -57,6 +57,13 @@ final class CreateClientCommand extends Command
                 'Sets allowed scope for client. Use this option multiple times to set multiple scopes.',
                 []
             )
+            ->addOption(
+                'confidential',
+                null,
+                InputOption::VALUE_NONE,
+                'Identify a client as confidential or public.',
+                false
+            )
             ->addArgument(
                 'identifier',
                 InputArgument::OPTIONAL,
@@ -93,6 +100,7 @@ final class CreateClientCommand extends Command
 
         $client = new Client($identifier, $secret);
         $client->setActive(true);
+        $client->setConfidential($input->getOption('confidential'));
 
         $redirectUris = array_map(
             function (string $redirectUri): RedirectUri { return new RedirectUri($redirectUri); },

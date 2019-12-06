@@ -73,6 +73,7 @@ final class TestHelper
         $accessTokenEntity->setExpiryDateTime($accessToken->getExpiry());
         $accessTokenEntity->setClient($clientEntity);
         $accessTokenEntity->setUserIdentifier($accessToken->getUserIdentifier());
+        $accessTokenEntity->setPrivateKey(new CryptKey(self::PRIVATE_KEY_PATH, null, false));
 
         foreach ($accessToken->getScopes() as $scope) {
             $scopeEntity = new ScopeEntity();
@@ -81,9 +82,7 @@ final class TestHelper
             $accessTokenEntity->addScope($scopeEntity);
         }
 
-        return (string) $accessTokenEntity->convertToJWT(
-            new CryptKey(self::PRIVATE_KEY_PATH, null, false)
-        );
+        return (string) $accessTokenEntity;
     }
 
     public static function initializeDoctrineSchema(Application $application, array $arguments = []): bool

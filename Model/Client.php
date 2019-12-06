@@ -36,6 +36,11 @@ class Client
      */
     private $active = true;
 
+    /**
+     * @var bool
+     */
+    private $confidential = false;
+
     public function __construct(string $identifier, string $secret)
     {
         $this->identifier = $identifier;
@@ -110,6 +115,18 @@ class Client
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function isConfidential(): bool
+    {
+        return $this->active;
+    }
+
+    public function setConfidential(bool $confidential): self
+    {
+        $this->confidential = $confidential;
 
         return $this;
     }

@@ -339,7 +339,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleTokenRequest($request);
 
         // Response assertions.
-        $this->assertSame('invalid_credentials', $response['error']);
+        $this->assertSame('invalid_grant', $response['error']);
         $this->assertSame('The user credentials were incorrect.', $response['message']);
     }
 

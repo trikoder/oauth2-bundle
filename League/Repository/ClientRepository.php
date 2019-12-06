@@ -24,37 +24,22 @@ final class ClientRepository implements ClientRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientEntity(
-        $clientIdentifier,
-        $grantType = null,
-        $clientSecret = null,
-        $mustValidateSecret = true
-    ) {
+    public function getClientEntity($clientIdentifier)
+    {
         $client = $this->clientManager->find($clientIdentifier);
 
         if (null === $client) {
             return null;
         }
 
-        if (!$client->isActive()) {
-            return null;
-        }
-
-        if (!$this->isGrantSupported($client, $grantType)) {
-            return null;
-        }
-
-        if (!$mustValidateSecret) {
-            return $this->buildClientEntity($client);
-        }
-
-        if (!hash_equals($client->getSecret(), (string) $clientSecret)) {
-            return null;
-        }
-
         return $this->buildClientEntity($client);
     }
 
+    /**
+     * @param ClientModel $client
+     *
+     * @return ClientEntity
+     */
     private function buildClientEntity(ClientModel $client): ClientEntity
     {
         $clientEntity = new ClientEntity();
@@ -64,6 +49,12 @@ final class ClientRepository implements ClientRepositoryInterface
         return $clientEntity;
     }
 
+    /**
+     * @param ClientModel $client
+     * @param string|null $grant
+     *
+     * @return bool
+     */
     private function isGrantSupported(ClientModel $client, ?string $grant): bool
     {
         if (null === $grant) {
@@ -76,6 +67,32 @@ final class ClientRepository implements ClientRepositoryInterface
             return true;
         }
 
-        return \in_array($grant, $client->getGrants());
+        return in_array($grant, $client->getGrants(), false);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
+    {
+        $client = $this->clientManager->find($clientIdentifier);
+
+        if (null === $client) {
+            return false;
+        }
+
+        if (!$client->isActive()) {
+            return false;
+        }
+
+        if (!$this->isGrantSupported($client, $grantType)) {
+            return false;
+        }
+
+        if (!hash_equals($client->getSecret(), (string) $clientSecret)) {
+            return false;
+        }
+
+        return true;
     }
 }

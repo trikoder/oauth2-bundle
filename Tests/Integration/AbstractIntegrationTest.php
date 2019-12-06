@@ -268,10 +268,14 @@ abstract class AbstractIntegrationTest extends TestCase
             TestHelper::ENCRYPTION_KEY
         );
 
+        // TODO: Make this grant option configurable
+        $authCodeGrant = new AuthCodeGrant($authCodeRepository, $refreshTokenRepository, new DateInterval('PT10M'));
+        $authCodeGrant->disableRequireCodeChallengeForPublicClients();
+
         $authorizationServer->enableGrantType(new ClientCredentialsGrant());
         $authorizationServer->enableGrantType(new RefreshTokenGrant($refreshTokenRepository));
         $authorizationServer->enableGrantType(new PasswordGrant($userRepository, $refreshTokenRepository));
-        $authorizationServer->enableGrantType(new AuthCodeGrant($authCodeRepository, $refreshTokenRepository, new DateInterval('PT10M')));
+        $authorizationServer->enableGrantType($authCodeGrant);
         $authorizationServer->enableGrantType(new ImplicitGrant(new DateInterval('PT10M')));
 
         return $authorizationServer;

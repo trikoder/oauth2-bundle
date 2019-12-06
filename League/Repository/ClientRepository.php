@@ -24,35 +24,45 @@ final class ClientRepository implements ClientRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientEntity(
-        $clientIdentifier,
-        $grantType = null,
-        $clientSecret = null,
-        $mustValidateSecret = true
-    ) {
+    public function getClientEntity($clientIdentifier)
+    {
         $client = $this->clientManager->find($clientIdentifier);
 
         if (null === $client) {
             return null;
         }
 
+        return $this->buildClientEntity($client);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateClient($clientIdentifier, $clientSecret, $grantType)
+    {
+        $client = $this->clientManager->find($clientIdentifier);
+
+        if (null === $client) {
+            return false;
+        }
+
         if (!$client->isActive()) {
-            return null;
+            return false;
         }
 
         if (!$this->isGrantSupported($client, $grantType)) {
-            return null;
+            return false;
         }
 
-        if (!$mustValidateSecret) {
-            return $this->buildClientEntity($client);
+        if (null === $clientSecret) {
+            return true;
         }
 
-        if (!hash_equals($client->getSecret(), (string) $clientSecret)) {
-            return null;
+        if (hash_equals($client->getSecret(), (string) $clientSecret)) {
+            return true;
         }
 
-        return $this->buildClientEntity($client);
+        return false;
     }
 
     private function buildClientEntity(ClientModel $client): ClientEntity

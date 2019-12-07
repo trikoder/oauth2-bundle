@@ -23,6 +23,7 @@ Options:
       --redirect-uri[=REDIRECT-URI]  Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs. (multiple values allowed)
       --grant-type[=GRANT-TYPE]      Sets allowed grant type for client. Use this option multiple times to set multiple grant types. (multiple values allowed)
       --scope[=SCOPE]                Sets allowed scope for client. Use this option multiple times to set multiple scopes. (multiple values allowed)
+      --confidential                 Identify a client as confidential or public.
 ```
 
 
@@ -45,6 +46,7 @@ Options:
       --grant-type[=GRANT-TYPE]      Sets allowed grant type for client. Use this option multiple times to set multiple grant types. (multiple values allowed)
       --scope[=SCOPE]                Sets allowed scope for client. Use this option multiple times to set multiple scopes. (multiple values allowed)
       --deactivated                  If provided, it will deactivate the given client.
+      --confidential                 Set client confidentiality. Use this option with value 0 to set client public.
 ```
 
 #### Restrict which grant types a client can access

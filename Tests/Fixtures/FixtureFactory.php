@@ -47,6 +47,7 @@ final class FixtureFactory
     public const FIXTURE_CLIENT_FIRST = 'foo';
     public const FIXTURE_CLIENT_SECOND = 'bar';
     public const FIXTURE_CLIENT_INACTIVE = 'baz_inactive';
+    public const FIXTURE_CLIENT_PUBLIC = 'buz_public';
     public const FIXTURE_CLIENT_RESTRICTED_GRANTS = 'qux_restricted_grants';
     public const FIXTURE_CLIENT_RESTRICTED_SCOPES = 'quux_restricted_scopes';
 
@@ -250,6 +251,9 @@ final class FixtureFactory
 
         $clients[] = (new Client(self::FIXTURE_CLIENT_INACTIVE, 'woah'))
             ->setActive(false);
+
+        $clients[] = (new Client(self::FIXTURE_CLIENT_PUBLIC, 'public'))
+            ->setConfidential(false);
 
         $clients[] = (new Client(self::FIXTURE_CLIENT_RESTRICTED_GRANTS, 'wicked'))
             ->setGrants(new Grant('password'));

@@ -83,6 +83,24 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
         $this->assertFalse($updatedClient->isActive());
     }
 
+    public function testUpdateConfidential(): void
+    {
+        $client = $this->fakeAClient('bond');
+        $this->getClientManager()->save($client);
+        $this->assertTrue($client->isConfidential());
+        $command = $this->application->find('trikoder:oauth2:update-client');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
+            'command' => $command->getName(),
+            'identifier' => $client->getIdentifier(),
+            '--confidential' => false,
+        ]);
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Given oAuth2 client updated successfully', $output);
+        $updatedClient = $this->getClientManager()->find($client->getIdentifier());
+        $this->assertTrue($updatedClient->isConfidential());
+    }
+
     private function fakeAClient($identifier): Client
     {
         return new Client($identifier, 'quzbaz');

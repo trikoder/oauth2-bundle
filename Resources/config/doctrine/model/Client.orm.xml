@@ -9,5 +9,6 @@
         <field name="grants" type="oauth2_grant" nullable="true" />
         <field name="scopes" type="oauth2_scope" nullable="true" />
         <field name="active" type="boolean" />
+        <field name="confidential" type="boolean" />
     </entity>
 </doctrine-mapping>

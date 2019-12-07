@@ -55,7 +55,7 @@ final class ClientRepository implements ClientRepositoryInterface
         }
 
         if (null === $clientSecret) {
-            return true;
+            return !$client->isConfidential();
         }
 
         if (hash_equals($client->getSecret(), (string) $clientSecret)) {

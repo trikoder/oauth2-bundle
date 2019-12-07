@@ -98,7 +98,7 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Given oAuth2 client updated successfully', $output);
         $updatedClient = $this->getClientManager()->find($client->getIdentifier());
-        $this->assertTrue($updatedClient->isConfidential());
+        $this->assertFalse($updatedClient->isConfidential());
     }
 
     private function fakeAClient($identifier): Client

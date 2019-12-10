@@ -67,7 +67,7 @@ final class UpdateClientCommand extends Command
                 'confidential',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Set client confidentiality. Use this option with value 0 to set client public.',
+                'Set client confidential. If the client is confidential then the secret must be validated (PKCE client validation).',
                 true
             )
             ->addArgument(
@@ -98,10 +98,7 @@ final class UpdateClientCommand extends Command
     private function updateClientFromInput(Client $client, InputInterface $input): Client
     {
         $client->setActive(!$input->getOption('deactivated'));
-
-        if ($input->hasOption('confidential')) {
-            $client->setConfidential((bool) $input->getOption('confidential'));
-        }
+        $client->setConfidential((bool) $input->getOption('confidential'));
 
         $redirectUris = array_map(
             function (string $redirectUri): RedirectUri { return new RedirectUri($redirectUri); },

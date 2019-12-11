@@ -24,7 +24,7 @@ final class ClientRepository implements ClientRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientEntity($clientIdentifier)
+    public function getClientEntity($clientIdentifier, $grantType = null, $clientSecret = null, $mustValidateSecret = true)
     {
         $client = $this->clientManager->find($clientIdentifier);
 

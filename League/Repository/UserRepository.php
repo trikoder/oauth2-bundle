@@ -52,7 +52,6 @@ final class UserRepository implements UserRepositoryInterface
         $client = $this->clientManager->find($clientEntity->getIdentifier());
 
         $event = $this->eventDispatcher->dispatch(
-            OAuth2Events::USER_RESOLVE,
             new UserResolveEvent(
                 $username,
                 $password,

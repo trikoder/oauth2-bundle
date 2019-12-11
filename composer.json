@@ -20,9 +20,9 @@
         "psr/http-factory": "^1.0",
         "sensio/framework-extra-bundle": "^5.3",
         "symfony/event-dispatcher-contracts": "^1.1|^2.0",
-        "symfony/framework-bundle": "^4.3|^5.0",
+        "symfony/framework-bundle": "^4.4|^5.0",
         "symfony/psr-http-message-bridge": "^1.2",
-        "symfony/security-bundle": "^4.3|^5.0"
+        "symfony/security-bundle": "^4.4|^5.0"
     },
     "require-dev": {
         "ext-timecop": "*",
@@ -30,8 +30,8 @@
         "friendsofphp/php-cs-fixer": "^2.16.0",
         "nyholm/psr7": "^1.1",
         "phpunit/phpunit": "^8.4",
-        "symfony/browser-kit": "^4.3|^5.0",
-        "symfony/phpunit-bridge": "^4.3|^5.0",
+        "symfony/browser-kit": "^4.4|^5.0",
+        "symfony/phpunit-bridge": "^4.4|^5.0",
         "zendframework/zend-diactoros": "^2.1"
     },
     "autoload": {

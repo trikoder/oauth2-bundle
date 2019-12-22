@@ -199,6 +199,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(ScopeManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;
@@ -208,6 +209,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(ClientManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;
@@ -217,6 +219,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(AccessTokenManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;
@@ -226,6 +229,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(RefreshTokenManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;
@@ -235,6 +239,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(AuthorizationCodeManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;

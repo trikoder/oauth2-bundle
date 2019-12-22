@@ -24,6 +24,8 @@
     "require-dev": {
         "ext-timecop": "*",
         "ext-xdebug": "*",
+        "doctrine/mongodb-odm": "^2.0",
+        "doctrine/orm": "^2.7",
         "friendsofphp/php-cs-fixer": "2.16.0",
         "nyholm/psr7": "^1.1",
         "phpunit/phpunit": "^8.4",

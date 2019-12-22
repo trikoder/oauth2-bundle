@@ -6,7 +6,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -49,7 +49,7 @@ final class OAuth2Listener
         $this->oauth2TokenFactory = $oauth2TokenFactory;
     }
 
-    public function __invoke(ResponseEvent $event)
+    public function __invoke(RequestEvent $event)
     {
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
 

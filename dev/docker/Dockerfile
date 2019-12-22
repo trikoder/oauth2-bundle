@@ -24,9 +24,11 @@ RUN apk add --update --no-cache --virtual .build-deps \
     && pecl install \
         xdebug-${XDEBUG_VERSION} \
         timecop-${TIMECOP_VERSION} \
+        mongodb \
     && docker-php-ext-enable \
         xdebug \
         timecop \
+        mongodb \
     && apk del --purge .build-deps
 
 RUN echo '[xdebug]' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \

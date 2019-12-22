@@ -40,6 +40,14 @@ final class GrantOdm extends Type
     /**
      * {@inheritdoc}
      */
+    public function closureToPHP(): string
+    {
+        return '$return = explode(\Trikoder\Bundle\OAuth2Bundle\DBAL\Type\GrantOdm::VALUE_DELIMITER, $value);';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function convertToDatabaseValue($value)
     {
         if (!\is_array($value)) {

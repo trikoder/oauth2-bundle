@@ -43,6 +43,14 @@ final class ScopeOdm extends Type
     /**
      * {@inheritdoc}
      */
+    public function closureToPHP(): string
+    {
+        return '$return = explode(\Trikoder\Bundle\OAuth2Bundle\DBAL\Type\ScopeOdm::VALUE_DELIMITER, $value);';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function convertToDatabaseValue($value)
     {
         if (!\is_array($value)) {

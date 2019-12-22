@@ -84,16 +84,18 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
      */
     public function prepend(ContainerBuilder $container)
     {
-        $container->prependExtensionConfig('doctrine', [
-            'dbal' => [
-                'connections' => null,
-                'types' => [
-                    'oauth2_grant' => GrantType::class,
-                    'oauth2_redirect_uri' => RedirectUriType::class,
-                    'oauth2_scope' => ScopeType::class,
+        if ($container->hasExtension('doctrine')) {
+            $container->prependExtensionConfig('doctrine', [
+                'dbal' => [
+                    'connections' => null,
+                    'types' => [
+                        'oauth2_grant' => GrantType::class,
+                        'oauth2_redirect_uri' => RedirectUriType::class,
+                        'oauth2_scope' => ScopeType::class,
+                    ],
                 ],
-            ],
-        ]);
+            ]);
+        }
     }
 
     /**

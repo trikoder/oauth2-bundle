@@ -6,6 +6,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use DateInterval;
 use Defuse\Crypto\Key;
+use Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -38,6 +39,9 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
+
+use function class_exists;
+use function sprintf;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
@@ -236,9 +240,12 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $entityManagerName = $config['entity_manager'];
 
-        $entityManager = new Reference(
-            sprintf('doctrine.orm.%s_entity_manager', $entityManagerName)
-        );
+        $referenceId = sprintf('doctrine.orm.%s_entity_manager', $entityManagerName);
+        if (class_exists(DoctrineMongoDBMappingsPass::class)) {
+            $referenceId = sprintf('doctrine_mongodb.odm.%s_document_manager', $entityManagerName);
+        }
+
+        $entityManager = new Reference($referenceId);
 
         $container
             ->getDefinition(AccessTokenManager::class)

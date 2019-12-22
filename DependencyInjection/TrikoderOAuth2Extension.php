@@ -104,7 +104,6 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     private function assertRequiredBundlesAreEnabled(ContainerBuilder $container): void
     {
         $requiredBundles = [
-            'doctrine' => DoctrineBundle::class,
             'security' => SecurityBundle::class,
             'sensio_framework_extra' => SensioFrameworkExtraBundle::class,
         ];
@@ -113,6 +112,10 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             if (!$container->hasExtension($bundleAlias)) {
                 throw new LogicException(sprintf('Bundle \'%s\' needs to be enabled in your application kernel.', $requiredBundle));
             }
+        }
+
+        if (!$container->hasExtension('doctrine') || !$container->hasExtension('doctrine_mongodb')) {
+            throw new LogicException('One of \'doctrine\' or \'doctrine_mongodb\' bundle needs to be enabled in your application kernel.');
         }
     }
 

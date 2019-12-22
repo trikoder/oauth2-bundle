@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
 
 final class AuthorizationCodeManager implements AuthorizationCodeManagerInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var ObjectManager
      */
-    private $entityManager;
+    private $objectManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(ObjectManager $objectManager)
     {
-        $this->entityManager = $entityManager;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -25,7 +25,7 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
      */
     public function find(string $identifier): ?AuthorizationCode
     {
-        return $this->entityManager->find(AuthorizationCode::class, $identifier);
+        return $this->objectManager->find(AuthorizationCode::class, $identifier);
     }
 
     /**
@@ -33,7 +33,7 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
      */
     public function save(AuthorizationCode $authorizationCode): void
     {
-        $this->entityManager->persist($authorizationCode);
-        $this->entityManager->flush();
+        $this->objectManager->persist($authorizationCode);
+        $this->objectManager->flush();
     }
 }

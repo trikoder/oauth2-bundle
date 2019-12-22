@@ -21,6 +21,19 @@ final class GrantOdm extends Type
     private const VALUE_DELIMITER = ' ';
 
     /**
+     * {@inheritdoc}
+     */
+    public function convertToPHPValue($value)
+    {
+        if (null === $value) {
+            return [];
+        }
+
+        $values = explode(self::VALUE_DELIMITER, $value);
+
+        return $this->convertDatabaseValues($values);
+    }
+    /**
      * @param array $values
      *
      * @return array

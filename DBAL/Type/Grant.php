@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\TextType;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant as GrantModel;
+
+use function explode;
 
 final class Grant extends TextType
 {
@@ -27,6 +30,20 @@ final class Grant extends TextType
     public function getName()
     {
         return self::NAME;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        if (null === $value) {
+            return [];
+        }
+
+        $values = explode(self::VALUE_DELIMITER, $value);
+
+        return $this->convertDatabaseValues($values);
     }
 
     /**

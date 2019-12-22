@@ -34,20 +34,6 @@ trait ImplodedArray
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
-    {
-        if (null === $value) {
-            return [];
-        }
-
-        $values = explode(self::VALUE_DELIMITER, $value);
-
-        return $this->convertDatabaseValues($values);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         $fieldDeclaration['length'] = 65535;

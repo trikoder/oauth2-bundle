@@ -7,6 +7,8 @@ namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri as RedirectUriModel;
 
+use function explode;
+
 /**
  * Class RedirectUriOdm
  *
@@ -21,6 +23,20 @@ final class RedirectUriOdm extends Type
      * @var string
      */
     private const VALUE_DELIMITER = ' ';
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToPHPValue($value)
+    {
+        if (null === $value) {
+            return [];
+        }
+
+        $values = explode(self::VALUE_DELIMITER, $value);
+
+        return $this->convertDatabaseValues($values);
+    }
 
     /**
      * {@inheritdoc}

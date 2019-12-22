@@ -3,7 +3,7 @@
                         xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
                             http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
     <document name="Trikoder\Bundle\OAuth2Bundle\Model\Client">
-        <id field-name="identifier" />
+        <id field-name="identifier" strategy="NONE" />
         <field field-name="secret" type="string" />
         <field field-name="redirectUris" type="oauth2_redirect_uri" nullable="true" />
         <field field-name="grants" type="oauth2_grant" nullable="true" />

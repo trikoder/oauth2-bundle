@@ -114,7 +114,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             }
         }
 
-        if (!$container->hasExtension('doctrine') || !$container->hasExtension('doctrine_mongodb')) {
+        if (!$container->hasExtension('doctrine') && !$container->hasExtension('doctrine_mongodb')) {
             throw new LogicException('One of \'doctrine\' or \'doctrine_mongodb\' bundle needs to be enabled in your application kernel.');
         }
     }

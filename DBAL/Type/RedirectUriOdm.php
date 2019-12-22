@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 
-use Doctrine\DBAL\Types\TextType;
-use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
+use Doctrine\ODM\MongoDB\Types\Type;
+use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri as RedirectUriModel;
 
-final class Scope extends TextType
+/**
+ * Class RedirectUriOdm
+ *
+ * @package Trikoder\Bundle\OAuth2Bundle\DBAL\Type
+ */
+final class RedirectUriOdm extends Type
 {
+
     use ImplodedArray;
 
     /**
@@ -17,25 +23,12 @@ final class Scope extends TextType
     private const VALUE_DELIMITER = ' ';
 
     /**
-     * @var string
-     */
-    private const NAME = 'oauth2_scope';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return self::NAME;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function convertDatabaseValues(array $values): array
     {
         foreach ($values as &$value) {
-            $value = new ScopeModel($value);
+            $value = new RedirectUriModel($value);
         }
 
         return $values;

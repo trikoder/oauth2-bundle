@@ -5,16 +5,11 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\TextType;
 use InvalidArgumentException;
 use LogicException;
 
-abstract class ImplodedArray extends TextType
+trait ImplodedArray
 {
-    /**
-     * @var string
-     */
-    private const VALUE_DELIMITER = ' ';
 
     /**
      * {@inheritdoc}

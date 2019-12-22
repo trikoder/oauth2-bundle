@@ -1,14 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 
-use Doctrine\DBAL\Types\TextType;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant as GrantModel;
 
-final class Grant extends TextType
+/**
+ * Class GrantOdm
+ *
+ * @package Trikoder\Bundle\OAuth2Bundle\DBAL\Type
+ */
+final class GrantOdm extends Type
 {
+
     use ImplodedArray;
 
     /**
@@ -17,20 +21,9 @@ final class Grant extends TextType
     private const VALUE_DELIMITER = ' ';
 
     /**
-     * @var string
-     */
-    private const NAME = 'oauth2_grant';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return self::NAME;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @param array $values
+     *
+     * @return array
      */
     protected function convertDatabaseValues(array $values): array
     {

@@ -3,7 +3,7 @@
                         xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
                             http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
     <document name="Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken">
-        <id />
+        <id field-name="identifier" />
         <field field-name="expiry" type="datetime" />
         <field field-name="revoked" type="boolean" />
         <reference-one field="accessToken" target-document="Trikoder\Bundle\OAuth2Bundle\Model\AccessToken" />

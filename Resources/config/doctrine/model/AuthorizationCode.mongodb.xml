@@ -3,7 +3,7 @@
                         xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
                             http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
     <document name="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode">
-        <id />
+        <id field-name="identifier" />
         <field field-name="expiry" type="date" />
         <field field-name="userIdentifier" type="string" nullable="true" />
         <field field-name="scopes" type="oauth2_scope" nullable="true" />

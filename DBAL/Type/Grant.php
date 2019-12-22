@@ -6,12 +6,15 @@ namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\TextType;
+use LogicException;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant as GrantModel;
 
 use function explode;
+use function implode;
 
 final class Grant extends TextType
 {
+
     use ImplodedArray;
 
     /**
@@ -44,6 +47,26 @@ final class Grant extends TextType
         $values = explode(self::VALUE_DELIMITER, $value);
 
         return $this->convertDatabaseValues($values);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        if (!\is_array($value)) {
+            throw new LogicException('This type can only be used in combination with arrays.');
+        }
+
+        if (0 === \count($value)) {
+            return null;
+        }
+
+        foreach ($value as $item) {
+            $this->assertValueCanBeImploded($item);
+        }
+
+        return implode(self::VALUE_DELIMITER, $value);
     }
 
     /**

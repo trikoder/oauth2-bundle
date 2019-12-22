@@ -3,7 +3,10 @@
 namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 
 use Doctrine\ODM\MongoDB\Types\Type;
+use LogicException;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant as GrantModel;
+
+use function implode;
 
 /**
  * Class GrantOdm
@@ -33,6 +36,27 @@ final class GrantOdm extends Type
 
         return $this->convertDatabaseValues($values);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToDatabaseValue($value)
+    {
+        if (!\is_array($value)) {
+            throw new LogicException('This type can only be used in combination with arrays.');
+        }
+
+        if (0 === \count($value)) {
+            return null;
+        }
+
+        foreach ($value as $item) {
+            $this->assertValueCanBeImploded($item);
+        }
+
+        return implode(self::VALUE_DELIMITER, $value);
+    }
+
     /**
      * @param array $values
      *

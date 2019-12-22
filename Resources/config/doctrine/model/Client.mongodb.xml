@@ -5,9 +5,9 @@
     <document name="Trikoder\Bundle\OAuth2Bundle\Model\Client">
         <id field-name="identifier" strategy="NONE" />
         <field field-name="secret" type="string" />
-        <field field-name="redirectUris" type="oauth2_redirect_uri" nullable="true" />
-        <field field-name="grants" type="oauth2_grant" nullable="true" />
-        <field field-name="scopes" type="oauth2_scope" nullable="true" />
+        <field field-name="redirectUris" type="oauth2_redirect_uri" />
+        <field field-name="grants" type="oauth2_grant" />
+        <field field-name="scopes" type="oauth2_scope" />
         <field field-name="active" type="boolean" />
     </document>
 </doctrine-mongo-mapping>

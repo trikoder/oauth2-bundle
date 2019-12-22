@@ -24,15 +24,30 @@ final class TrikoderOAuth2Bundle extends Bundle
      * {@inheritdoc}
      * @throws MappingException
      */
+    public function boot()
+    {
+        parent::boot();
+        if (class_exists(DoctrineMongoDBMappingsPass::class)) {
+            if (!Type::hasType('oauth2_grant')) {
+                Type::addType('oauth2_grant', GrantOdm::class);
+            }
+            if (!Type::hasType('oauth2_redirect_uri')) {
+                Type::addType('oauth2_redirect_uri', RedirectUriOdm::class);
+            }
+            if (!Type::hasType('oauth2_scope')) {
+                Type::addType('oauth2_scope', ScopeOdm::class);
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
 
         if (class_exists(DoctrineMongoDBMappingsPass::class)) {
-            Type::addType('oauth2_grant', GrantOdm::class);
-            Type::addType('oauth2_redirect_uri', RedirectUriOdm::class);
-            Type::addType('oauth2_scope', ScopeOdm::class);
-
             $this->configureDoctrineMongoExtension($container);
         } else {
             $this->configureDoctrineOrmExtension($container);

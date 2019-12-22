@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine;
 
 use DateTime;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Persistence\ObjectManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
@@ -40,6 +41,15 @@ final class AccessTokenManager implements AccessTokenManagerInterface
 
     public function clearExpired(): int
     {
+        if ($this->objectManager instanceof DocumentManager) {
+            return $this->objectManager->createQueryBuilder()
+                ->remove(AccessToken::class)
+                ->field('expiry')->lte(new DateTime())
+                ->getQuery()
+                ->execute()
+                ->getDeletedCount();
+        }
+
         return $this->objectManager->createQueryBuilder()
             ->delete(AccessToken::class, 'at')
             ->where('at.expiry < :expiry')

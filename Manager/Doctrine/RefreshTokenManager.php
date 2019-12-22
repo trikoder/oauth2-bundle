@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine;
 
 use DateTime;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Persistence\ObjectManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
 final class RefreshTokenManager implements RefreshTokenManagerInterface
@@ -40,6 +42,15 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
 
     public function clearExpired(): int
     {
+        if ($this->objectManager instanceof DocumentManager) {
+            return $this->objectManager->createQueryBuilder()
+                ->remove(RefreshToken::class)
+                ->field('expiry')->lte(new DateTime())
+                ->getQuery()
+                ->execute()
+                ->getDeletedCount();
+        }
+
         return $this->objectManager->createQueryBuilder()
             ->delete(RefreshToken::class, 'rt')
             ->where('rt.expiry < :expiry')

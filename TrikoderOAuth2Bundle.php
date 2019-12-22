@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle;
 
+use Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -20,7 +21,11 @@ final class TrikoderOAuth2Bundle extends Bundle
     {
         parent::build($container);
 
-        $this->configureDoctrineExtension($container);
+        if (class_exists(DoctrineMongoDBMappingsPass::class)) {
+            $this->configureDoctrineMongoExtension($container);
+        } else {
+            $this->configureDoctrineOrmExtension($container);
+        }
         $this->configureSecurityExtension($container);
     }
 
@@ -39,10 +44,28 @@ final class TrikoderOAuth2Bundle extends Bundle
         $extension->addSecurityListenerFactory(new OAuth2Factory());
     }
 
-    private function configureDoctrineExtension(ContainerBuilder $container): void
+    private function configureDoctrineOrmExtension(ContainerBuilder $container): void
     {
         $container->addCompilerPass(
             DoctrineOrmMappingsPass::createXmlMappingDriver(
+                [
+                    realpath(__DIR__ . '/Resources/config/doctrine/model') => 'Trikoder\Bundle\OAuth2Bundle\Model',
+                ],
+                [
+                    'trikoder.oauth2.persistence.doctrine.manager',
+                ],
+                'trikoder.oauth2.persistence.doctrine.enabled',
+                [
+                    'TrikoderOAuth2Bundle' => 'Trikoder\Bundle\OAuth2Bundle\Model',
+                ]
+            )
+        );
+    }
+
+    private function configureDoctrineMongoExtension(ContainerBuilder $container): void
+    {
+        $container->addCompilerPass(
+            DoctrineMongoDBMappingsPass::createXmlMappingDriver(
                 [
                     realpath(__DIR__ . '/Resources/config/doctrine/model') => 'Trikoder\Bundle\OAuth2Bundle\Model',
                 ],

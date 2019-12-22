@@ -6,7 +6,6 @@ namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use DateInterval;
 use Defuse\Crypto\Key;
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Grant\AuthCodeGrant;

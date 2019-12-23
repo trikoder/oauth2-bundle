@@ -24,7 +24,7 @@ final class ScopeOdm extends Type
     /**
      * @var string
      */
-    private const VALUE_DELIMITER = ' ';
+    public const VALUE_DELIMITER = ' ';
 
     /**
      * {@inheritdoc}

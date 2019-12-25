@@ -2,7 +2,7 @@
                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                         xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
                             http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
-    <document name="Trikoder\Bundle\OAuth2Bundle\Model\Client">
+    <document name="Trikoder\Bundle\OAuth2Bundle\Model\Client" collection="OAuth2Client">
         <id field-name="identifier" strategy="NONE" />
         <field field-name="secret" type="string" />
         <field field-name="redirectUris" type="oauth2_redirect_uri" />

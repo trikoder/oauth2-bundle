@@ -31,7 +31,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
-use Trikoder\Bundle\OAuth2Bundle\Event\Listener\AuthorizationRequestAuthenticationResolvingListener;
+use Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestAuthenticationResolvingListener;
 use Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestDecisionResolvingListener;
 use Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager;

@@ -134,7 +134,7 @@ class UserConsentDecisionStrategy implements AuthorizationDecisionStrategy
         }
 
         $redirectUri = $this->urlGenerator->generate($this->consentApprovalRoute, $params);
-        return new Response(null, 302, ['Location' => $redirectUri]);
+        return new Response\RedirectResponse($redirectUri);
     }
 
     private function getResponseType(AuthorizationRequestResolveEvent $event): string

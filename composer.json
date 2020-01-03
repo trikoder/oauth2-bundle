@@ -14,6 +14,7 @@
     "require": {
         "php": ">=7.2",
         "doctrine/doctrine-bundle": "^2.0.3",
+        "doctrine/mongodb-odm-bundle": "^4.1",
         "league/oauth2-server": "^7.2",
         "psr/http-factory": "^1.0",
         "sensio/framework-extra-bundle": "^5.5",

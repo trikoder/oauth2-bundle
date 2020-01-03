@@ -241,10 +241,11 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     private function configureDoctrinePersistence(ContainerBuilder $container, array $config): void
     {
         $entityManagerName = $config['entity_manager'];
+        $documentManagerName = $config['document_manager'];
 
         $referenceId = sprintf('doctrine.orm.%s_entity_manager', $entityManagerName);
         if (class_exists(DoctrineMongoDBMappingsPass::class)) {
-            $referenceId = sprintf('doctrine_mongodb.odm.%s_document_manager', $entityManagerName);
+            $referenceId = sprintf('doctrine_mongodb.odm.%s_document_manager', $documentManagerName);
         }
 
         $entityManager = new Reference($referenceId);
@@ -270,7 +271,10 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         ;
 
         $container->setParameter('trikoder.oauth2.persistence.doctrine.enabled', true);
-        $container->setParameter('trikoder.oauth2.persistence.doctrine.manager', $entityManagerName);
+        $container->setParameter(
+            'trikoder.oauth2.persistence.doctrine.manager',
+            class_exists(DoctrineMongoDBMappingsPass::class) ? $documentManagerName : $entityManagerName
+        );
     }
 
     private function configureInMemoryPersistence(ContainerBuilder $container): void

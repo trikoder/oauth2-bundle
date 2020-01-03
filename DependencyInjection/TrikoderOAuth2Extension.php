@@ -46,6 +46,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 {
     /**
      * {@inheritdoc}
+     *
      * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container)

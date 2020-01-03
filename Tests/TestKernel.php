@@ -104,6 +104,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
     /**
      * {@inheritdoc}
+     *
      * @throws LoaderLoadException
      */
     protected function configureRoutes(RouteCollectionBuilder $routes)

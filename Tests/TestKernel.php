@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use LogicException;
 use Nyholm\Psr7\Factory as Nyholm;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
+use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
+use Symfony\Component\Config\Exception\LoaderLoadException;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,6 +30,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Support\SqlitePlatform;
+use Trikoder\Bundle\OAuth2Bundle\TrikoderOAuth2Bundle;
 use Zend\Diactoros as ZendFramework;
 
 final class TestKernel extends Kernel implements CompilerPassInterface
@@ -56,11 +62,11 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     public function registerBundles()
     {
         return [
-            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
-            new \Trikoder\Bundle\OAuth2Bundle\TrikoderOAuth2Bundle(),
+            new DoctrineBundle(),
+            new SensioFrameworkExtraBundle(),
+            new FrameworkBundle(),
+            new SecurityBundle(),
+            new TrikoderOAuth2Bundle(),
         ];
     }
 
@@ -98,6 +104,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
     /**
      * {@inheritdoc}
+     * @throws LoaderLoadException
      */
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
@@ -196,7 +203,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         $container
             ->getDefinition(
-                $container
+                (string)$container
                     ->getAlias(ScopeManagerInterface::class)
                     ->setPublic(true)
             )
@@ -205,7 +212,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string)$container
                     ->getAlias(ClientManagerInterface::class)
                     ->setPublic(true)
             )
@@ -214,7 +221,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string)$container
                     ->getAlias(AccessTokenManagerInterface::class)
                     ->setPublic(true)
             )
@@ -223,7 +230,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string)$container
                     ->getAlias(RefreshTokenManagerInterface::class)
                     ->setPublic(true)
             )
@@ -232,7 +239,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string)$container
                     ->getAlias(AuthorizationCodeManagerInterface::class)
                     ->setPublic(true)
             )

@@ -7,6 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 use DateInterval;
 use Defuse\Crypto\Key;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -16,6 +17,7 @@ use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
 use LogicException;
+use RuntimeException;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\FileLocator;
@@ -39,11 +41,13 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
+use function count;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -130,7 +134,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             $authorizationServer->replaceArgument('$encryptionKey', $config['encryption_key']);
         } elseif ('defuse' === $config['encryption_key_type']) {
             if (!class_exists(Key::class)) {
-                throw new \RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
+                throw new RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
             }
 
             $keyDefinition = (new Definition(Key::class))
@@ -209,9 +213,12 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         ;
     }
 
+    /**
+     * @throws Exception
+     */
     private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config): void
     {
-        if (\count($config) > 1) {
+        if (count($config) > 1) {
             throw new LogicException('Only one persistence method can be configured at a time.');
         }
 
@@ -283,7 +290,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $scopeManager = $container
             ->getDefinition(
-                $container->getAlias(ScopeManagerInterface::class)
+                (string)$container->getAlias(ScopeManagerInterface::class)
             )
         ;
 

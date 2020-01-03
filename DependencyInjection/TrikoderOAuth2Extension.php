@@ -202,6 +202,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $container
             ->getDefinition(AuthCodeGrant::class)
             ->replaceArgument('$authCodeTTL', new Definition(DateInterval::class, [$config['auth_code_ttl']]))
+            ->addMethodCall('disableRequireCodeChallengeForPublicClients') // TODO: Make this grant option configurable
             ->addMethodCall('setRefreshTokenTTL', [
                 new Definition(DateInterval::class, [$config['refresh_token_ttl']]),
             ])

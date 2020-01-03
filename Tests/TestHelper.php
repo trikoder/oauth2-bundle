@@ -79,6 +79,7 @@ final class TestHelper
         $clientEntity->setRedirectUri(array_map('strval', $accessToken->getClient()->getRedirectUris()));
 
         $accessTokenEntity = new AccessTokenEntity();
+        $accessTokenEntity->setPrivateKey(new CryptKey(self::PRIVATE_KEY_PATH, null, false));
         $accessTokenEntity->setIdentifier($accessToken->getIdentifier());
         $accessTokenEntity->setExpiryDateTime($accessToken->getExpiry());
         $accessTokenEntity->setClient($clientEntity);
@@ -91,10 +92,7 @@ final class TestHelper
             $accessTokenEntity->addScope($scopeEntity);
         }
 
-        $privateKey = new CryptKey(self::PRIVATE_KEY_PATH, null, false);
-        $accessTokenEntity->setPrivateKey($privateKey);
-
-        return (string)$accessTokenEntity;
+        return (string) $accessTokenEntity;
     }
 
     /**

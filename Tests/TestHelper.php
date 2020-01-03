@@ -48,7 +48,7 @@ final class TestHelper
     {
         $uris = $authCode->getClient()->getRedirectUris();
         $uri = null;
-        if (count($uris) > 0) {
+        if (\count($uris) > 0) {
             $uri = $uris[0];
         } else {
             $uri = new RedirectUri('http://localhost/');
@@ -96,9 +96,6 @@ final class TestHelper
     }
 
     /**
-     * @param Application $application
-     * @param array $arguments
-     * @return bool
      * @throws Exception
      */
     public static function initializeDoctrineSchema(Application $application, array $arguments = []): bool

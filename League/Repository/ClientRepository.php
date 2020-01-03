@@ -8,7 +8,6 @@ use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Client as ClientEntity;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client as ClientModel;
-use function in_array;
 
 final class ClientRepository implements ClientRepositoryInterface
 {
@@ -87,6 +86,6 @@ final class ClientRepository implements ClientRepositoryInterface
             return true;
         }
 
-        return in_array($grant, $client->getGrants(), true);
+        return \in_array($grant, $client->getGrants(), true);
     }
 }

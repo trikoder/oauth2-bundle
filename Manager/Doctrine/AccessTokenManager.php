@@ -28,6 +28,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
     {
         /** @var AccessToken $accessToken */
         $accessToken = $this->entityManager->find(AccessToken::class, $identifier);
+
         return $accessToken;
     }
 

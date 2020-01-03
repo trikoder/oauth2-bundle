@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTimeImmutable;
+use Nyholm\Psr7\Response;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
@@ -12,9 +13,8 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
-use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 //use Zend\Diactoros\Response;
-use Nyholm\Psr7\Response;
+use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 
 final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 {

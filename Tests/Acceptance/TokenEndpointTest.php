@@ -20,7 +20,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
-        /** @var  ScopeManagerInterface $scopeManager */
+        /** @var ScopeManagerInterface $scopeManager */
         $scopeManager = $this->client->getContainer()->get(ScopeManagerInterface::class);
         /** @var ClientManagerInterface $clientManager */
         $clientManager = $this->client->getContainer()->get(ClientManagerInterface::class);

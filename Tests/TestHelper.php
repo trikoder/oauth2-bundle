@@ -47,7 +47,7 @@ final class TestHelper
     {
         $uris = $authCode->getClient()->getRedirectUris();
         $uri = null;
-        if (count($uris) > 0) {
+        if (\count($uris) > 0) {
             $uri = $uris[0];
         } else {
             $uri = new RedirectUri('http://localhost/');

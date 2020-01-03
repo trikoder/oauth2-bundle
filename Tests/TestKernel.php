@@ -203,7 +203,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         $container
             ->getDefinition(
-                (string)$container
+                (string) $container
                     ->getAlias(ScopeManagerInterface::class)
                     ->setPublic(true)
             )
@@ -212,7 +212,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                (string)$container
+                (string) $container
                     ->getAlias(ClientManagerInterface::class)
                     ->setPublic(true)
             )
@@ -221,7 +221,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                (string)$container
+                (string) $container
                     ->getAlias(AccessTokenManagerInterface::class)
                     ->setPublic(true)
             )
@@ -230,7 +230,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                (string)$container
+                (string) $container
                     ->getAlias(RefreshTokenManagerInterface::class)
                     ->setPublic(true)
             )
@@ -239,7 +239,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                (string)$container
+                (string) $container
                     ->getAlias(AuthorizationCodeManagerInterface::class)
                     ->setPublic(true)
             )

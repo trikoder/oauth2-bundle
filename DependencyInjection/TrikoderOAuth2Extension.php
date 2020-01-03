@@ -41,7 +41,6 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
-use function count;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
@@ -218,7 +217,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
      */
     private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config): void
     {
-        if (count($config) > 1) {
+        if (\count($config) > 1) {
             throw new LogicException('Only one persistence method can be configured at a time.');
         }
 
@@ -290,7 +289,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $scopeManager = $container
             ->getDefinition(
-                (string)$container->getAlias(ScopeManagerInterface::class)
+                (string) $container->getAlias(ScopeManagerInterface::class)
             )
         ;
 

@@ -57,6 +57,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         return [
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
@@ -183,6 +184,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
             'persistence' => [
                 'doctrine' => [
                     'entity_manager' => 'default',
+                    'document_manager' => 'default',
                 ],
             ],
         ]);

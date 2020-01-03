@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTime;
+use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
@@ -20,18 +20,28 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
+        /** @var  ScopeManagerInterface $scopeManager */
+        $scopeManager = $this->client->getContainer()->get(ScopeManagerInterface::class);
+        /** @var ClientManagerInterface $clientManager */
+        $clientManager = $this->client->getContainer()->get(ClientManagerInterface::class);
+        /** @var AccessTokenManagerInterface $accessTokenManager */
+        $accessTokenManager = $this->client->getContainer()->get(AccessTokenManagerInterface::class);
+        /** @var RefreshTokenManagerInterface $refreshTokenManager */
+        $refreshTokenManager = $this->client->getContainer()->get(RefreshTokenManagerInterface::class);
+        /** @var AuthorizationCodeManagerInterface $authCodeManager */
+        $authCodeManager = $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class);
         FixtureFactory::initializeFixtures(
-            $this->client->getContainer()->get(ScopeManagerInterface::class),
-            $this->client->getContainer()->get(ClientManagerInterface::class),
-            $this->client->getContainer()->get(AccessTokenManagerInterface::class),
-            $this->client->getContainer()->get(RefreshTokenManagerInterface::class),
-            $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class)
+            $scopeManager,
+            $clientManager,
+            $accessTokenManager,
+            $refreshTokenManager,
+            $authCodeManager
         );
     }
 
     public function testSuccessfulClientCredentialsRequest(): void
     {
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $this->client->request('POST', '/token', [
@@ -64,7 +74,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 $event->setUser(FixtureFactory::createUser());
             });
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $this->client->request('POST', '/token', [
@@ -98,7 +108,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(RefreshTokenManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_REFRESH_TOKEN);
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $this->client->request('POST', '/token', [
@@ -131,7 +141,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(AuthorizationCodeManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_AUTH_CODE);
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $this->client->request('POST', '/token', [

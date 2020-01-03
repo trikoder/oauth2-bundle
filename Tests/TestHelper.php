@@ -6,6 +6,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Tests;
 
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
+use Exception;
 use League\OAuth2\Server\CryptKey;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -90,11 +91,18 @@ final class TestHelper
             $accessTokenEntity->addScope($scopeEntity);
         }
 
-        return (string) $accessTokenEntity->convertToJWT(
-            new CryptKey(self::PRIVATE_KEY_PATH, null, false)
-        );
+        $privateKey = new CryptKey(self::PRIVATE_KEY_PATH, null, false);
+        $accessTokenEntity->setPrivateKey($privateKey);
+
+        return (string)$accessTokenEntity;
     }
 
+    /**
+     * @param Application $application
+     * @param array $arguments
+     * @return bool
+     * @throws Exception
+     */
     public static function initializeDoctrineSchema(Application $application, array $arguments = []): bool
     {
         $statusCode = $application

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\InMemory;
 
-use DateTime;
+use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
+use function count;
 
 final class RefreshTokenManager implements RefreshTokenManagerInterface
 {
@@ -33,13 +34,13 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
 
     public function clearExpired(): int
     {
-        $count = \count($this->refreshTokens);
+        $count = count($this->refreshTokens);
 
-        $now = new DateTime();
+        $now = new DateTimeImmutable();
         $this->refreshTokens = array_filter($this->refreshTokens, function (RefreshToken $refreshToken) use ($now): bool {
             return $refreshToken->getExpiry() >= $now;
         });
 
-        return $count - \count($this->refreshTokens);
+        return $count - count($this->refreshTokens);
     }
 }

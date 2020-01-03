@@ -31,7 +31,6 @@ use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Support\SqlitePlatform;
 use Trikoder\Bundle\OAuth2Bundle\TrikoderOAuth2Bundle;
-use Zend\Diactoros as ZendFramework;
 
 final class TestKernel extends Kernel implements CompilerPassInterface
 {
@@ -251,10 +250,11 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         switch ($this->psrHttpProvider) {
             case self::PSR_HTTP_PROVIDER_ZENDFRAMEWORK:
-                $serverRequestFactory = ZendFramework\ServerRequestFactory::class;
-                $streamFactory = ZendFramework\StreamFactory::class;
-                $uploadedFileFactory = ZendFramework\UploadedFileFactory::class;
-                $responseFactory = ZendFramework\ResponseFactory::class;
+//                $serverRequestFactory = ZendFramework\ServerRequestFactory::class;
+//                $streamFactory = ZendFramework\StreamFactory::class;
+//                $uploadedFileFactory = ZendFramework\UploadedFileFactory::class;
+//                $responseFactory = ZendFramework\ResponseFactory::class;
+                throw new LogicException('use nyholm/psr7 in place of zend-diactoros');
                 break;
             case self::PSR_HTTP_PROVIDER_NYHOLM:
                 $serverRequestFactory = Nyholm\Psr17Factory::class;

@@ -104,6 +104,9 @@ This package is currently in the active development.
 
                 # Name of the entity manager that you wish to use for managing clients and tokens.
                 entity_manager:       default
+
+                # Name of the document manager that you wish to use for managing clients and tokens.
+                document_manager:       default
             in_memory:            ~
 
         # The priority of the event listener that converts an Exception to a Response
@@ -119,11 +122,17 @@ This package is currently in the active development.
     Trikoder\Bundle\OAuth2Bundle\TrikoderOAuth2Bundle::class => ['all' => true]
     ```
 
-1. Update the database so bundle entities can be persisted using Doctrine:
+1. Update the database so bundle models can be persisted using Doctrine:
 
     ```sh
     bin/console doctrine:schema:update --force
     ```
+   > For Doctrine ORM (entities)
+
+    ```sh
+    bin/console doctrine:mongodb:schema:update
+   ```
+   > For Doctrine ODM (documents)
 
 1. Import the routes inside your `config/routes.yaml` file:
 

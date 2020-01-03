@@ -89,12 +89,4 @@ final class ClientRepository implements ClientRepositoryInterface
 
         return in_array($grant, $client->getGrants(), true);
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function validateClient($clientIdentifier, $clientSecret, $grantType)
-    {
-        // TODO: Implement validateClient() method.
-    }
 }

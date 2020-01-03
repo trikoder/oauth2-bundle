@@ -79,13 +79,13 @@ final class ScopeRepository implements ScopeRepositoryInterface
         $scopes = $this->setupScopes($client, $this->scopeConverter->toDomainArray($scopes));
 
         $event = $this->eventDispatcher->dispatch(
-            OAuth2Events::SCOPE_RESOLVE,
             new ScopeResolveEvent(
                 $scopes,
                 new GrantModel($grantType),
                 $client,
                 $userIdentifier
-            )
+            ),
+            OAuth2Events::SCOPE_RESOLVE
         );
 
         return $this->scopeConverter->toLeagueArray($event->getScopes());

@@ -141,7 +141,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
         $container->loadFromExtension('doctrine_mongodb', [
             'connections' => [
                 'default' => [
-                    'server' => 'mongodb://test:test@db:27017'
+                    'server' => 'mongodb://test:test@mongo:27017'
                 ],
             ],
             'document_managers' => [

@@ -13,9 +13,8 @@
     ],
     "require": {
         "php": ">=7.2",
-        "doctrine/data-fixtures": "^1.4",
-        "doctrine/doctrine-bundle": "^2.0",
-        "doctrine/orm": "^2.7",
+        "doctrine/doctrine-bundle": "^1.8|^2.0",
+        "doctrine/orm": "^2.7|^3.0",
         "league/oauth2-server": "^8.0",
         "psr/http-factory": "^1.0",
         "sensio/framework-extra-bundle": "^5.5",
@@ -25,7 +24,8 @@
         "symfony/psr-http-message-bridge": "^2.0",
         "symfony/security-bundle": "^5.0",
         "symfony/validator": "^5.0",
-        "symfony/web-profiler-bundle": "^5.0"
+        "symfony/web-profiler-bundle": "^5.0",
+        "symfony/framework-bundle": "^4.4|^5.0.2"
     },
     "require-dev": {
         "ext-timecop": "*",
@@ -36,7 +36,6 @@
         "phpunit/phpunit": "^8.5",
         "roave/security-advisories": "dev-master",
         "symfony/browser-kit": "^5.0",
-        "symfony/framework-bundle": "^5.0.2",
         "symfony/phpunit-bridge": "^5.0"
     },
     "autoload": {
@@ -62,7 +61,7 @@
             "dev-master": "3.x-dev"
         },
         "symfony": {
-            "require": "5.0.*"
+            "require": "4.4.*"
         }
     }
 }

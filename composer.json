@@ -18,13 +18,8 @@
         "league/oauth2-server": "^8.0",
         "psr/http-factory": "^1.0",
         "sensio/framework-extra-bundle": "^5.5",
-        "symfony/expression-language": "^5.0",
-        "symfony/form": "^5.0",
-        "symfony/property-info": "^5.0",
         "symfony/psr-http-message-bridge": "^2.0",
-        "symfony/security-bundle": "^5.0",
-        "symfony/validator": "^5.0",
-        "symfony/web-profiler-bundle": "^5.0",
+        "symfony/security-bundle": "^4.4|^5.0",
         "symfony/framework-bundle": "^4.4|^5.0.2"
     },
     "require-dev": {

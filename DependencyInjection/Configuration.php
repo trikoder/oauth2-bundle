@@ -161,6 +161,11 @@ final class Configuration implements ConfigurationInterface
                             ->cannotBeEmpty()
                             ->defaultValue('default')
                         ->end()
+                        ->scalarNode('document_manager')
+                            ->info('Name of the document manager that you wish to use for managing clients and tokens.')
+                            ->cannotBeEmpty()
+                            ->defaultValue('default')
+                        ->end()
                     ->end()
                 ->end()
                 // In-memory persistence

@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Laminas\Diactoros\ResponseFactory;
+use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\StreamFactory;
+use Laminas\Diactoros\UploadedFileFactory;
 use LogicException;
 use Nyholm\Psr7\Factory as Nyholm;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -251,11 +255,10 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         switch ($this->psrHttpProvider) {
             case self::PSR_HTTP_PROVIDER_ZENDFRAMEWORK:
-//                $serverRequestFactory = ZendFramework\ServerRequestFactory::class;
-//                $streamFactory = ZendFramework\StreamFactory::class;
-//                $uploadedFileFactory = ZendFramework\UploadedFileFactory::class;
-//                $responseFactory = ZendFramework\ResponseFactory::class;
-                throw new LogicException('use nyholm/psr7 in place of zend-diactoros');
+                $serverRequestFactory = ServerRequestFactory::class;
+                $streamFactory = StreamFactory::class;
+                $uploadedFileFactory = UploadedFileFactory::class;
+                $responseFactory = ResponseFactory::class;
                 break;
             case self::PSR_HTTP_PROVIDER_NYHOLM:
                 $serverRequestFactory = Nyholm\Psr17Factory::class;

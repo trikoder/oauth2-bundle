@@ -18,7 +18,7 @@
         "league/oauth2-server": "^8.0",
         "psr/http-factory": "^1.0",
         "sensio/framework-extra-bundle": "^5.5",
-        "symfony/psr-http-message-bridge": "^2.0",
+        "symfony/psr-http-message-bridge": "^1.3",
         "symfony/security-bundle": "^4.4|^5.0",
         "symfony/framework-bundle": "^4.4|^5.0.2"
     },
@@ -56,7 +56,7 @@
             "dev-master": "3.x-dev"
         },
         "symfony": {
-            "require": "4.4.*|5.0.*"
+            "require": "5.0.*"
         }
     }
 }

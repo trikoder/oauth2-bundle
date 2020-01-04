@@ -6,7 +6,6 @@ namespace Trikoder\Bundle\OAuth2Bundle;
 
 use Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
-use Doctrine\ODM\MongoDB\Mapping\MappingException;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,22 +20,14 @@ final class TrikoderOAuth2Bundle extends Bundle
 {
 
     /**
-     * {@inheritdoc}
-     * @throws MappingException
+     * TrikoderOAuth2Bundle constructor.
      */
-    public function boot()
+    public function __construct()
     {
-        parent::boot();
         if (class_exists(DoctrineMongoDBMappingsPass::class)) {
-            if (!Type::hasType('oauth2_grant')) {
-                Type::addType('oauth2_grant', GrantOdm::class);
-            }
-            if (!Type::hasType('oauth2_redirect_uri')) {
-                Type::addType('oauth2_redirect_uri', RedirectUriOdm::class);
-            }
-            if (!Type::hasType('oauth2_scope')) {
-                Type::addType('oauth2_scope', ScopeOdm::class);
-            }
+            Type::registerType('oauth2_grant', GrantOdm::class);
+            Type::registerType('oauth2_redirect_uri', RedirectUriOdm::class);
+            Type::registerType('oauth2_scope', ScopeOdm::class);
         }
     }
 

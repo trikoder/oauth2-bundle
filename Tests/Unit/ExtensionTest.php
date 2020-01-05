@@ -80,7 +80,7 @@ final class ExtensionTest extends TestCase
                 ],
                 //Pick one for valid config:
                 //'persistence' => ['doctrine' => []]
-                'persistence' => ['in_memory' => 1]
+                'persistence' => ['in_memory' => 1],
             ],
         ];
     }

@@ -1,18 +1,19 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\TextType;
+use Doctrine\ODM\MongoDB\Types\Type;
 use LogicException;
-use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri as RedirectUriModel;
+use Trikoder\Bundle\OAuth2Bundle\Model\Grant as GrantModel;
 
-use function explode;
 use function implode;
 
-final class RedirectUri extends TextType
+/**
+ * Class GrantOdm
+ *
+ * @package Trikoder\Bundle\OAuth2Bundle\DBAL\Type
+ */
+final class GrantOdm extends Type
 {
 
     use ImplodedArray;
@@ -20,25 +21,12 @@ final class RedirectUri extends TextType
     /**
      * @var string
      */
-    private const VALUE_DELIMITER = ' ';
-
-    /**
-     * @var string
-     */
-    private const NAME = 'oauth2_redirect_uri';
+    public const VALUE_DELIMITER = ' ';
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return self::NAME;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value)
     {
         if (null === $value) {
             return [];
@@ -52,7 +40,15 @@ final class RedirectUri extends TextType
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function closureToPHP(): string
+    {
+        return '$return = explode(\Trikoder\Bundle\OAuth2Bundle\DBAL\Type\GrantOdm::VALUE_DELIMITER, $value);';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToDatabaseValue($value)
     {
         if (!\is_array($value)) {
             throw new LogicException('This type can only be used in combination with arrays.');
@@ -70,12 +66,14 @@ final class RedirectUri extends TextType
     }
 
     /**
-     * {@inheritdoc}
+     * @param array $values
+     *
+     * @return array
      */
     protected function convertDatabaseValues(array $values): array
     {
         foreach ($values as &$value) {
-            $value = new RedirectUriModel($value);
+            $value = new GrantModel($value);
         }
 
         return $values;

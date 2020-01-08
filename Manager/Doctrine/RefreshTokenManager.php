@@ -5,20 +5,22 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine;
 
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\Persistence\ObjectManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
 final class RefreshTokenManager implements RefreshTokenManagerInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var ObjectManager
      */
-    private $entityManager;
+    private $objectManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(ObjectManager $objectManager)
     {
-        $this->entityManager = $entityManager;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -26,7 +28,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
      */
     public function find(string $identifier): ?RefreshToken
     {
-        return $this->entityManager->find(RefreshToken::class, $identifier);
+        return $this->objectManager->find(RefreshToken::class, $identifier);
     }
 
     /**
@@ -34,13 +36,22 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
      */
     public function save(RefreshToken $refreshToken): void
     {
-        $this->entityManager->persist($refreshToken);
-        $this->entityManager->flush();
+        $this->objectManager->persist($refreshToken);
+        $this->objectManager->flush();
     }
 
     public function clearExpired(): int
     {
-        return $this->entityManager->createQueryBuilder()
+        if ($this->objectManager instanceof DocumentManager) {
+            return $this->objectManager->createQueryBuilder()
+                ->remove(RefreshToken::class)
+                ->field('expiry')->lte(new DateTime())
+                ->getQuery()
+                ->execute()
+                ->getDeletedCount();
+        }
+
+        return $this->objectManager->createQueryBuilder()
             ->delete(RefreshToken::class, 'rt')
             ->where('rt.expiry < :expiry')
             ->setParameter('expiry', new DateTime())

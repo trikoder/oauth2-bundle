@@ -6,7 +6,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use DateInterval;
 use Defuse\Crypto\Key;
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -39,6 +39,9 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
+
+use function class_exists;
+use function sprintf;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
@@ -81,16 +84,18 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
      */
     public function prepend(ContainerBuilder $container)
     {
-        $container->prependExtensionConfig('doctrine', [
-            'dbal' => [
-                'connections' => null,
-                'types' => [
-                    'oauth2_grant' => GrantType::class,
-                    'oauth2_redirect_uri' => RedirectUriType::class,
-                    'oauth2_scope' => ScopeType::class,
+        if ($container->hasExtension('doctrine')) {
+            $container->prependExtensionConfig('doctrine', [
+                'dbal' => [
+                    'connections' => null,
+                    'types' => [
+                        'oauth2_grant' => GrantType::class,
+                        'oauth2_redirect_uri' => RedirectUriType::class,
+                        'oauth2_scope' => ScopeType::class,
+                    ],
                 ],
-            ],
-        ]);
+            ]);
+        }
     }
 
     /**
@@ -104,7 +109,6 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     private function assertRequiredBundlesAreEnabled(ContainerBuilder $container): void
     {
         $requiredBundles = [
-            'doctrine' => DoctrineBundle::class,
             'security' => SecurityBundle::class,
             'sensio_framework_extra' => SensioFrameworkExtraBundle::class,
         ];
@@ -113,6 +117,10 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             if (!$container->hasExtension($bundleAlias)) {
                 throw new LogicException(sprintf('Bundle \'%s\' needs to be enabled in your application kernel.', $requiredBundle));
             }
+        }
+
+        if (!$container->hasExtension('doctrine') && !$container->hasExtension('doctrine_mongodb')) {
+            throw new LogicException('One of \'doctrine\' or \'doctrine_mongodb\' bundle needs to be enabled in your application kernel.');
         }
     }
 
@@ -233,33 +241,40 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     private function configureDoctrinePersistence(ContainerBuilder $container, array $config): void
     {
         $entityManagerName = $config['entity_manager'];
+        $documentManagerName = $config['document_manager'];
 
-        $entityManager = new Reference(
-            sprintf('doctrine.orm.%s_entity_manager', $entityManagerName)
-        );
+        $referenceId = sprintf('doctrine.orm.%s_entity_manager', $entityManagerName);
+        if (class_exists(DoctrineMongoDBMappingsPass::class)) {
+            $referenceId = sprintf('doctrine_mongodb.odm.%s_document_manager', $documentManagerName);
+        }
+
+        $entityManager = new Reference($referenceId);
 
         $container
             ->getDefinition(AccessTokenManager::class)
-            ->replaceArgument('$entityManager', $entityManager)
+            ->replaceArgument('$objectManager', $entityManager)
         ;
 
         $container
             ->getDefinition(ClientManager::class)
-            ->replaceArgument('$entityManager', $entityManager)
+            ->replaceArgument('$objectManager', $entityManager)
         ;
 
         $container
             ->getDefinition(RefreshTokenManager::class)
-            ->replaceArgument('$entityManager', $entityManager)
+            ->replaceArgument('$objectManager', $entityManager)
         ;
 
         $container
             ->getDefinition(AuthorizationCodeManager::class)
-            ->replaceArgument('$entityManager', $entityManager)
+            ->replaceArgument('$objectManager', $entityManager)
         ;
 
         $container->setParameter('trikoder.oauth2.persistence.doctrine.enabled', true);
-        $container->setParameter('trikoder.oauth2.persistence.doctrine.manager', $entityManagerName);
+        $container->setParameter(
+            'trikoder.oauth2.persistence.doctrine.manager',
+            class_exists(DoctrineMongoDBMappingsPass::class) ? $documentManagerName : $entityManagerName
+        );
     }
 
     private function configureInMemoryPersistence(ContainerBuilder $container): void
@@ -283,7 +298,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $scopeManager = $container
             ->getDefinition(
-                $container->getAlias(ScopeManagerInterface::class)
+                $container->getAlias(ScopeManagerInterface::class)->__toString()
             )
         ;
 

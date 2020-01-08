@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine;
 
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\Persistence\ObjectManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 
 final class AccessTokenManager implements AccessTokenManagerInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var ObjectManager
      */
-    private $entityManager;
+    private $objectManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(ObjectManager $objectManager)
     {
-        $this->entityManager = $entityManager;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -26,7 +27,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
      */
     public function find(string $identifier): ?AccessToken
     {
-        return $this->entityManager->find(AccessToken::class, $identifier);
+        return $this->objectManager->find(AccessToken::class, $identifier);
     }
 
     /**
@@ -34,13 +35,22 @@ final class AccessTokenManager implements AccessTokenManagerInterface
      */
     public function save(AccessToken $accessToken): void
     {
-        $this->entityManager->persist($accessToken);
-        $this->entityManager->flush();
+        $this->objectManager->persist($accessToken);
+        $this->objectManager->flush();
     }
 
     public function clearExpired(): int
     {
-        return $this->entityManager->createQueryBuilder()
+        if ($this->objectManager instanceof DocumentManager) {
+            return $this->objectManager->createQueryBuilder()
+                ->remove(AccessToken::class)
+                ->field('expiry')->lte(new DateTime())
+                ->getQuery()
+                ->execute()
+                ->getDeletedCount();
+        }
+
+        return $this->objectManager->createQueryBuilder()
             ->delete(AccessToken::class, 'at')
             ->where('at.expiry < :expiry')
             ->setParameter('expiry', new DateTime())

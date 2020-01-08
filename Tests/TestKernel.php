@@ -57,6 +57,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         return [
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
@@ -137,6 +138,19 @@ final class TestKernel extends Kernel implements CompilerPassInterface
             'orm' => null,
         ]);
 
+        $container->loadFromExtension('doctrine_mongodb', [
+            'connections' => [
+                'default' => [
+                    'server' => 'mongodb://test:test@mongo:27017'
+                ],
+            ],
+            'document_managers' => [
+                'default' => [
+                    'auto_mapping' => true,
+                ],
+            ],
+        ]);
+
         $container->loadFromExtension('framework', [
             'secret' => 'nope',
             'test' => null,
@@ -183,6 +197,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
             'persistence' => [
                 'doctrine' => [
                     'entity_manager' => 'default',
+                    'document_manager' => 'default',
                 ],
             ],
         ]);
@@ -199,6 +214,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(ScopeManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;
@@ -208,6 +224,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(ClientManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;
@@ -217,6 +234,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(AccessTokenManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;
@@ -226,6 +244,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(RefreshTokenManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;
@@ -235,6 +254,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $container
                     ->getAlias(AuthorizationCodeManagerInterface::class)
                     ->setPublic(true)
+                    ->__toString()
             )
             ->setPublic(true)
         ;

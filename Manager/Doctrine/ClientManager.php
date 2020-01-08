@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientFilter;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
@@ -12,13 +12,13 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 final class ClientManager implements ClientManagerInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var ObjectManager
      */
-    private $entityManager;
+    private $objectManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(ObjectManager $objectManager)
     {
-        $this->entityManager = $entityManager;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -26,7 +26,7 @@ final class ClientManager implements ClientManagerInterface
      */
     public function find(string $identifier): ?Client
     {
-        return $this->entityManager->find(Client::class, $identifier);
+        return $this->objectManager->find(Client::class, $identifier);
     }
 
     /**
@@ -34,8 +34,8 @@ final class ClientManager implements ClientManagerInterface
      */
     public function save(Client $client): void
     {
-        $this->entityManager->persist($client);
-        $this->entityManager->flush();
+        $this->objectManager->persist($client);
+        $this->objectManager->flush();
     }
 
     /**
@@ -43,8 +43,8 @@ final class ClientManager implements ClientManagerInterface
      */
     public function remove(Client $client): void
     {
-        $this->entityManager->remove($client);
-        $this->entityManager->flush();
+        $this->objectManager->remove($client);
+        $this->objectManager->flush();
     }
 
     /**
@@ -52,7 +52,7 @@ final class ClientManager implements ClientManagerInterface
      */
     public function list(?ClientFilter $clientFilter): array
     {
-        $repository = $this->entityManager->getRepository(Client::class);
+        $repository = $this->objectManager->getRepository(Client::class);
         $criteria = self::filterToCriteria($clientFilter);
 
         return $repository->findBy($criteria);

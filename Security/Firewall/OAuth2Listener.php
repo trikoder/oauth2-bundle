@@ -6,17 +6,16 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedException;
 
-final class OAuth2Listener implements ListenerInterface
+final class OAuth2Listener
 {
     /**
      * @var TokenStorageInterface
@@ -50,15 +49,7 @@ final class OAuth2Listener implements ListenerInterface
         $this->oauth2TokenFactory = $oauth2TokenFactory;
     }
 
-    /**
-     * BC layer for Symfony < 4.3
-     */
-    public function handle(GetResponseEvent $event)
-    {
-        $this->__invoke($event);
-    }
-
-    public function __invoke(GetResponseEvent $event)
+    public function __invoke(RequestEvent $event)
     {
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
 

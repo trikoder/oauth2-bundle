@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager as DoctrineClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
@@ -19,18 +19,18 @@ final class DoctrineClientManagerTest extends AbstractAcceptanceTest
 {
     public function testSimpleDelete(): void
     {
-        /** @var $em EntityManagerInterface */
-        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $doctrineClientManager = new DoctrineClientManager($em);
+        /** @var $objectManager ObjectManager */
+        $objectManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $doctrineClientManager = new DoctrineClientManager($objectManager);
 
         $client = new Client('client', 'secret');
-        $em->persist($client);
-        $em->flush();
+        $objectManager->persist($client);
+        $objectManager->flush();
 
         $doctrineClientManager->remove($client);
 
         $this->assertNull(
-            $em
+            $objectManager
                 ->getRepository(Client::class)
                 ->find($client->getIdentifier())
         );
@@ -38,32 +38,32 @@ final class DoctrineClientManagerTest extends AbstractAcceptanceTest
 
     public function testClientDeleteCascadesToAccessTokens(): void
     {
-        /** @var $em EntityManagerInterface */
-        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $doctrineClientManager = new DoctrineClientManager($em);
+        /** @var $objectManager ObjectManager */
+        $objectManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $doctrineClientManager = new DoctrineClientManager($objectManager);
 
         $client = new Client('client', 'secret');
-        $em->persist($client);
-        $em->flush();
+        $objectManager->persist($client);
+        $objectManager->flush();
 
         $accessToken = new AccessToken('access token', (new DateTime())->modify('+1 day'), $client, $client->getIdentifier(), []);
-        $em->persist($accessToken);
-        $em->flush();
+        $objectManager->persist($accessToken);
+        $objectManager->flush();
 
         $doctrineClientManager->remove($client);
 
         $this->assertNull(
-            $em
+            $objectManager
                 ->getRepository(Client::class)
                 ->find($client->getIdentifier())
         );
 
         // The entity manager has to be cleared manually
         // because it doesn't process deep integrity constraints
-        $em->clear();
+        $objectManager->clear();
 
         $this->assertNull(
-            $em
+            $objectManager
                 ->getRepository(AccessToken::class)
                 ->find($accessToken->getIdentifier())
         );
@@ -71,42 +71,42 @@ final class DoctrineClientManagerTest extends AbstractAcceptanceTest
 
     public function testClientDeleteCascadesToAccessTokensAndRefreshTokens(): void
     {
-        /** @var $em EntityManagerInterface */
-        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $doctrineClientManager = new DoctrineClientManager($em);
+        /** @var $objectManager ObjectManager */
+        $objectManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $doctrineClientManager = new DoctrineClientManager($objectManager);
 
         $client = new Client('client', 'secret');
-        $em->persist($client);
-        $em->flush();
+        $objectManager->persist($client);
+        $objectManager->flush();
 
         $accessToken = new AccessToken('access token', (new DateTime())->modify('+1 day'), $client, $client->getIdentifier(), []);
-        $em->persist($accessToken);
-        $em->flush();
+        $objectManager->persist($accessToken);
+        $objectManager->flush();
 
         $refreshToken = new RefreshToken('refresh token', (new DateTime())->modify('+1 day'), $accessToken);
-        $em->persist($refreshToken);
-        $em->flush();
+        $objectManager->persist($refreshToken);
+        $objectManager->flush();
 
         $doctrineClientManager->remove($client);
 
         $this->assertNull(
-            $em
+            $objectManager
                 ->getRepository(Client::class)
                 ->find($client->getIdentifier())
         );
 
         // The entity manager has to be cleared manually
         // because it doesn't process deep integrity constraints
-        $em->clear();
+        $objectManager->clear();
 
         $this->assertNull(
-            $em
+            $objectManager
                 ->getRepository(AccessToken::class)
                 ->find($accessToken->getIdentifier())
         );
 
         /** @var $refreshToken RefreshToken */
-        $refreshToken = $em
+        $refreshToken = $objectManager
             ->getRepository(RefreshToken::class)
             ->find($refreshToken->getIdentifier())
         ;

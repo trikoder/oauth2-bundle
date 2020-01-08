@@ -1,0 +1,11 @@
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
+                            http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+    <document name="Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken" collection="OAuth2RefreshToken">
+        <id field-name="identifier" strategy="NONE" />
+        <field field-name="expiry" type="date" />
+        <field field-name="revoked" type="boolean" />
+        <reference-one field="accessToken" target-document="Trikoder\Bundle\OAuth2Bundle\Model\AccessToken" />
+    </document>
+</doctrine-mongo-mapping>

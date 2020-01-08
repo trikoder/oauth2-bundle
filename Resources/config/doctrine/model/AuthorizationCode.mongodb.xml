@@ -1,0 +1,13 @@
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
+                            http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+    <document name="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode" collection="OAuth2AuthorizationCode">
+        <id field-name="identifier" strategy="NONE" />
+        <field field-name="expiry" type="date" />
+        <field field-name="userIdentifier" type="string" nullable="true" />
+        <field field-name="scopes" type="oauth2_scope" nullable="true" />
+        <field field-name="revoked" type="boolean" />
+        <reference-one field="client" target-document="Trikoder\Bundle\OAuth2Bundle\Model\Client" />
+    </document>
+</doctrine-mongo-mapping>

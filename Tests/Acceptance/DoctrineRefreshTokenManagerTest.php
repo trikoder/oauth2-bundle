@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTime;
+use Doctrine\Persistence\ObjectManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager as DoctrineRefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
@@ -16,15 +17,25 @@ use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
  */
 final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
 {
-    public function testClearExpired(): void
+    public function testClearExpiredORM(): void
     {
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $this->clearExpired($em);
+    }
 
-        $doctrineRefreshTokenManager = new DoctrineRefreshTokenManager($em);
+    public function testClearExpiredODM(): void
+    {
+        $dm = $this->client->getContainer()->get('doctrine_mongodb.odm.document_manager');
+        $this->clearExpired($dm);
+    }
+
+    private function clearExpired(ObjectManager $objectManager)
+    {
+        $doctrineRefreshTokenManager = new DoctrineRefreshTokenManager($objectManager);
 
         $client = new Client('client', 'secret');
-        $em->persist($client);
-        $em->flush();
+        $objectManager->persist($client);
+        $objectManager->flush();
 
         timecop_freeze(new DateTime());
 
@@ -33,11 +44,11 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
 
             /** @var RefreshToken $token */
             foreach ($testData['input'] as $token) {
-                $em->persist($token->getAccessToken());
+                $objectManager->persist($token->getAccessToken());
                 $doctrineRefreshTokenManager->save($token);
             }
 
-            $em->flush();
+            $objectManager->flush();
 
             $this->assertSame(3, $doctrineRefreshTokenManager->clearExpired());
         } finally {
@@ -46,7 +57,7 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
 
         $this->assertSame(
             $testData['output'],
-            $em->getRepository(RefreshToken::class)->findBy([], ['identifier' => 'ASC'])
+            $objectManager->getRepository(RefreshToken::class)->findBy([], ['identifier' => 'ASC'])
         );
     }
 

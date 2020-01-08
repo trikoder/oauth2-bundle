@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\TextType;
+use Doctrine\ODM\MongoDB\Types\Type;
 use LogicException;
 use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri as RedirectUriModel;
 
 use function explode;
 use function implode;
 
-final class RedirectUri extends TextType
+/**
+ * Class RedirectUriOdm
+ *
+ * @package Trikoder\Bundle\OAuth2Bundle\DBAL\Type
+ */
+final class RedirectUriOdm extends Type
 {
 
     use ImplodedArray;
@@ -20,25 +24,12 @@ final class RedirectUri extends TextType
     /**
      * @var string
      */
-    private const VALUE_DELIMITER = ' ';
-
-    /**
-     * @var string
-     */
-    private const NAME = 'oauth2_redirect_uri';
+    public const VALUE_DELIMITER = ' ';
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return self::NAME;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value)
     {
         if (null === $value) {
             return [];
@@ -52,7 +43,15 @@ final class RedirectUri extends TextType
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function closureToPHP(): string
+    {
+        return '$return = explode(\Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUriOdm::VALUE_DELIMITER, $value);';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToDatabaseValue($value)
     {
         if (!\is_array($value)) {
             throw new LogicException('This type can only be used in combination with arrays.');

@@ -9,3 +9,12 @@ services:
         image: trikoder/oauth2-bundle
         volumes:
             - .:/app/src
+        links:
+            - mongo
+    mongo:
+        environment:
+            - MONGO_INITDB_DATABASE=test
+            - MONGO_INITDB_ROOT_PASSWORD=test
+            - MONGO_INITDB_ROOT_USERNAME=test
+        image: mongo
+

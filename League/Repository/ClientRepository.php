@@ -86,6 +86,6 @@ final class ClientRepository implements ClientRepositoryInterface
             return true;
         }
 
-        return \in_array($grant, $client->getGrants(), true);
+        return \in_array($grant, $client->getGrants());
     }
 }

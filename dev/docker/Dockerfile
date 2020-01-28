@@ -1,7 +1,12 @@
-ARG PHP_VERSION=7.3
+ARG PHP_VERSION=7.4
 
-FROM php:${PHP_VERSION}-cli-alpine3.8
+FROM php:${PHP_VERSION}-cli-alpine3.10
 LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"
+
+ARG COMPOSER_VERSION=1.9.1
+ARG FLEX_VERSION=1.4.8
+ARG TIMECOP_VERSION=1.2.10
+ARG XDEBUG_VERSION=2.8.0
 
 # This is where we're going to store all of our non-project specific binaries
 RUN mkdir -p /app/bin
@@ -17,8 +22,8 @@ RUN apk add --update --no-cache --virtual .build-deps \
         xml \
         zip \
     && pecl install \
-        xdebug-2.7.2 \
-        timecop-beta \
+        xdebug-${XDEBUG_VERSION} \
+        timecop-${TIMECOP_VERSION} \
     && docker-php-ext-enable \
         xdebug \
         timecop \
@@ -41,13 +46,13 @@ RUN apk add --update --no-cache \
 RUN curl --show-error https://getcomposer.org/installer | php -- \
         --install-dir=/app/bin \
         --filename=composer \
-        --version=1.9.1
+        --version=${COMPOSER_VERSION}
 
 # Create the user that's going to run our application
 RUN useradd -ms /bin/sh app
 
 # Enable parallel package installation for Composer
-RUN su-exec app composer global require symfony/flex
+RUN su-exec app composer global require symfony/flex:${FLEX_VERSION}
 
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint
 

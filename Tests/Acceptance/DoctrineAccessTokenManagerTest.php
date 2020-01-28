@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
+namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager as DoctrineAccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
-use Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance\AbstractAcceptanceTest;
 
 /**
- * TODO: This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ * @TODO   This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ * @covers \Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager
  */
 final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
 {

@@ -14,7 +14,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = $this->getWrappedTreeBuilder('trikoder_oauth2');
         $rootNode = $treeBuilder->getRootNode();
@@ -29,6 +29,11 @@ final class Configuration implements ConfigurationInterface
                 ->scalarNode('exception_event_listener_priority')
                     ->info('The priority of the event listener that converts an Exception to a Response')
                     ->defaultValue(10)
+                ->end()
+                ->scalarNode('role_prefix')
+                    ->info('Set a custom prefix that replaces the default \'ROLE_OAUTH2_\' role prefix')
+                    ->defaultValue('ROLE_OAUTH2_')
+                    ->cannotBeEmpty()
                 ->end()
             ->end();
 
@@ -167,7 +172,7 @@ final class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    private function getWrappedTreeBuilder(string $name): object
+    private function getWrappedTreeBuilder(string $name): TreeBuilder
     {
         return new class($name) extends TreeBuilder {
             public function __construct(string $name)

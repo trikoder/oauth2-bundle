@@ -7,7 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\League\Repository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\ScopeResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
@@ -79,8 +79,13 @@ final class ScopeRepository implements ScopeRepositoryInterface
         $scopes = $this->setupScopes($client, $this->scopeConverter->toDomainArray($scopes));
 
         $event = $this->eventDispatcher->dispatch(
-            new ScopeResolveEvent($scopes, new GrantModel($grantType), $client, $userIdentifier),
-            OAuth2Events::SCOPE_RESOLVE
+            OAuth2Events::SCOPE_RESOLVE,
+            new ScopeResolveEvent(
+                $scopes,
+                new GrantModel($grantType),
+                $client,
+                $userIdentifier
+            )
         );
 
         return $this->scopeConverter->toLeagueArray($event->getScopes());

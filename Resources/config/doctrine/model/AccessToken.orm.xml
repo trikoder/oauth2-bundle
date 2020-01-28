@@ -13,7 +13,7 @@
         <field name="scopes" type="oauth2_scope" nullable="true" />
         <field name="revoked" type="boolean" />
         <many-to-one field="client" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\Client">
-            <join-column name="client" referenced-column-name="identifier" nullable="false" />
+            <join-column name="client" referenced-column-name="identifier" nullable="false" on-delete="CASCADE" />
         </many-to-one>
     </entity>
 </doctrine-mapping>

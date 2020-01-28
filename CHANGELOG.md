@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2019-12-09
+### Added
+- Ability to change the scope role prefix using the `role_prefix` configuration option ([b2ee617](https://github.com/trikoder/oauth2-bundle/commit/b2ee6179832cc142d95e3b13d9af09d6cb6831d5))
+- Interfaces for converter type service classes ([d2caf69](https://github.com/trikoder/oauth2-bundle/commit/d2caf690839523a2c84d967a6f99787898d4c654))
+- New testing target in Travis CI for Symfony 4.4 ([8a44fd4](https://github.com/trikoder/oauth2-bundle/commit/8a44fd4d7673467cc4f69988424cdfc677767aab))
+- The bundle is now fully compatible with [Symfony Flex](https://github.com/symfony/flex) ([a4ccea1](https://github.com/trikoder/oauth2-bundle/commit/a4ccea1dfaaba6d95daf3e1f1a84952cafb65d01))
+
+### Changed
+- [DoctrineBundle](https://github.com/doctrine/DoctrineBundle) version constraint to allow `2.x` derived versions ([885e398](https://github.com/trikoder/oauth2-bundle/commit/885e39811331e89bae99bca71f1a783497d26d12))
+- Explicitly list [league/oauth2-server](https://github.com/thephpleague/oauth2-server) version requirements in the documentation ([9dce66a](https://github.com/trikoder/oauth2-bundle/commit/9dce66a089c33c224fe5cb58bdfd6285350a607b))
+- Reduce distributed package size by excluding files that are used only for development ([80b9e41](https://github.com/trikoder/oauth2-bundle/commit/80b9e41155e7a94c3b1a4602c8daa25cc6d246b2))
+- Simplify `AuthorizationRequestResolveEvent` class creation ([32908c1](https://github.com/trikoder/oauth2-bundle/commit/32908c1a4a89fd89d5835d4de931d237de223b50))
+
+### Fixed
+- Not being able to delete clients that have access/refresh tokens assigned to them ([424b770](https://github.com/trikoder/oauth2-bundle/commit/424b770dbd99e4651777a3fa26186a756b4e93c4))
+
 ## [2.0.1] - 2019-08-13
 ### Removed
 - PSR-7/17 alias check during the container compile process ([0847ea3](https://github.com/trikoder/oauth2-bundle/commit/0847ea3034cc433c9c8f92ec46fedbdace259e3d))

@@ -8,7 +8,6 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappi
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Trikoder\Bundle\OAuth2Bundle\DependencyInjection\CompilerPass\EventDispatcherCompilerPass;
 use Trikoder\Bundle\OAuth2Bundle\DependencyInjection\Security\OAuth2Factory;
 use Trikoder\Bundle\OAuth2Bundle\DependencyInjection\TrikoderOAuth2Extension;
 
@@ -42,7 +41,6 @@ final class TrikoderOAuth2Bundle extends Bundle
 
     private function configureDoctrineExtension(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new EventDispatcherCompilerPass());
         $container->addCompilerPass(
             DoctrineOrmMappingsPass::createXmlMappingDriver(
                 [

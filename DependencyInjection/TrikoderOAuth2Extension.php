@@ -39,6 +39,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
+use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
@@ -56,6 +57,9 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureAuthorizationServer($container, $config['authorization_server']);
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
+
+        $container->getDefinition(OAuth2TokenFactory::class)
+            ->setArgument(0, $config['role_prefix']);
 
         $container->getDefinition(ConvertExceptionToResponseListener::class)
             ->addTag('kernel.event_listener', [

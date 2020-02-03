@@ -5,6 +5,7 @@ LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"
 
 ARG COMPOSER_VERSION=1.9.1
 ARG FLEX_VERSION=1.4.8
+ARG PHP_CS_FIXER_VERSION=2.16.1
 ARG TIMECOP_VERSION=1.2.10
 ARG XDEBUG_VERSION=2.8.0
 
@@ -47,6 +48,11 @@ RUN curl --show-error https://getcomposer.org/installer | php -- \
         --install-dir=/app/bin \
         --filename=composer \
         --version=${COMPOSER_VERSION}
+
+# PHP-CS-Fixer
+RUN curl --location --output /app/bin/php-cs-fixer --show-error \
+        https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v${PHP_CS_FIXER_VERSION}/php-cs-fixer.phar \
+    && chmod a+x /app/bin/php-cs-fixer
 
 # Create the user that's going to run our application
 RUN useradd -ms /bin/sh app

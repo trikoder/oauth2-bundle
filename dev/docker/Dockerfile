@@ -35,6 +35,9 @@ RUN echo '[xdebug]' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo 'xdebug.remote_connect_back = 0' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo 'xdebug.remote_host = %XDEBUG_REMOTE_HOST%' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
+RUN echo '[timecop]' >> /usr/local/etc/php/conf.d/docker-php-ext-timecop.ini \
+    && echo 'timecop.func_override = 0' >> /usr/local/etc/php/conf.d/docker-php-ext-timecop.ini
+
 # Utilities needed to run this image
 RUN apk add --update --no-cache \
         git \

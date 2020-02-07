@@ -3,11 +3,11 @@ ARG PHP_VERSION=7.4
 FROM php:${PHP_VERSION}-cli-alpine3.10
 LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"
 
-ARG COMPOSER_VERSION=1.9.1
-ARG FLEX_VERSION=1.4.8
+ARG COMPOSER_VERSION=1.9.3
+ARG FLEX_VERSION=1.6.2
 ARG PHP_CS_FIXER_VERSION=2.16.1
 ARG TIMECOP_VERSION=1.2.10
-ARG XDEBUG_VERSION=2.8.0
+ARG XDEBUG_VERSION=2.9.2
 
 # This is where we're going to store all of our non-project specific binaries
 RUN mkdir -p /app/bin

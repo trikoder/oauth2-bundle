@@ -3,10 +3,11 @@ ARG PHP_VERSION=7.4
 FROM php:${PHP_VERSION}-cli-alpine3.10
 LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"
 
-ARG COMPOSER_VERSION=1.9.1
-ARG FLEX_VERSION=1.4.8
+ARG COMPOSER_VERSION=1.9.3
+ARG FLEX_VERSION=1.6.2
+ARG PHP_CS_FIXER_VERSION=2.16.1
 ARG TIMECOP_VERSION=1.2.10
-ARG XDEBUG_VERSION=2.8.0
+ARG XDEBUG_VERSION=2.9.2
 
 # This is where we're going to store all of our non-project specific binaries
 RUN mkdir -p /app/bin
@@ -32,7 +33,10 @@ RUN apk add --update --no-cache --virtual .build-deps \
 RUN echo '[xdebug]' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo 'xdebug.remote_enable = 1' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo 'xdebug.remote_connect_back = 0' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo 'xdebug.remote_host = %XDEBUG_REMOTE_HOST%' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
+    && echo 'xdebug.remote_host = %XDEBUG_REMOTE_HOST%' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN echo '[timecop]' >> /usr/local/etc/php/conf.d/docker-php-ext-timecop.ini \
+    && echo 'timecop.func_override = 0' >> /usr/local/etc/php/conf.d/docker-php-ext-timecop.ini
 
 # Utilities needed to run this image
 RUN apk add --update --no-cache \
@@ -47,6 +51,11 @@ RUN curl --show-error https://getcomposer.org/installer | php -- \
         --install-dir=/app/bin \
         --filename=composer \
         --version=${COMPOSER_VERSION}
+
+# PHP-CS-Fixer
+RUN curl --location --output /app/bin/php-cs-fixer --show-error \
+        https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v${PHP_CS_FIXER_VERSION}/php-cs-fixer.phar \
+    && chmod a+x /app/bin/php-cs-fixer
 
 # Create the user that's going to run our application
 RUN useradd -ms /bin/sh app

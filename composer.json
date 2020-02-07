@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "description": "Symfony bundle which provides OAuth 2.0 authorization/resource server capabilities.",
     "keywords": ["oauth2"],
-    "homepage": "http://www.trikoder.net/",
+    "homepage": "https://www.trikoder.net/",
     "license": "MIT",
     "authors": [
         {

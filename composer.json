@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "description": "Symfony bundle which provides OAuth 2.0 authorization/resource server capabilities.",
     "keywords": ["oauth2"],
-    "homepage": "http://www.trikoder.net/",
+    "homepage": "https://www.trikoder.net/",
     "license": "MIT",
     "authors": [
         {
@@ -41,7 +41,7 @@
     },
     "scripts": {
         "lint": "php-cs-fixer fix",
-        "test": "phpunit"
+        "test": "php -d timecop.func_override=1 vendor/bin/phpunit"
     },
     "suggest": {
         "nelmio/cors-bundle": "For handling CORS requests",
@@ -54,9 +54,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "3.x-dev"
-        },
-        "symfony": {
-            "require": "4.4.*|5.0.*"
         }
     }
 }

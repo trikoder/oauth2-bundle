@@ -63,10 +63,10 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
     {
         return new RefreshToken(
             $identifier,
-            (new DateTimeImmutable())->modify($modify),
+            new DateTimeImmutable($modify),
             new AccessToken(
                 $identifier,
-                (new DateTimeImmutable('+1 day')),
+                new DateTimeImmutable('+1 day'),
                 new Client('client', 'secret'),
                 null,
                 []

@@ -25,7 +25,6 @@
     "require-dev": {
         "ext-timecop": "*",
         "ext-xdebug": "*",
-        "friendsofphp/php-cs-fixer": "^2.16",
         "laminas/laminas-diactoros": "^2.2",
         "nyholm/psr7": "^1.2",
         "phpunit/phpunit": "^8.5",

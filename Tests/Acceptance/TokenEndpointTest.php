@@ -20,22 +20,12 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
-        /** @var ScopeManagerInterface $scopeManager */
-        $scopeManager = $this->client->getContainer()->get(ScopeManagerInterface::class);
-        /** @var ClientManagerInterface $clientManager */
-        $clientManager = $this->client->getContainer()->get(ClientManagerInterface::class);
-        /** @var AccessTokenManagerInterface $accessTokenManager */
-        $accessTokenManager = $this->client->getContainer()->get(AccessTokenManagerInterface::class);
-        /** @var RefreshTokenManagerInterface $refreshTokenManager */
-        $refreshTokenManager = $this->client->getContainer()->get(RefreshTokenManagerInterface::class);
-        /** @var AuthorizationCodeManagerInterface $authCodeManager */
-        $authCodeManager = $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class);
         FixtureFactory::initializeFixtures(
-            $scopeManager,
-            $clientManager,
-            $accessTokenManager,
-            $refreshTokenManager,
-            $authCodeManager
+            $this->client->getContainer()->get(ScopeManagerInterface::class),
+            $this->client->getContainer()->get(ClientManagerInterface::class),
+            $this->client->getContainer()->get(AccessTokenManagerInterface::class),
+            $this->client->getContainer()->get(RefreshTokenManagerInterface::class),
+            $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class)
         );
     }
 

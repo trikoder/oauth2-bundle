@@ -17,7 +17,6 @@ use Trikoder\Bundle\OAuth2Bundle\League\Entity\Client as ClientEntity;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Scope as ScopeEntity;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken as AccessTokenModel;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode as AuthorizationCodeModel;
-use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken as RefreshTokenModel;
 
 final class TestHelper

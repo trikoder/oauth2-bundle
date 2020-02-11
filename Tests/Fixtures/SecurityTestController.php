@@ -16,7 +16,6 @@ final class SecurityTestController extends AbstractController
 
     /**
      * SecurityTestController constructor.
-     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(TokenStorageInterface $tokenStorage)
     {

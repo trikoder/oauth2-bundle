@@ -46,7 +46,7 @@ final class DoctrineClientManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        $accessToken = new AccessToken('access token', (new DateTimeImmutable())->modify('+1 day'), $client, $client->getIdentifier(), []);
+        $accessToken = new AccessToken('access token', new DateTimeImmutable('+1 day'), $client, $client->getIdentifier(), []);
         $em->persist($accessToken);
         $em->flush();
 
@@ -79,11 +79,11 @@ final class DoctrineClientManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        $accessToken = new AccessToken('access token', (new DateTimeImmutable())->modify('+1 day'), $client, $client->getIdentifier(), []);
+        $accessToken = new AccessToken('access token', new DateTimeImmutable('+1 day'), $client, $client->getIdentifier(), []);
         $em->persist($accessToken);
         $em->flush();
 
-        $refreshToken = new RefreshToken('refresh token', (new DateTimeImmutable())->modify('+1 day'), $accessToken);
+        $refreshToken = new RefreshToken('refresh token', new DateTimeImmutable('+1 day'), $accessToken);
         $em->persist($refreshToken);
         $em->flush();
 

@@ -46,17 +46,9 @@ final class TestHelper
 
     public static function generateEncryptedAuthCodePayload(AuthorizationCodeModel $authCode): ?string
     {
-        $uris = $authCode->getClient()->getRedirectUris();
-        $uri = null;
-        if (\count($uris) > 0) {
-            $uri = $uris[0];
-        } else {
-            $uri = new RedirectUri('http://localhost/');
-        }
-
         $payload = json_encode([
             'client_id' => $authCode->getClient()->getIdentifier(),
-            'redirect_uri' => (string) $uri,
+            'redirect_uri' => (string) $authCode->getClient()->getRedirectUris()[0],
             'auth_code_id' => $authCode->getIdentifier(),
             'scopes' => (new ScopeConverter())->toDomainArray($authCode->getScopes()),
             'user_id' => $authCode->getUserIdentifier(),

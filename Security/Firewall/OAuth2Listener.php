@@ -49,14 +49,6 @@ final class OAuth2Listener
         $this->oauth2TokenFactory = $oauth2TokenFactory;
     }
 
-    /**
-     * BC layer for Symfony < 4.3
-     */
-    public function handle(RequestEvent $event)
-    {
-        $this->__invoke($event);
-    }
-
     public function __invoke(RequestEvent $event)
     {
         $request = $this->httpMessageFactory->createRequest($event->getRequest());

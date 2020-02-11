@@ -74,7 +74,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     {
         return new AccessToken(
             $identifier,
-            (new DateTimeImmutable())->modify($modify),
+            new DateTimeImmutable($modify),
             $client,
             null,
             []
@@ -140,10 +140,10 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     {
         return new RefreshToken(
             $identifier,
-            (new DateTimeImmutable('+1 day')),
+            new DateTimeImmutable('+1 day'),
             new AccessToken(
                 $identifier,
-                (new DateTimeImmutable())->modify($modify),
+                new DateTimeImmutable($modify),
                 $client,
                 null,
                 []

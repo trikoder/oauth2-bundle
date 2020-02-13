@@ -11,12 +11,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class SecurityTestController extends AbstractController
 {
-    /** @var TokenStorageInterface $tokenStorage */
+    /**
+     * @var TokenStorageInterface
+     */
     private $tokenStorage;
 
-    /**
-     * SecurityTestController constructor.
-     */
     public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;

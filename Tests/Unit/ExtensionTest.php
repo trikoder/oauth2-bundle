@@ -88,11 +88,5 @@ final class ExtensionTest extends TestCase
     private function setupContainer(ContainerBuilder $container): void
     {
         $container->register(ScopeManager::class);
-        //the line below is no-longer needed if "persistence" above
-        //is set to either doctrine or in_memory
-        //which will ensure that services defined in either
-        // storage/in_memory.xml or storage/doctrine.xml
-        //get properly defined
-        //$container->setAlias(ScopeManagerInterface::class, ScopeManager::class);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager as DoctrineAccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
@@ -18,6 +19,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
 {
     public function testClearExpired(): void
     {
+        /** @var EntityManagerInterface $em */
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
 
         $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em);
@@ -81,8 +83,8 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
 
     public function testClearExpiredWithRefreshToken(): void
     {
+        /** @var EntityManagerInterface $em */
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-
         $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em);
 
         $client = new Client('client', 'secret');

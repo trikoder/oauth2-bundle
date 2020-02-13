@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Trikoder\Bundle\OAuth2Bundle\DependencyInjection\TrikoderOAuth2Extension;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager;
-use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 
 final class ExtensionTest extends TestCase
 {
@@ -79,7 +78,9 @@ final class ExtensionTest extends TestCase
                 'resource_server' => [
                     'public_key' => 'foo',
                 ],
-                'persistence' => [],
+                //Pick one for valid config:
+                //'persistence' => ['doctrine' => []]
+                'persistence' => ['in_memory' => 1],
             ],
         ];
     }
@@ -87,6 +88,5 @@ final class ExtensionTest extends TestCase
     private function setupContainer(ContainerBuilder $container): void
     {
         $container->register(ScopeManager::class);
-        $container->setAlias(ScopeManagerInterface::class, ScopeManager::class);
     }
 }

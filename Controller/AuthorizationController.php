@@ -58,8 +58,8 @@ final class AuthorizationController
 
             /** @var AuthorizationRequestResolveEvent $event */
             $event = $this->eventDispatcher->dispatch(
-                OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE,
-                $this->eventFactory->fromAuthorizationRequest($authRequest)
+                $this->eventFactory->fromAuthorizationRequest($authRequest),
+                OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE
             );
 
             $authRequest->setUser($this->userConverter->toLeague($event->getUser()));

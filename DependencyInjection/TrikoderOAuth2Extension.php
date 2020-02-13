@@ -7,6 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 use DateInterval;
 use Defuse\Crypto\Key;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -45,6 +46,8 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 {
     /**
      * {@inheritdoc}
+     *
+     * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -211,6 +214,9 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         ;
     }
 
+    /**
+     * @throws Exception
+     */
     private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config): void
     {
         if (\count($config) > 1) {
@@ -285,7 +291,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $scopeManager = $container
             ->getDefinition(
-                $container->getAlias(ScopeManagerInterface::class)
+                (string) $container->getAlias(ScopeManagerInterface::class)
             )
         ;
 

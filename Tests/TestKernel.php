@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests;
 
+use Laminas\Diactoros\ResponseFactory;
+use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\StreamFactory;
+use Laminas\Diactoros\UploadedFileFactory;
 use LogicException;
 use Nyholm\Psr7\Factory as Nyholm;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -11,6 +15,7 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Exception\LoaderLoadException;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,7 +30,6 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Support\SqlitePlatform;
-use Zend\Diactoros as ZendFramework;
 
 final class TestKernel extends Kernel implements CompilerPassInterface
 {
@@ -98,6 +102,8 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws LoaderLoadException
      */
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
@@ -196,7 +202,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(ScopeManagerInterface::class)
                     ->setPublic(true)
             )
@@ -205,7 +211,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(ClientManagerInterface::class)
                     ->setPublic(true)
             )
@@ -214,7 +220,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(AccessTokenManagerInterface::class)
                     ->setPublic(true)
             )
@@ -223,7 +229,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(RefreshTokenManagerInterface::class)
                     ->setPublic(true)
             )
@@ -232,7 +238,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(AuthorizationCodeManagerInterface::class)
                     ->setPublic(true)
             )
@@ -244,10 +250,10 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         switch ($this->psrHttpProvider) {
             case self::PSR_HTTP_PROVIDER_ZENDFRAMEWORK:
-                $serverRequestFactory = ZendFramework\ServerRequestFactory::class;
-                $streamFactory = ZendFramework\StreamFactory::class;
-                $uploadedFileFactory = ZendFramework\UploadedFileFactory::class;
-                $responseFactory = ZendFramework\ResponseFactory::class;
+                $serverRequestFactory = ServerRequestFactory::class;
+                $streamFactory = StreamFactory::class;
+                $uploadedFileFactory = UploadedFileFactory::class;
+                $responseFactory = ResponseFactory::class;
                 break;
             case self::PSR_HTTP_PROVIDER_NYHOLM:
                 $serverRequestFactory = Nyholm\Psr17Factory::class;

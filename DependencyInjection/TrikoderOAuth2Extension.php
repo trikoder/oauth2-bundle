@@ -283,7 +283,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $scopeManager = $container
             ->getDefinition(
-                $container->getAlias(ScopeManagerInterface::class)
+                (string)$container->getAlias(ScopeManagerInterface::class)
             )
         ;
 

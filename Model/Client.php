@@ -12,7 +12,7 @@ class Client
     private $identifier;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $secret;
 
@@ -36,7 +36,7 @@ class Client
      */
     private $active = true;
 
-    public function __construct(string $identifier, string $secret)
+    public function __construct(string $identifier, ?string $secret)
     {
         $this->identifier = $identifier;
         $this->secret = $secret;
@@ -52,7 +52,7 @@ class Client
         return $this->identifier;
     }
 
-    public function getSecret(): string
+    public function getSecret(): ?string
     {
         return $this->secret;
     }
@@ -112,5 +112,10 @@ class Client
         $this->active = $active;
 
         return $this;
+    }
+
+    public function isConfidential(): bool
+    {
+        return !empty($this->secret);
     }
 }

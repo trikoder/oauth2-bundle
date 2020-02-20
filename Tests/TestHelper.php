@@ -63,6 +63,15 @@ final class TestHelper
         }
     }
 
+    public static function decryptPayload(string $payload): ?string
+    {
+        try {
+            return Crypto::decryptWithPassword($payload, self::ENCRYPTION_KEY);
+        } catch (CryptoException $e) {
+            return null;
+        }
+    }
+
     public static function generateJwtToken(AccessTokenModel $accessToken): string
     {
         $clientEntity = new ClientEntity();

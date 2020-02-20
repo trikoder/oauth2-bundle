@@ -54,11 +54,7 @@ final class ClientRepository implements ClientRepositoryInterface
             return false;
         }
 
-        if (null === $clientSecret) {
-            return true;
-        }
-
-        if (hash_equals($client->getSecret(), (string) $clientSecret)) {
+        if (!$client->isConfidential() || hash_equals($client->getSecret(), (string) $clientSecret)) {
             return true;
         }
 
@@ -70,6 +66,7 @@ final class ClientRepository implements ClientRepositoryInterface
         $clientEntity = new ClientEntity();
         $clientEntity->setIdentifier($client->getIdentifier());
         $clientEntity->setRedirectUri(array_map('strval', $client->getRedirectUris()));
+        $clientEntity->setConfidential($client->isConfidential());
 
         return $clientEntity;
     }

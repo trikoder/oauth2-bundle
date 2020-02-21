@@ -71,7 +71,7 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     {
         $authorizationCode = $this->authorizationCodeManager->find($codeId);
 
-        if (null === $codeId) {
+        if (null === $authorizationCode) {
             return;
         }
 

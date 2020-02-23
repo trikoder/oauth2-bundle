@@ -7,7 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
-class ClientEntityTest extends TestCase
+final class ClientEntityTest extends TestCase
 {
     /**
      * @dataProvider confidentialDataProvider

@@ -156,23 +156,27 @@ There are two possible reasons for the authentication server to reject a request
 - Provided token is expired or invalid (HTTP response 401 `Unauthorized`)
 - Provided token is valid but scopes are insufficient (HTTP response 403 `Forbidden`)
 
-## Clearing expired access & refresh tokens
+## Clearing expired access, refresh tokens and auth codes
 
-To clear expired access & refresh tokens you can use the `trikoder:oauth2:clear-expired-tokens` command.
+To clear expired access, refresh tokens and auth codes you can use the `trikoder:oauth2:clear-expired-tokens` command.
 
 The command removes all tokens whose expiry time is lesser than the current.
 
 ```sh
 Description:
-  Clears all expired access and/or refresh tokens
+  Clears all expired access and/or refresh tokens and/or auth codes
 
 Usage:
   trikoder:oauth2:clear-expired-tokens [options]
 
 Options:
-  -a, --access-tokens-only   Clear only access tokens.
-  -r, --refresh-tokens-only  Clear only refresh tokens.
+  -a, --access-tokens   Clear expired access tokens.
+  -r, --refresh-tokens  Clear expired refresh tokens.
+  -ac, --auth-codes  Clear expired auth codes.
 ```
+
+Not passing any option means that both expired access and refresh tokens as well as expired auth codes
+will be cleared.
 
 ## CORS requests
 

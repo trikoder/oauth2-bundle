@@ -167,6 +167,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Command\ClearExpiredTokensCommand">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" />
             <tag name="console.command" />
         </service>
         <service id="trikoder.oauth2.command.clear_expired_tokens_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\ClearExpiredTokensCommand" />

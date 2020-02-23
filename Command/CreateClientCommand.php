@@ -72,9 +72,8 @@ final class CreateClientCommand extends Command
             ->addOption(
                 'public',
                 null,
-                InputOption::VALUE_OPTIONAL,
-                'Should the client be public?',
-                false
+                InputOption::VALUE_NONE,
+                'Create a public client'
             )
         ;
     }

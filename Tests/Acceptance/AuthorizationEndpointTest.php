@@ -142,6 +142,45 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->assertSame(FixtureFactory::FIXTURE_PUBLIC_CLIENT, $authCode->getClient()->getIdentifier());
     }
 
+    public function testAuthCodeRequestWithPublicClientWithoutCodeChallengeWhenTheChallengeIsRequiredForPublicClients(): void
+    {
+        $this->client
+            ->getContainer()
+            ->get('event_dispatcher')
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
+                $this->fail('This event should not have been dispatched.');
+            });
+
+        timecop_freeze(new DateTimeImmutable());
+
+        try {
+            $this->client->request(
+                'GET',
+                '/authorize',
+                [
+                    'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
+                    'response_type' => 'code',
+                    'scope' => '',
+                    'state' => bin2hex(random_bytes(20)),
+                ]
+            );
+        } finally {
+            timecop_return();
+        }
+
+        $response = $this->client->getResponse();
+
+        $this->assertSame(400, $response->getStatusCode());
+
+        $this->assertSame('application/json', $response->headers->get('Content-Type'));
+
+        $jsonResponse = json_decode($response->getContent(), true);
+
+        $this->assertSame('invalid_request', $jsonResponse['error']);
+        $this->assertSame('The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.', $jsonResponse['message']);
+        $this->assertSame('Code challenge must be provided for public clients', $jsonResponse['hint']);
+    }
+
     public function testSuccessfulTokenRequest(): void
     {
         $this->client

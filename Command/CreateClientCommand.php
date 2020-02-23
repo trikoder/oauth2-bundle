@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Command;
 
-use Exception;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -84,7 +83,7 @@ final class CreateClientCommand extends Command
 
         try {
             $client = $this->buildClientFromInput($input);
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             $io->error($exception->getMessage());
 
             return 1;

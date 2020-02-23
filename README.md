@@ -183,7 +183,7 @@ dev/bin/php composer test
 You can run the debugger using the following command:
 
 ```sh
-dev/bin/php-debug vendor/bin/phpunit
+dev/bin/php-debug -d timecop.func_override=1 vendor/bin/phpunit
 ```
 
 Make sure your IDE is setup properly, for more information check out the [dedicated documentation](docs/debugging.md).

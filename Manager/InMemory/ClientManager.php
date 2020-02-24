@@ -48,7 +48,7 @@ final class ClientManager implements ClientManagerInterface
             return $this->clients;
         }
 
-        return array_filter($this->clients, function (Client $client) use ($clientFilter): bool {
+        return array_filter($this->clients, static function (Client $client) use ($clientFilter): bool {
             $grantsPassed = self::passesFilter($client->getGrants(), $clientFilter->getGrants());
             $scopesPassed = self::passesFilter($client->getScopes(), $clientFilter->getScopes());
             $redirectUrisPassed = self::passesFilter($client->getRedirectUris(), $clientFilter->getRedirectUris());

@@ -30,6 +30,7 @@ final class ListClientsCommand extends Command
     public function __construct(ClientManagerInterface $clientManager)
     {
         parent::__construct();
+
         $this->clientManager = $clientManager;
     }
 
@@ -82,13 +83,13 @@ final class ListClientsCommand extends Command
         return
             ClientFilter
                 ::create()
-                ->addGrantCriteria(...array_map(function (string $grant): Grant {
+                ->addGrantCriteria(...array_map(static function (string $grant): Grant {
                     return new Grant($grant);
                 }, $input->getOption('grant-type')))
-                ->addRedirectUriCriteria(...array_map(function (string $redirectUri): RedirectUri {
+                ->addRedirectUriCriteria(...array_map(static function (string $redirectUri): RedirectUri {
                     return new RedirectUri($redirectUri);
                 }, $input->getOption('redirect-uri')))
-                ->addScopeCriteria(...array_map(function (string $scope): Scope {
+                ->addScopeCriteria(...array_map(static function (string $scope): Scope {
                     return new Scope($scope);
                 }, $input->getOption('scope')))
             ;
@@ -104,7 +105,7 @@ final class ListClientsCommand extends Command
 
     private function getRows(array $clients, array $columns): array
     {
-        return array_map(function (Client $client) use ($columns): array {
+        return array_map(static function (Client $client) use ($columns): array {
             $values = [
                 'identifier' => $client->getIdentifier(),
                 'secret' => $client->getSecret(),
@@ -113,7 +114,7 @@ final class ListClientsCommand extends Command
                 'grant type' => implode(', ', $client->getGrants()),
             ];
 
-            return array_map(function (string $column) use ($values): string {
+            return array_map(static function (string $column) use ($values): string {
                 return $values[$column];
             }, $columns);
         }, $clients);
@@ -122,7 +123,7 @@ final class ListClientsCommand extends Command
     private function getColumns(InputInterface $input): array
     {
         $requestedColumns = $input->getOption('columns');
-        $requestedColumns = array_map(function (string $column): string {
+        $requestedColumns = array_map(static function (string $column): string {
             return strtolower(trim($column));
         }, $requestedColumns);
 

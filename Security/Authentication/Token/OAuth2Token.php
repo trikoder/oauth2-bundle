@@ -107,7 +107,7 @@ final class OAuth2Token extends AbstractToken
         $roles = [];
 
         foreach ($this->getAttribute('server_request')->getAttribute('oauth_scopes', []) as $scope) {
-            $roles[] = trim(strtoupper($prefix . $scope));
+            $roles[] = strtoupper(trim($prefix . $scope));
         }
 
         return $roles;

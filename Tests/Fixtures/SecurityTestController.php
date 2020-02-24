@@ -30,7 +30,7 @@ final class SecurityTestController extends AbstractController
     {
         $roles = $this->get('security.token_storage')->getToken()->getRoles();
 
-        $roles = array_map(function (Role $role): string {
+        $roles = array_map(static function (Role $role): string {
             return $role->getRole();
         }, $roles);
 

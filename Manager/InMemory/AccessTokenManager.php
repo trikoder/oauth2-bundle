@@ -36,7 +36,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
         $count = \count($this->accessTokens);
 
         $now = new DateTime();
-        $this->accessTokens = array_filter($this->accessTokens, function (AccessToken $accessToken) use ($now): bool {
+        $this->accessTokens = array_filter($this->accessTokens, static function (AccessToken $accessToken) use ($now): bool {
             return $accessToken->getExpiry() >= $now;
         });
 

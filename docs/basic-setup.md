@@ -158,7 +158,7 @@ There are two possible reasons for the authentication server to reject a request
 
 ## Clearing expired access, refresh tokens and auth codes
 
-To clear expired access, refresh tokens and auth codes you can use the `trikoder:oauth2:clear-expired-tokens` command.
+To clear expired access and refresh tokens and auth codes you can use the `trikoder:oauth2:clear-expired-tokens` command.
 
 The command removes all tokens whose expiry time is lesser than the current.
 

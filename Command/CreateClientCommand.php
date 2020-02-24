@@ -72,7 +72,7 @@ final class CreateClientCommand extends Command
                 'public',
                 null,
                 InputOption::VALUE_NONE,
-                'Create a public client'
+                'Create a public client.'
             )
         ;
     }

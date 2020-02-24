@@ -98,14 +98,12 @@ final class AuthCodeRepository implements AuthCodeRepositoryInterface
     {
         $client = $this->clientManager->find($authCode->getClient()->getIdentifier());
 
-        $authorizationCode = new AuthorizationCode(
+        return new AuthorizationCode(
             $authCode->getIdentifier(),
             $authCode->getExpiryDateTime(),
             $client,
             $authCode->getUserIdentifier(),
             $this->scopeConverter->toDomainArray($authCode->getScopes())
         );
-
-        return $authorizationCode;
     }
 }

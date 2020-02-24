@@ -24,6 +24,7 @@ Options:
       --grant-type[=GRANT-TYPE]      Sets allowed grant type for client. Use this option multiple times to set multiple grant types. (multiple values allowed)
       --scope[=SCOPE]                Sets allowed scope for client. Use this option multiple times to set multiple scopes. (multiple values allowed)
       --public                       Creates a public client (a client which does not have a secret)
+      --allow-plain-text-pkce        Creates a client which is allowed to create an authorization code grant PKCE request with the "plain" code challenge method
 ```
 
 

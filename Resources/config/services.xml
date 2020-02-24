@@ -118,6 +118,7 @@
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="controller.service_arguments" />
         </service>
         <service id="trikoder.oauth2.controller.authorization_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController" />

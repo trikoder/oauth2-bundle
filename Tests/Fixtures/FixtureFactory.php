@@ -41,6 +41,7 @@ final class FixtureFactory
     public const FIXTURE_REFRESH_TOKEN_WITH_SCOPES = 'e47d593ed661840b3633e4577c3261ef57ba225be193b190deb69ee9afefdc19f54f890fbdda59f5';
 
     public const FIXTURE_AUTH_CODE = '0aa70e8152259988b3c8e9e8cff604019bb986eb226bd126da189829b95a2be631e2506042064e12';
+    public const FIXTURE_AUTH_CODE_PUBLIC_CLIENT = 'xaa70e8152259988b3c8e9e8cff604019bb986eb226bd126da189829b95a2be631e2506042064e12';
     public const FIXTURE_AUTH_CODE_DIFFERENT_CLIENT = 'e8fe264053cb346f4437af05c8cc9036931cfec3a0d5b54bdae349304ca4a83fd2f4590afd51e559';
     public const FIXTURE_AUTH_CODE_EXPIRED = 'a7bdbeb26c9f095d842f5e5b8e313b24318d6b26728d1c543136727bbe9525f7a7930305a09b7401';
 
@@ -49,8 +50,10 @@ final class FixtureFactory
     public const FIXTURE_CLIENT_INACTIVE = 'baz_inactive';
     public const FIXTURE_CLIENT_RESTRICTED_GRANTS = 'qux_restricted_grants';
     public const FIXTURE_CLIENT_RESTRICTED_SCOPES = 'quux_restricted_scopes';
+    public const FIXTURE_PUBLIC_CLIENT = 'foo_public';
 
     public const FIXTURE_CLIENT_FIRST_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri';
+    public const FIXTURE_PUBLIC_CLIENT_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri-foo-test';
 
     public const FIXTURE_SCOPE_FIRST = 'fancy';
     public const FIXTURE_SCOPE_SECOND = 'rock';
@@ -218,6 +221,14 @@ final class FixtureFactory
         );
 
         $authorizationCodes[] = new AuthorizationCode(
+            self::FIXTURE_AUTH_CODE_PUBLIC_CLIENT,
+            new DateTimeImmutable('+2 minute'),
+            $clientManager->find(self::FIXTURE_PUBLIC_CLIENT),
+            self::FIXTURE_USER,
+            []
+        );
+
+        $authorizationCodes[] = new AuthorizationCode(
             self::FIXTURE_AUTH_CODE_DIFFERENT_CLIENT,
             new DateTimeImmutable('+2 minute'),
             $clientManager->find(self::FIXTURE_CLIENT_SECOND),
@@ -256,6 +267,9 @@ final class FixtureFactory
 
         $clients[] = (new Client(self::FIXTURE_CLIENT_RESTRICTED_SCOPES, 'beer'))
             ->setScopes(new Scope(self::FIXTURE_SCOPE_SECOND));
+
+        $clients[] = (new Client(self::FIXTURE_PUBLIC_CLIENT, null))
+            ->setRedirectUris(new RedirectUri(self::FIXTURE_PUBLIC_CLIENT_REDIRECT_URI));
 
         return $clients;
     }

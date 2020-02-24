@@ -99,6 +99,11 @@ abstract class AbstractIntegrationTest extends TestCase
     private $psrFactory;
 
     /**
+     * @var bool
+     */
+    private $requireCodeChallengeForPublicClients = true;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -251,6 +256,16 @@ abstract class AbstractIntegrationTest extends TestCase
         return $data;
     }
 
+    protected function enableRequireCodeChallengeForPublicClients(): void
+    {
+        $this->requireCodeChallengeForPublicClients = true;
+    }
+
+    protected function disableRequireCodeChallengeForPublicClients(): void
+    {
+        $this->requireCodeChallengeForPublicClients = false;
+    }
+
     private function createAuthorizationServer(
         ScopeRepositoryInterface $scopeRepository,
         ClientRepositoryInterface $clientRepository,
@@ -267,9 +282,11 @@ abstract class AbstractIntegrationTest extends TestCase
             TestHelper::ENCRYPTION_KEY
         );
 
-        // TODO: Make this grant option configurable
         $authCodeGrant = new AuthCodeGrant($authCodeRepository, $refreshTokenRepository, new DateInterval('PT10M'));
-        $authCodeGrant->disableRequireCodeChallengeForPublicClients();
+
+        if (!$this->requireCodeChallengeForPublicClients) {
+            $authCodeGrant->disableRequireCodeChallengeForPublicClients();
+        }
 
         $authorizationServer->enableGrantType(new ClientCredentialsGrant());
         $authorizationServer->enableGrantType(new RefreshTokenGrant($refreshTokenRepository));

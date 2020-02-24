@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
@@ -64,7 +65,53 @@ final class ExtensionTest extends TestCase
         ];
     }
 
-    private function getValidConfiguration(array $options): array
+    /**
+     * @dataProvider requireCodeChallengeForPublicClientsProvider
+     */
+    public function testAuthCodeGrantDisableRequireCodeChallengeForPublicClientsConfig(
+        ?bool $requireCodeChallengeForPublicClients,
+        bool $shouldTheRequirementBeDisabled
+    ): void {
+        $container = new ContainerBuilder();
+
+        $this->setupContainer($container);
+
+        $extension = new TrikoderOAuth2Extension();
+
+        $configuration = $this->getValidConfiguration();
+        $configuration[0]['authorization_server']['require_code_challenge_for_public_clients'] = $requireCodeChallengeForPublicClients;
+
+        $extension->load($configuration, $container);
+
+        $authorizationServer = $container->getDefinition(AuthCodeGrant::class);
+        $methodCalls = $authorizationServer->getMethodCalls();
+
+        $isRequireCodeChallengeForPublicClientsDisabled = false;
+
+        foreach ($methodCalls as $methodCall) {
+            if ('disableRequireCodeChallengeForPublicClients' === $methodCall[0]) {
+                $isRequireCodeChallengeForPublicClientsDisabled = true;
+                break;
+            }
+        }
+
+        $this->assertSame($shouldTheRequirementBeDisabled, $isRequireCodeChallengeForPublicClientsDisabled);
+    }
+
+    public function requireCodeChallengeForPublicClientsProvider(): iterable
+    {
+        yield 'when not requiring code challenge for public clients the requirement should be disabled' => [
+            false, true,
+        ];
+        yield 'when code challenge for public clients is required the requirement should not be disabled' => [
+            true, false,
+        ];
+        yield 'with the default value the requirement should not be disabled' => [
+            null, false,
+        ];
+    }
+
+    private function getValidConfiguration(array $options = []): array
     {
         return [
             [

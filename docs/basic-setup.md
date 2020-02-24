@@ -23,6 +23,7 @@ Options:
       --redirect-uri[=REDIRECT-URI]  Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs. (multiple values allowed)
       --grant-type[=GRANT-TYPE]      Sets allowed grant type for client. Use this option multiple times to set multiple grant types. (multiple values allowed)
       --scope[=SCOPE]                Sets allowed scope for client. Use this option multiple times to set multiple scopes. (multiple values allowed)
+      --public                       Creates a public client (a client which does not have a secret)
 ```
 
 

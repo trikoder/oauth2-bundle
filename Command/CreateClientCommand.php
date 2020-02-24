@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Command;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,13 +68,27 @@ final class CreateClientCommand extends Command
                 InputArgument::OPTIONAL,
                 'The client secret'
             )
+            ->addOption(
+                'public',
+                null,
+                InputOption::VALUE_NONE,
+                'Create a public client.'
+            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $client = $this->buildClientFromInput($input);
+
+        try {
+            $client = $this->buildClientFromInput($input);
+        } catch (InvalidArgumentException $exception) {
+            $io->error($exception->getMessage());
+
+            return 1;
+        }
+
         $this->clientManager->save($client);
         $io->success('New oAuth2 client created successfully.');
 
@@ -89,7 +104,14 @@ final class CreateClientCommand extends Command
     private function buildClientFromInput(InputInterface $input): Client
     {
         $identifier = $input->getArgument('identifier') ?? hash('md5', random_bytes(16));
-        $secret = $input->getArgument('secret') ?? hash('sha512', random_bytes(32));
+
+        $isPublic = $input->getOption('public');
+
+        if (null !== $input->getArgument('secret') && $isPublic) {
+            throw new InvalidArgumentException('The client cannot have a secret and be public.');
+        }
+
+        $secret = $isPublic ? null : $input->getArgument('secret') ?? hash('sha512', random_bytes(32));
 
         $client = new Client($identifier, $secret);
         $client->setActive(true);

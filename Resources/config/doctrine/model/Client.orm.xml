@@ -4,7 +4,7 @@
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
     <entity name="Trikoder\Bundle\OAuth2Bundle\Model\Client" table="oauth2_client">
         <id name="identifier" type="string" length="32" />
-        <field name="secret" type="string" length="128" />
+        <field name="secret" type="string" length="128" nullable="true" />
         <field name="redirectUris" type="oauth2_redirect_uri" nullable="true" />
         <field name="grants" type="oauth2_grant" nullable="true" />
         <field name="scopes" type="oauth2_scope" nullable="true" />

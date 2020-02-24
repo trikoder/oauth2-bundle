@@ -14,6 +14,11 @@ final class Client implements ClientEntityInterface
     use ClientTrait;
 
     /**
+     * @var bool
+     */
+    private $allowPlainTextPkce = false;
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
@@ -32,5 +37,15 @@ final class Client implements ClientEntityInterface
     public function setConfidential(bool $isConfidential): void
     {
         $this->isConfidential = $isConfidential;
+    }
+
+    public function isPlainTextPkceAllowed(): bool
+    {
+        return $this->allowPlainTextPkce;
+    }
+
+    public function setAllowPlainTextPkce(bool $allowPlainTextPkce): void
+    {
+        $this->allowPlainTextPkce = $allowPlainTextPkce;
     }
 }

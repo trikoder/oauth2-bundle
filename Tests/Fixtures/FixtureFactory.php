@@ -51,9 +51,11 @@ final class FixtureFactory
     public const FIXTURE_CLIENT_RESTRICTED_GRANTS = 'qux_restricted_grants';
     public const FIXTURE_CLIENT_RESTRICTED_SCOPES = 'quux_restricted_scopes';
     public const FIXTURE_PUBLIC_CLIENT = 'foo_public';
+    public const FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD = 'bar_public';
 
     public const FIXTURE_CLIENT_FIRST_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri';
     public const FIXTURE_PUBLIC_CLIENT_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri-foo-test';
+    public const FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri-bar-test';
 
     public const FIXTURE_SCOPE_FIRST = 'fancy';
     public const FIXTURE_SCOPE_SECOND = 'rock';
@@ -270,6 +272,10 @@ final class FixtureFactory
 
         $clients[] = (new Client(self::FIXTURE_PUBLIC_CLIENT, null))
             ->setRedirectUris(new RedirectUri(self::FIXTURE_PUBLIC_CLIENT_REDIRECT_URI));
+
+        $clients[] = (new Client(self::FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD, null))
+            ->setAllowPlainTextPkce(true)
+            ->setRedirectUris(new RedirectUri(self::FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD_REDIRECT_URI));
 
         return $clients;
     }

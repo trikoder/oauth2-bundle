@@ -9,5 +9,10 @@
         <field name="grants" type="oauth2_grant" nullable="true" />
         <field name="scopes" type="oauth2_scope" nullable="true" />
         <field name="active" type="boolean" />
+        <field name="allowPlainTextPkce" column="allow_plain_text_pkce" type="boolean">
+            <options>
+                <option name="default">false</option>
+            </options>
+        </field>
     </entity>
 </doctrine-mapping>

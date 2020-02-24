@@ -36,6 +36,11 @@ class Client
      */
     private $active = true;
 
+    /**
+     * @var bool
+     */
+    private $allowPlainTextPkce = false;
+
     public function __construct(string $identifier, ?string $secret)
     {
         $this->identifier = $identifier;
@@ -117,5 +122,17 @@ class Client
     public function isConfidential(): bool
     {
         return !empty($this->secret);
+    }
+
+    public function isPlainTextPkceAllowed(): bool
+    {
+        return $this->allowPlainTextPkce;
+    }
+
+    public function setAllowPlainTextPkce(bool $allowPlainTextPkce): self
+    {
+        $this->allowPlainTextPkce = $allowPlainTextPkce;
+
+        return $this;
     }
 }

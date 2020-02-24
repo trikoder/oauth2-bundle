@@ -74,6 +74,12 @@ final class CreateClientCommand extends Command
                 InputOption::VALUE_NONE,
                 'Create a public client.'
             )
+            ->addOption(
+                'allow-plain-text-pkce',
+                null,
+                InputOption::VALUE_NONE,
+                'Create a client who is allowed to use plain challenge method for PKCE.'
+            )
         ;
     }
 
@@ -115,6 +121,7 @@ final class CreateClientCommand extends Command
 
         $client = new Client($identifier, $secret);
         $client->setActive(true);
+        $client->setAllowPlainTextPkce($input->getOption('allow-plain-text-pkce'));
 
         $redirectUris = array_map(
             function (string $redirectUri): RedirectUri { return new RedirectUri($redirectUri); },

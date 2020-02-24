@@ -172,7 +172,7 @@ Usage:
 Options:
   -a, --access-tokens   Clear expired access tokens.
   -r, --refresh-tokens  Clear expired refresh tokens.
-  -ac, --auth-codes  Clear expired auth codes.
+  -c, --auth-codes  Clear expired auth codes.
 ```
 
 Not passing any option means that both expired access and refresh tokens as well as expired auth codes

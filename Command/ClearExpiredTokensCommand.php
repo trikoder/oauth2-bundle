@@ -62,7 +62,7 @@ final class ClearExpiredTokensCommand extends Command
             )
             ->addOption(
                 'auth-codes',
-                'ac',
+                'c',
                 InputOption::VALUE_NONE,
                 'Clear expired auth codes.'
             )

@@ -2,8 +2,8 @@
 
 set -e
 
-usermod -ou ${HOST_USER_ID} app &> /dev/null
-groupmod -og ${HOST_GROUP_ID} app &> /dev/null
+usermod -ou "${HOST_USER_ID}" app &> /dev/null
+groupmod -og "${HOST_GROUP_ID}" app &> /dev/null
 
 HOST_IP="${HOST_IP:-$(ip route | grep ^default | awk '{ print $3 }')}"
 

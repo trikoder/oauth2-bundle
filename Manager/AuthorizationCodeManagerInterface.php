@@ -11,4 +11,6 @@ interface AuthorizationCodeManagerInterface
     public function find(string $identifier): ?AuthorizationCode;
 
     public function save(AuthorizationCode $authCode): void;
+
+    public function clearExpired(): int;
 }

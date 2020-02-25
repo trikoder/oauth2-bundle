@@ -30,7 +30,7 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
         $count = \count($this->authorizationCodes);
 
         $now = new DateTimeImmutable();
-        $this->authorizationCodes = array_filter($this->authorizationCodes, function (AuthorizationCode $authorizationCode) use ($now): bool {
+        $this->authorizationCodes = array_filter($this->authorizationCodes, static function (AuthorizationCode $authorizationCode) use ($now): bool {
             return $authorizationCode->getExpiryDateTime() >= $now;
         });
 

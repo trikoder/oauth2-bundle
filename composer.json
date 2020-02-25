@@ -7,6 +7,14 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Antonio Pauletich",
+            "email": "antonio.pauletich@trikoder.net"
+        },
+        {
+            "name": "Berislav Balogović",
+            "email": "berislav.balogovic@trikoder.net"
+        },
+        {
             "name": "Petar Obradović",
             "email": "petar.obradovic@trikoder.net"
         }

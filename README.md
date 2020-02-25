@@ -148,6 +148,7 @@ security:
 
 * [Basic setup](docs/basic-setup.md)
 * [Controlling token scopes](docs/controlling-token-scopes.md)
+* [Authorization code grant](docs/authorization-code-grant.md)
 * [Password grant handling](docs/password-grant-handling.md)
 
 ## Development

@@ -151,6 +151,7 @@ security:
 * [Basic setup](docs/basic-setup.md)
 * [Controlling token scopes](docs/controlling-token-scopes.md)
 * [Password grant handling](docs/password-grant-handling.md)
+* [Implementing custom grant type](docs/implementing-custom-grant-type.md)
 
 ## Development
 

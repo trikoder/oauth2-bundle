@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2020-02-25
+### Added
+- The bundle is now additionally tested against PHP 7.4 ([2b29be3](https://github.com/trikoder/oauth2-bundle/commit/2b29be3629877a648f4a199b96185b40d625f6aa))
+
+### Fixed
+- Authentication provider not being aware of the current firewall context ([d349329](https://github.com/trikoder/oauth2-bundle/commit/d349329056c219969e097ae6bd3eb724968f9812))
+- Faulty logic when revoking authorization codes ([24ad882](https://github.com/trikoder/oauth2-bundle/commit/24ad88211cefddf97170f5c1cc8ba1e5cf285e42))
+
 ## [2.1.0] - 2019-12-09
 ### Added
 - Ability to change the scope role prefix using the `role_prefix` configuration option ([b2ee617](https://github.com/trikoder/oauth2-bundle/commit/b2ee6179832cc142d95e3b13d9af09d6cb6831d5))

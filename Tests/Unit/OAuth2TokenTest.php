@@ -31,16 +31,10 @@ final class OAuth2TokenTest extends TestCase
 
         $this->assertSame($providerKey, $unserializedToken->getProviderKey());
 
-        $roles = $unserializedToken->getRoles();
-        $this->assertCount(1, $roles);
         $expectedRole = $rolePrefix . strtoupper($scopes[0]);
-        $this->assertSame($expectedRole, $roles[0]->getRole());
+        $this->assertSame([$expectedRole], $token->getRoleNames());
 
         $this->assertSame($user->getUsername(), $unserializedToken->getUser()->getUsername());
         $this->assertFalse($unserializedToken->isAuthenticated());
-
-        if (method_exists($token, 'getRoleNames')) {
-            $this->assertSame([$expectedRole], $token->getRoleNames());
-        }
     }
 }

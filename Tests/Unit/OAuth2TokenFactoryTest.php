@@ -32,9 +32,9 @@ final class OAuth2TokenFactoryTest extends TestCase
 
         $this->assertInstanceOf(OAuth2Token::class, $token);
 
-        $roles = $token->getRoles();
+        $roles = $token->getRoleNames();
         $this->assertCount(1, $roles);
-        $this->assertSame($rolePrefix . strtoupper($scopes[0]), $roles[0]->getRole());
+        $this->assertSame($rolePrefix . strtoupper($scopes[0]), $roles[0]);
 
         $this->assertFalse($token->isAuthenticated());
         $this->assertSame($user, $token->getUser());

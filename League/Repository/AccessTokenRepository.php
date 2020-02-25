@@ -107,14 +107,12 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     {
         $client = $this->clientManager->find($accessTokenEntity->getClient()->getIdentifier());
 
-        $accessToken = new AccessTokenModel(
+        return new AccessTokenModel(
             $accessTokenEntity->getIdentifier(),
             $accessTokenEntity->getExpiryDateTime(),
             $client,
             $accessTokenEntity->getUserIdentifier(),
             $this->scopeConverter->toDomainArray($accessTokenEntity->getScopes())
         );
-
-        return $accessToken;
     }
 }

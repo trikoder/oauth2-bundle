@@ -290,7 +290,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
     public function testValidPasswordGrant(): void
     {
-        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event): void {
+        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', static function (UserResolveEvent $event): void {
             $event->setUser(FixtureFactory::createUser());
         });
 
@@ -326,7 +326,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
     public function testInvalidCredentialsPasswordGrant(): void
     {
-        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', function (UserResolveEvent $event): void {
+        $this->eventDispatcher->addListener('trikoder.oauth2.user_resolve', static function (UserResolveEvent $event): void {
             $event->setUser(null);
         });
 

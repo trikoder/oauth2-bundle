@@ -15,7 +15,7 @@ final class OAuth2EntryPoint implements AuthenticationEntryPointInterface
     /**
      * {@inheritdoc}
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, ?AuthenticationException $authException = null)
     {
         $exception = new UnauthorizedHttpException('Bearer');
 

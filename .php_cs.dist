@@ -34,6 +34,7 @@ return PhpCsFixer\Config::create()
         'yoda_style'                 => true,
         'compact_nullable_typehint'  => true,
         'visibility_required'        => true,
+        'nullable_type_declaration_for_default_null_value' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder)

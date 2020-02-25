@@ -32,11 +32,21 @@ final class OAuth2Provider implements AuthenticationProviderInterface
      */
     private $oauth2TokenFactory;
 
-    public function __construct(UserProviderInterface $userProvider, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory)
-    {
+    /**
+     * @var string
+     */
+    private $providerKey;
+
+    public function __construct(
+        UserProviderInterface $userProvider,
+        ResourceServer $resourceServer,
+        OAuth2TokenFactory $oauth2TokenFactory,
+        string $providerKey
+    ) {
         $this->userProvider = $userProvider;
         $this->resourceServer = $resourceServer;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
+        $this->providerKey = $providerKey;
     }
 
     /**
@@ -60,7 +70,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
             $request->getAttribute('oauth_user_id')
         );
 
-        $token = $this->oauth2TokenFactory->createOAuth2Token($request, $user);
+        $token = $this->oauth2TokenFactory->createOAuth2Token($request, $user, $this->providerKey);
         $token->setAuthenticated(true);
 
         return $token;
@@ -71,7 +81,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
      */
     public function supports(TokenInterface $token)
     {
-        return $token instanceof OAuth2Token;
+        return $token instanceof OAuth2Token && $this->providerKey === $token->getProviderKey();
     }
 
     private function getAuthenticatedUser(string $userIdentifier): ?UserInterface

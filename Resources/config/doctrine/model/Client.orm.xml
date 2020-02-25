@@ -11,7 +11,7 @@
         <field name="active" type="boolean" />
         <field name="allowPlainTextPkce" column="allow_plain_text_pkce" type="boolean">
             <options>
-                <option name="default">false</option>
+                <option name="default">0</option>
             </options>
         </field>
     </entity>

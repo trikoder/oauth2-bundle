@@ -46,7 +46,7 @@ before_script:
     - dev/bin/php composer update --ansi --prefer-dist
 
 script:
-    - dev/bin/php composer test -- --colors=always --coverage-clover=coverage.xml --debug
+    - dev/bin/php-test composer test -- --colors=always --coverage-clover=coverage.xml --debug
     - dev/bin/php composer lint -- --ansi --diff --dry-run --using-cache=no --verbose
 
 after_script:

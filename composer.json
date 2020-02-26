@@ -47,7 +47,7 @@
     },
     "scripts": {
         "lint": "php-cs-fixer fix",
-        "test": "php -d timecop.func_override=1 vendor/bin/phpunit"
+        "test": "phpunit"
     },
     "suggest": {
         "nelmio/cors-bundle": "For handling CORS requests",

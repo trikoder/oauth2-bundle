@@ -177,7 +177,7 @@ dev/bin/php composer install
 You can run the test suite using the following command:
 
 ```sh
-dev/bin/php composer test
+dev/bin/php-test composer test
 ```
 
 ### Debugging
@@ -185,7 +185,7 @@ dev/bin/php composer test
 You can run the debugger using the following command:
 
 ```sh
-dev/bin/php-debug -d timecop.func_override=1 vendor/bin/phpunit
+dev/bin/php-debug vendor/bin/phpunit
 ```
 
 Make sure your IDE is setup properly, for more information check out the [dedicated documentation](docs/debugging.md).

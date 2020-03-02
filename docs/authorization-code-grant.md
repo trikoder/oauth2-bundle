@@ -2,7 +2,7 @@
 
 Authorization code grant has two steps
 
-1. Acquiring authorization code
+1. Getting authorization code
 2. Getting token from authorization code
 
 ## Requirements
@@ -12,6 +12,8 @@ To use authorization code grant `enable_auth_code_grant` parameter inside `autho
 ### Example: config.yml
 
 ```yaml
+# /packages/trikoder_oauth2.yaml
+
 trikoder_oauth2:
     authorization_server:
         enable_auth_code_grant: true
@@ -26,6 +28,8 @@ It can be done by including `Resources/config/routes.xml` which will provide `/a
 ### Example: custom setup
 
 ```yaml
+# /routes/trikoder_oauth2.yaml
+
 oauth2_authorization_code:
     controller: Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController::indexAction
     path: /oauth2-authorization-code
@@ -83,7 +87,7 @@ final class AuthorizationCodeListener
     {
         if (null !== ($user = $this->security->getUser())) {
             $event->setUser($user);
-            $event->resolveAuthorization(true);
+            $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
         } else {
             $event->setResponse(
                 new Response(
@@ -116,6 +120,8 @@ This example assumes scope `user.view` is already registered scope inside `triko
 ### Example: config.yml
 
 ```yaml
+# /packages/trikoder_oauth2.yaml
+
 trikoder_oauth2:
     scopes:
         - 'user.view'

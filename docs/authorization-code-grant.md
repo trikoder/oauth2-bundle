@@ -9,7 +9,7 @@ Authorization code grant has two steps
 
 To use authorization code grant `enable_auth_code_grant` parameter inside `authorization_server` must be set to `true` (it is set to `true` by default).
 
-### Example: config.yml
+### Example: config
 
 ```yaml
 # /packages/trikoder_oauth2.yaml
@@ -46,7 +46,9 @@ After assigning routes, listener for `trikoder.oauth2.authorization_request_reso
 1. `setUser(?UserInterface $user)` and `resolveAuthorization(bool $authorizationResolution)` when user is already logged in when accessing authorization endpoint
 2. `setResponse(ResponseInterface $response)` when user needs to log in before authorization server can issue authorization code
 
-### Example: (services.yml and php class)
+`\Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestUserResolvingListener` with priority value `1024` calls `setUser(?UserInterface $user)` if user is logged in, so make sure your listener has lower priority than it.
+
+### Example: services.yml and php class
 
 ```yaml
     BestNamespace\OAuthLogin\Listener\AuthorizationCodeListener:
@@ -64,29 +66,24 @@ namespace BestNamespace\OAuthLogin\Listener;
 use Nyholm\Psr7\Response;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Security;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 
 final class AuthorizationCodeListener
 {
-    private $security;
     private $urlGenerator;
     private $requestStack;
 
     public function __construct(
-        Security $security,
         UrlGeneratorInterface $urlGenerator,
         RequestStack $requestStack
     ) {
-        $this->security = $security;
         $this->urlGenerator = $urlGenerator;
         $this->requestStack = $requestStack;
     }
 
     public function onAuthorizationRequestResolve(AuthorizationRequestResolveEvent $event)
     {
-        if (null !== ($user = $this->security->getUser())) {
-            $event->setUser($user);
+        if (null !== $event->getUser()) {
             $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
         } else {
             $event->setResponse(
@@ -117,7 +114,7 @@ bin/console trikoder:oauth2:create-client best_client not_so_secret --redirect-u
 
 This example assumes scope `user.view` is already registered scope inside `trikoder_oauth2` configuration
 
-### Example: config.yml
+### Example: config
 
 ```yaml
 # /packages/trikoder_oauth2.yaml

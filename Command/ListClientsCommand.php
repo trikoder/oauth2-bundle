@@ -115,7 +115,7 @@ final class ListClientsCommand extends Command
             ];
 
             return array_map(static function (string $column) use ($values): string {
-                return $values[$column];
+                return $values[$column] ?? '';
             }, $columns);
         }, $clients);
     }

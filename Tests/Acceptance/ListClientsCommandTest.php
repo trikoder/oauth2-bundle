@@ -35,6 +35,28 @@ TABLE;
         $this->assertEquals(trim($expected), trim($output));
     }
 
+    public function testListClientsWithClientHavingNoSecret(): void
+    {
+        $client = $this->fakeAClient('foobar', null);
+        $this->getClientManager()->save($client);
+
+        $command = $this->command();
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
+            'command' => $command->getName(),
+        ]);
+        $output = $commandTester->getDisplay();
+        $expected = <<<TABLE
+ ------------ -------- ------- -------------- ------------ 
+  identifier   secret   scope   redirect uri   grant type  
+ ------------ -------- ------- -------------- ------------ 
+  foobar                                                  
+ ------------ -------- ------- -------------- ------------
+TABLE;
+
+        $this->assertEquals(trim($expected), trim($output));
+    }
+
     public function testListClientsEmpty(): void
     {
         $command = $this->command();

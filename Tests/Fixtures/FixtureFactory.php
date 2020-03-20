@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures;
 
-use DateTime;
+use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
@@ -41,6 +41,7 @@ final class FixtureFactory
     public const FIXTURE_REFRESH_TOKEN_WITH_SCOPES = 'e47d593ed661840b3633e4577c3261ef57ba225be193b190deb69ee9afefdc19f54f890fbdda59f5';
 
     public const FIXTURE_AUTH_CODE = '0aa70e8152259988b3c8e9e8cff604019bb986eb226bd126da189829b95a2be631e2506042064e12';
+    public const FIXTURE_AUTH_CODE_PUBLIC_CLIENT = 'xaa70e8152259988b3c8e9e8cff604019bb986eb226bd126da189829b95a2be631e2506042064e12';
     public const FIXTURE_AUTH_CODE_DIFFERENT_CLIENT = 'e8fe264053cb346f4437af05c8cc9036931cfec3a0d5b54bdae349304ca4a83fd2f4590afd51e559';
     public const FIXTURE_AUTH_CODE_EXPIRED = 'a7bdbeb26c9f095d842f5e5b8e313b24318d6b26728d1c543136727bbe9525f7a7930305a09b7401';
     public const FIXTURE_AUTH_CODE_OPENID = '86adfc23d7b07ba70b9a501c03ff9fafb967efb2b4b14099feced03a14430c3c00a69b3282f769a8';
@@ -50,8 +51,12 @@ final class FixtureFactory
     public const FIXTURE_CLIENT_INACTIVE = 'baz_inactive';
     public const FIXTURE_CLIENT_RESTRICTED_GRANTS = 'qux_restricted_grants';
     public const FIXTURE_CLIENT_RESTRICTED_SCOPES = 'quux_restricted_scopes';
+    public const FIXTURE_PUBLIC_CLIENT = 'foo_public';
+    public const FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD = 'bar_public';
 
     public const FIXTURE_CLIENT_FIRST_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri';
+    public const FIXTURE_PUBLIC_CLIENT_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri-foo-test';
+    public const FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri-bar-test';
 
     public const FIXTURE_SCOPE_FIRST = 'fancy';
     public const FIXTURE_SCOPE_SECOND = 'rock';
@@ -105,7 +110,7 @@ final class FixtureFactory
 
         $accessTokens[] = (new AccessToken(
             self::FIXTURE_ACCESS_TOKEN_USER_BOUND,
-            new DateTime('+1 hour'),
+            new DateTimeImmutable('+1 hour'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             self::FIXTURE_USER,
             []
@@ -113,7 +118,7 @@ final class FixtureFactory
 
         $accessTokens[] = (new AccessToken(
             self::FIXTURE_ACCESS_TOKEN_DIFFERENT_CLIENT,
-            new DateTime('+1 hour'),
+            new DateTimeImmutable('+1 hour'),
             $clientManager->find(self::FIXTURE_CLIENT_SECOND),
             self::FIXTURE_USER,
             []
@@ -121,7 +126,7 @@ final class FixtureFactory
 
         $accessTokens[] = (new AccessToken(
             self::FIXTURE_ACCESS_TOKEN_EXPIRED,
-            new DateTime('-1 hour'),
+            new DateTimeImmutable('-1 hour'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             self::FIXTURE_USER,
             []
@@ -129,7 +134,7 @@ final class FixtureFactory
 
         $accessTokens[] = (new AccessToken(
             self::FIXTURE_ACCESS_TOKEN_REVOKED,
-            new DateTime('+1 hour'),
+            new DateTimeImmutable('+1 hour'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             self::FIXTURE_USER,
             []
@@ -138,7 +143,7 @@ final class FixtureFactory
 
         $accessTokens[] = new AccessToken(
             self::FIXTURE_ACCESS_TOKEN_PUBLIC,
-            new DateTime('+1 hour'),
+            new DateTimeImmutable('+1 hour'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             null,
             []
@@ -146,7 +151,7 @@ final class FixtureFactory
 
         $accessTokens[] = (new AccessToken(
             self::FIXTURE_ACCESS_TOKEN_WITH_SCOPES,
-            new DateTime('+1 hour'),
+            new DateTimeImmutable('+1 hour'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             null,
             [$scopeManager->find(self::FIXTURE_SCOPE_FIRST)]
@@ -154,7 +159,7 @@ final class FixtureFactory
 
         $accessTokens[] = (new AccessToken(
             self::FIXTURE_ACCESS_TOKEN_USER_BOUND_WITH_SCOPES,
-            new DateTime('+1 hour'),
+            new DateTimeImmutable('+1 hour'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             self::FIXTURE_USER,
             [$scopeManager->find(self::FIXTURE_SCOPE_FIRST)]
@@ -172,32 +177,32 @@ final class FixtureFactory
 
         $refreshTokens[] = new RefreshToken(
             self::FIXTURE_REFRESH_TOKEN,
-            new DateTime('+1 month'),
+            new DateTimeImmutable('+1 month'),
             $accessTokenManager->find(self::FIXTURE_ACCESS_TOKEN_USER_BOUND)
         );
 
         $refreshTokens[] = new RefreshToken(
             self::FIXTURE_REFRESH_TOKEN_DIFFERENT_CLIENT,
-            new DateTime('+1 month'),
+            new DateTimeImmutable('+1 month'),
             $accessTokenManager->find(self::FIXTURE_ACCESS_TOKEN_DIFFERENT_CLIENT)
         );
 
         $refreshTokens[] = new RefreshToken(
             self::FIXTURE_REFRESH_TOKEN_EXPIRED,
-            new DateTime('-1 month'),
+            new DateTimeImmutable('-1 month'),
             $accessTokenManager->find(self::FIXTURE_ACCESS_TOKEN_EXPIRED)
         );
 
         $refreshTokens[] = (new RefreshToken(
             self::FIXTURE_REFRESH_TOKEN_REVOKED,
-            new DateTime('+1 month'),
+            new DateTimeImmutable('+1 month'),
             $accessTokenManager->find(self::FIXTURE_ACCESS_TOKEN_REVOKED)
         ))
             ->revoke();
 
         $refreshTokens[] = new RefreshToken(
             self::FIXTURE_REFRESH_TOKEN_WITH_SCOPES,
-            new DateTime('+1 month'),
+            new DateTimeImmutable('+1 month'),
             $accessTokenManager->find(self::FIXTURE_ACCESS_TOKEN_USER_BOUND_WITH_SCOPES)
         );
 
@@ -213,15 +218,23 @@ final class FixtureFactory
 
         $authorizationCodes[] = new AuthorizationCode(
             self::FIXTURE_AUTH_CODE,
-            new DateTime('+2 minute'),
+            new DateTimeImmutable('+2 minute'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             self::FIXTURE_USER,
             []
         );
 
         $authorizationCodes[] = new AuthorizationCode(
+            self::FIXTURE_AUTH_CODE_PUBLIC_CLIENT,
+            new DateTimeImmutable('+2 minute'),
+            $clientManager->find(self::FIXTURE_PUBLIC_CLIENT),
+            self::FIXTURE_USER,
+            []
+        );
+
+        $authorizationCodes[] = new AuthorizationCode(
             self::FIXTURE_AUTH_CODE_DIFFERENT_CLIENT,
-            new DateTime('+2 minute'),
+            new DateTimeImmutable('+2 minute'),
             $clientManager->find(self::FIXTURE_CLIENT_SECOND),
             self::FIXTURE_USER,
             []
@@ -229,15 +242,15 @@ final class FixtureFactory
 
         $authorizationCodes[] = new AuthorizationCode(
             self::FIXTURE_AUTH_CODE_EXPIRED,
-            new DateTime('-30 minute'),
+            new DateTimeImmutable('-30 minute'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             self::FIXTURE_USER,
             []
 
         );
-        $authCodes[] = new AuthCode(
+        $authorizationCodes[] = new AuthorizationCode(
             self::FIXTURE_AUTH_CODE_OPENID,
-            new DateTime('+2 minute'),
+            new DateTimeImmutable('+2 minute'),
             $clientManager->find(self::FIXTURE_CLIENT_FIRST),
             self::FIXTURE_USER,
             [new Scope(self::FIXTURE_SCOPE_OPENID)]
@@ -267,6 +280,13 @@ final class FixtureFactory
 
         $clients[] = (new Client(self::FIXTURE_CLIENT_RESTRICTED_SCOPES, 'beer'))
             ->setScopes(new Scope(self::FIXTURE_SCOPE_SECOND));
+
+        $clients[] = (new Client(self::FIXTURE_PUBLIC_CLIENT, null))
+            ->setRedirectUris(new RedirectUri(self::FIXTURE_PUBLIC_CLIENT_REDIRECT_URI));
+
+        $clients[] = (new Client(self::FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD, null))
+            ->setAllowPlainTextPkce(true)
+            ->setRedirectUris(new RedirectUri(self::FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD_REDIRECT_URI));
 
         return $clients;
     }

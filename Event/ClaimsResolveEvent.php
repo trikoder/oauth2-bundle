@@ -2,7 +2,7 @@
 
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 final class ClaimsResolveEvent extends Event
 {

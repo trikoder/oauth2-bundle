@@ -46,7 +46,15 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
      */
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
-        return new AccessTokenEntity();
+        $accessToken = new AccessTokenEntity();
+        $accessToken->setClient($clientEntity);
+        $accessToken->setUserIdentifier($userIdentifier);
+
+        foreach ($scopes as $scope) {
+            $accessToken->addScope($scope);
+        }
+
+        return $accessToken;
     }
 
     /**
@@ -99,14 +107,12 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     {
         $client = $this->clientManager->find($accessTokenEntity->getClient()->getIdentifier());
 
-        $accessToken = new AccessTokenModel(
+        return new AccessTokenModel(
             $accessTokenEntity->getIdentifier(),
             $accessTokenEntity->getExpiryDateTime(),
             $client,
             $accessTokenEntity->getUserIdentifier(),
             $this->scopeConverter->toDomainArray($accessTokenEntity->getScopes())
         );
-
-        return $accessToken;
     }
 }

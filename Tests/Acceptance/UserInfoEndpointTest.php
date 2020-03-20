@@ -3,11 +3,28 @@
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 final class UserInfoEndpointTest extends AbstractAcceptanceTest
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        FixtureFactory::initializeFixtures(
+            $this->client->getContainer()->get(ScopeManagerInterface::class),
+            $this->client->getContainer()->get(ClientManagerInterface::class),
+            $this->client->getContainer()->get(AccessTokenManagerInterface::class),
+            $this->client->getContainer()->get(RefreshTokenManagerInterface::class),
+            $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class)
+        );
+    }
+
     public function testSuccessfulGetUserInfoRequest()
     {
         $accessToken = $this->client->getContainer()->get(AccessTokenManagerInterface::class)

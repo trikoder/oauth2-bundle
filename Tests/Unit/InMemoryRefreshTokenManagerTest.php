@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager as InMemoryRefreshTokenManager;
@@ -18,7 +18,7 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
     {
         $inMemoryRefreshTokenManager = new InMemoryRefreshTokenManager();
 
-        timecop_freeze(new DateTime());
+        timecop_freeze(new DateTimeImmutable());
 
         try {
             $testData = $this->buildClearExpiredTestData();
@@ -63,10 +63,10 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
     {
         return new RefreshToken(
             $identifier,
-            (new DateTime())->modify($modify),
+            new DateTimeImmutable($modify),
             new AccessToken(
                 $identifier,
-                (new DateTime('+1 day')),
+                new DateTimeImmutable('+1 day'),
                 new Client('client', 'secret'),
                 null,
                 []

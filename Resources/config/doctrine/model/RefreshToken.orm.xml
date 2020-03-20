@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
@@ -8,7 +10,7 @@
                 <option name="fixed">true</option>
             </options>
         </id>
-        <field name="expiry" type="datetime" />
+        <field name="expiry" type="datetime_immutable" />
         <field name="revoked" type="boolean" />
         <many-to-one field="accessToken" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\AccessToken">
             <join-column name="access_token" referenced-column-name="identifier" on-delete="SET NULL" />

@@ -26,8 +26,7 @@ This package is currently in the active development.
 ## Requirements
 
 * [PHP 7.2](http://php.net/releases/7_2_0.php) or greater
-* [Symfony 4.2](https://symfony.com/roadmap/4.2) or [Symfony 3.4](https://symfony.com/roadmap/3.4)
-* [league/oauth2-server (versions >=7.2.0 <8.0)](https://packagist.org/packages/league/oauth2-server)
+* [Symfony 4.4](https://symfony.com/roadmap/4.4) or [Symfony 5.x](https://symfony.com/roadmap/5.0)
 
 ## Installation
 
@@ -85,6 +84,9 @@ This package is currently in the active development.
             # Whether to enable the authorization code grant
             enable_auth_code_grant: true
 
+            # Whether to require code challenge for public clients for the auth code grant
+            require_code_challenge_for_public_clients: true
+
             # Whether to enable the implicit grant
             enable_implicit_grant: true
         resource_server:      # Required
@@ -108,6 +110,9 @@ This package is currently in the active development.
 
         # The priority of the event listener that converts an Exception to a Response
         exception_event_listener_priority: 10
+
+        # Set a custom prefix that replaces the default 'ROLE_OAUTH2_' role prefix
+        role_prefix:          ROLE_OAUTH2_
     ```
 
 1. Enable the bundle in `config/bundles.php` by adding it to the array:
@@ -172,7 +177,7 @@ dev/bin/php composer install
 You can run the test suite using the following command:
 
 ```sh
-dev/bin/php composer test
+dev/bin/php-test composer test
 ```
 
 ### Debugging

@@ -6,11 +6,21 @@ namespace Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 final class SecurityTestController extends AbstractController
 {
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
     public function helloAction(): Response
     {
         /** @var UserInterface $user */
@@ -28,11 +38,7 @@ final class SecurityTestController extends AbstractController
 
     public function rolesAction(): Response
     {
-        $roles = $this->get('security.token_storage')->getToken()->getRoles();
-
-        $roles = array_map(function (Role $role): string {
-            return $role->getRole();
-        }, $roles);
+        $roles = $this->tokenStorage->getToken()->getRoleNames();
 
         return new Response(
             sprintf(

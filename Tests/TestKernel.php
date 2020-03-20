@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests;
 
+use Laminas\Diactoros\ResponseFactory;
+use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\StreamFactory;
+use Laminas\Diactoros\UploadedFileFactory;
 use LogicException;
 use Nyholm\Psr7\Factory as Nyholm;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -11,6 +15,7 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Exception\LoaderLoadException;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,9 +27,10 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\AlwaysAllowDecisionStrategy;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
-use Zend\Diactoros as ZendFramework;
+use Trikoder\Bundle\OAuth2Bundle\Tests\Support\SqlitePlatform;
 
 final class TestKernel extends Kernel implements CompilerPassInterface
 {
@@ -97,6 +103,8 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws LoaderLoadException
      */
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
@@ -131,6 +139,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                     'charset' => 'utf8mb4',
                     'utf8mb4_unicode_ci' => 'utf8mb4_unicode_ci',
                 ],
+                'platform_service' => SqlitePlatform::class,
             ],
             'orm' => null,
         ]);
@@ -138,6 +147,9 @@ final class TestKernel extends Kernel implements CompilerPassInterface
         $container->loadFromExtension('framework', [
             'secret' => 'nope',
             'test' => null,
+            'session' => [
+                'storage_id' => 'session.storage.mock_file'
+            ]
         ]);
 
         $container->loadFromExtension('security', [
@@ -171,6 +183,8 @@ final class TestKernel extends Kernel implements CompilerPassInterface
             'authorization_server' => [
                 'private_key' => '%env(PRIVATE_KEY_PATH)%',
                 'encryption_key' => '%env(ENCRYPTION_KEY)%',
+                'authorization_strategy' => AlwaysAllowDecisionStrategy::class,
+                'consent_route' => 'default'
             ],
             'resource_server' => [
                 'public_key' => '%env(PUBLIC_KEY_PATH)%',
@@ -184,19 +198,21 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 ],
             ],
             'openid_connect' => [
-                'enabled' => true,
+                'enabled' => false,
+                'login_route' => 'default'
             ],
         ]);
 
         $this->configureControllers($container);
         $this->configurePsrHttpFactory($container);
+        $this->configureDatabaseServices($container);
     }
 
     private function exposeManagerServices(ContainerBuilder $container): void
     {
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(ScopeManagerInterface::class)
                     ->setPublic(true)
             )
@@ -205,7 +221,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(ClientManagerInterface::class)
                     ->setPublic(true)
             )
@@ -214,7 +230,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(AccessTokenManagerInterface::class)
                     ->setPublic(true)
             )
@@ -223,7 +239,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(RefreshTokenManagerInterface::class)
                     ->setPublic(true)
             )
@@ -232,7 +248,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
 
         $container
             ->getDefinition(
-                $container
+                (string) $container
                     ->getAlias(AuthorizationCodeManagerInterface::class)
                     ->setPublic(true)
             )
@@ -244,10 +260,10 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         switch ($this->psrHttpProvider) {
             case self::PSR_HTTP_PROVIDER_ZENDFRAMEWORK:
-                $serverRequestFactory = ZendFramework\ServerRequestFactory::class;
-                $streamFactory = ZendFramework\StreamFactory::class;
-                $uploadedFileFactory = ZendFramework\UploadedFileFactory::class;
-                $responseFactory = ZendFramework\ResponseFactory::class;
+                $serverRequestFactory = ServerRequestFactory::class;
+                $streamFactory = StreamFactory::class;
+                $uploadedFileFactory = UploadedFileFactory::class;
+                $responseFactory = ResponseFactory::class;
                 break;
             case self::PSR_HTTP_PROVIDER_NYHOLM:
                 $serverRequestFactory = Nyholm\Psr17Factory::class;
@@ -256,9 +272,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $responseFactory = Nyholm\Psr17Factory::class;
                 break;
             default:
-                throw new LogicException(
-                    sprintf('PSR HTTP factory provider \'%s\' is not supported.', $this->psrHttpProvider)
-                );
+                throw new LogicException(sprintf('PSR HTTP factory provider \'%s\' is not supported.', $this->psrHttpProvider));
         }
 
         $container->addDefinitions([
@@ -285,6 +299,15 @@ final class TestKernel extends Kernel implements CompilerPassInterface
         ;
     }
 
+    private function configureDatabaseServices(ContainerBuilder $container): void
+    {
+        $container
+            ->register(SqlitePlatform::class)
+            ->setAutoconfigured(true)
+            ->setAutowired(true)
+        ;
+    }
+
     private function determinePsrHttpFactory(): void
     {
         $psrHttpProvider = getenv('PSR_HTTP_PROVIDER');
@@ -297,9 +320,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 $this->psrHttpProvider = self::PSR_HTTP_PROVIDER_NYHOLM;
                 break;
             default:
-                throw new LogicException(
-                    sprintf('PSR HTTP factory provider \'%s\' is not supported.', $psrHttpProvider)
-                );
+                throw new LogicException(sprintf('PSR HTTP factory provider \'%s\' is not supported.', $psrHttpProvider));
         }
     }
 

@@ -4,6 +4,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2020-02-26
+### Added
+- Ability to restrict clients from using the `plain` challenge method during PKCE ([4562a1f](https://github.com/trikoder/oauth2-bundle/commit/4562a1ff306375fd651aa91c85d0d4fd6f4c1b13))
+- Ability to clear expired authorization codes ([91b6447](https://github.com/trikoder/oauth2-bundle/commit/91b6447257419d8e961c4f5b0abd187f1b735856))
+- Support for defining public (non-confidential) clients ([8a71f55](https://github.com/trikoder/oauth2-bundle/commit/8a71f55aa1482d00cee66684141cc9ef81d31f31))
+- The bundle is now compatible with Symfony 5.x ([3f36977](https://github.com/trikoder/oauth2-bundle/commit/3f369771385c0b90855da712b9cb31faa4c651dc))
+
+### Changed
+- [PSR-7 Bridge](https://github.com/symfony/psr-http-message-bridge) version constraint to `^2.0` ([3c741ca](https://github.com/trikoder/oauth2-bundle/commit/3c741ca1e394886e8936ad018c28cd1ddd3dff02))
+- The bundle now relies on `8.x` versions of [league/oauth2-server](https://github.com/thephpleague/oauth2-server) for base functionality ([8becc18](https://github.com/trikoder/oauth2-bundle/commit/8becc18255052a73d0f76a030be9de0fe9868928))
+
+### Removed
+- Support for Symfony 3.4, 4.2 and 4.3 ([3f36977](https://github.com/trikoder/oauth2-bundle/commit/3f369771385c0b90855da712b9cb31faa4c651dc))
+
+## [2.1.1] - 2020-02-25
+### Added
+- The bundle is now additionally tested against PHP 7.4 ([2b29be3](https://github.com/trikoder/oauth2-bundle/commit/2b29be3629877a648f4a199b96185b40d625f6aa))
+
+### Fixed
+- Authentication provider not being aware of the current firewall context ([d349329](https://github.com/trikoder/oauth2-bundle/commit/d349329056c219969e097ae6bd3eb724968f9812))
+- Faulty logic when revoking authorization codes ([24ad882](https://github.com/trikoder/oauth2-bundle/commit/24ad88211cefddf97170f5c1cc8ba1e5cf285e42))
+
+## [2.1.0] - 2019-12-09
+### Added
+- Ability to change the scope role prefix using the `role_prefix` configuration option ([b2ee617](https://github.com/trikoder/oauth2-bundle/commit/b2ee6179832cc142d95e3b13d9af09d6cb6831d5))
+- Interfaces for converter type service classes ([d2caf69](https://github.com/trikoder/oauth2-bundle/commit/d2caf690839523a2c84d967a6f99787898d4c654))
+- New testing target in Travis CI for Symfony 4.4 ([8a44fd4](https://github.com/trikoder/oauth2-bundle/commit/8a44fd4d7673467cc4f69988424cdfc677767aab))
+- The bundle is now fully compatible with [Symfony Flex](https://github.com/symfony/flex) ([a4ccea1](https://github.com/trikoder/oauth2-bundle/commit/a4ccea1dfaaba6d95daf3e1f1a84952cafb65d01))
+
+### Changed
+- [DoctrineBundle](https://github.com/doctrine/DoctrineBundle) version constraint to allow `2.x` derived versions ([885e398](https://github.com/trikoder/oauth2-bundle/commit/885e39811331e89bae99bca71f1a783497d26d12))
+- Explicitly list [league/oauth2-server](https://github.com/thephpleague/oauth2-server) version requirements in the documentation ([9dce66a](https://github.com/trikoder/oauth2-bundle/commit/9dce66a089c33c224fe5cb58bdfd6285350a607b))
+- Reduce distributed package size by excluding files that are used only for development ([80b9e41](https://github.com/trikoder/oauth2-bundle/commit/80b9e41155e7a94c3b1a4602c8daa25cc6d246b2))
+- Simplify `AuthorizationRequestResolveEvent` class creation ([32908c1](https://github.com/trikoder/oauth2-bundle/commit/32908c1a4a89fd89d5835d4de931d237de223b50))
+
+### Fixed
+- Not being able to delete clients that have access/refresh tokens assigned to them ([424b770](https://github.com/trikoder/oauth2-bundle/commit/424b770dbd99e4651777a3fa26186a756b4e93c4))
+
 ## [2.0.1] - 2019-08-13
 ### Removed
 - PSR-7/17 alias check during the container compile process ([0847ea3](https://github.com/trikoder/oauth2-bundle/commit/0847ea3034cc433c9c8f92ec46fedbdace259e3d))

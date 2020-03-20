@@ -1,6 +1,50 @@
 # Upgrade
 Here you will find upgrade steps between major releases.
 
+## From 2.x to 3.x
+
+### Console command changes
+
+#### `trikoder:oauth2:clear-expired-tokens`
+
+The following options have been renamed:
+
+* `access-tokens-only` has been renamed to `access-tokens`
+* `refresh-tokens-only` has been renamed to `refresh-tokens`
+
+### SQL schema changes
+
+The bundle makes modifications to the existing schema. You will need to run the Doctrine schema update process to sync the changes:
+
+```sh
+bin/console doctrine:schema:update
+```
+
+The schema changes include:
+
+* New `allow_plain_text_pkce` field on the `oauth2_client` table
+* `secret` field on the `oauth2_client` table is now nullable
+
+### Interface changes
+
+The following interfaces have been changed:
+
+#### `Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface`
+
+- [Added the clearExpired() method](https://github.com/trikoder/oauth2-bundle/blob/v3.0.0/Manager/AuthorizationCodeManagerInterface.php#L15)
+
+### Method signature changes
+
+The following method signatures have been changed:
+
+#### `Trikoder\Bundle\OAuth2Bundle\Model\Client`
+
+- [Return type for getSecret() is now nullable](https://github.com/trikoder/oauth2-bundle/blob/v3.0.0/Model/Client.php#L60)
+
+---
+
+> **NOTE:** The underlying [league/oauth2-server](https://github.com/thephpleague/oauth2-server) library has been upgraded from version `7.x` to `8.x`. Please check your code if you are directly implementing their interfaces or extending existing non-final classes.
+
 ## From 1.x to 2.x
 
 ### PSR-7/17 HTTP transport implementation

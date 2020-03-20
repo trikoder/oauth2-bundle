@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
@@ -28,14 +30,14 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
-            <argument type="service" id="Symfony\Contracts\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
         </service>
         <service id="trikoder.oauth2.league.repository.scope_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository" />
         <service id="League\OAuth2\Server\Repositories\ScopeRepositoryInterface" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
-            <argument type="service" id="Symfony\Contracts\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
         </service>
         <service id="trikoder.oauth2.league.repository.user_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository" />
@@ -53,6 +55,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider">
             <argument key="$userProvider" />
             <argument key="$resourceServer" type="service" id="League\OAuth2\Server\ResourceServer" />
+            <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
         <service id="trikoder.oauth2.security.authentication.provider.oauth2_provider" alias="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider" />
 
@@ -63,6 +66,7 @@
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="sensio_framework_extra.psr7.http_message_factory" />
+            <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
         <service id="trikoder.oauth2.security.firewall.oauth2_listener" alias="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener" />
 
@@ -113,9 +117,10 @@
         <!-- Authorization controller -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
-            <argument type="service" id="Symfony\Contracts\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="controller.service_arguments" />
         </service>
         <service id="trikoder.oauth2.controller.authorization_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController" />
@@ -210,6 +215,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Command\ClearExpiredTokensCommand">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" />
             <tag name="console.command" />
         </service>
         <service id="trikoder.oauth2.command.clear_expired_tokens_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\ClearExpiredTokensCommand" />
@@ -228,5 +234,9 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
         </service>
         <service id="trikoder.oauth2.event.authorization_request_resolve_event_factory" alias="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory" />
+
+        <service id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory">
+            <argument type="string" />
+        </service>
     </services>
 </container>

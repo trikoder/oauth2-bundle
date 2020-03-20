@@ -6,6 +6,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Tests;
 
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
+use Exception;
 use League\OAuth2\Server\CryptKey;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -42,13 +43,13 @@ final class TestHelper
         }
     }
 
-    public static function generateEncryptedAuthCodePayload(AuthorizationCodeModel $authCode): ?string
+    public static function generateEncryptedAuthCodePayload(AuthorizationCodeModel $authCode, bool $convertScopes = true): ?string
     {
         $payload = json_encode([
             'client_id' => $authCode->getClient()->getIdentifier(),
             'redirect_uri' => (string) $authCode->getClient()->getRedirectUris()[0],
             'auth_code_id' => $authCode->getIdentifier(),
-            'scopes' => (new ScopeConverter())->toDomainArray($authCode->getScopes()),
+            'scopes' => $convertScopes ? (new ScopeConverter())->toDomainArray($authCode->getScopes()) : $authCode->getScopes(),
             'user_id' => $authCode->getUserIdentifier(),
             'expire_time' => $authCode->getExpiryDateTime()->getTimestamp(),
             'code_challenge' => null,
@@ -62,6 +63,15 @@ final class TestHelper
         }
     }
 
+    public static function decryptPayload(string $payload): ?string
+    {
+        try {
+            return Crypto::decryptWithPassword($payload, self::ENCRYPTION_KEY);
+        } catch (CryptoException $e) {
+            return null;
+        }
+    }
+
     public static function generateJwtToken(AccessTokenModel $accessToken): string
     {
         $clientEntity = new ClientEntity();
@@ -69,6 +79,7 @@ final class TestHelper
         $clientEntity->setRedirectUri(array_map('strval', $accessToken->getClient()->getRedirectUris()));
 
         $accessTokenEntity = new AccessTokenEntity();
+        $accessTokenEntity->setPrivateKey(new CryptKey(self::PRIVATE_KEY_PATH, null, false));
         $accessTokenEntity->setIdentifier($accessToken->getIdentifier());
         $accessTokenEntity->setExpiryDateTime($accessToken->getExpiry());
         $accessTokenEntity->setClient($clientEntity);
@@ -81,11 +92,12 @@ final class TestHelper
             $accessTokenEntity->addScope($scopeEntity);
         }
 
-        return (string) $accessTokenEntity->convertToJWT(
-            new CryptKey(self::PRIVATE_KEY_PATH, null, false)
-        );
+        return (string) $accessTokenEntity;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function initializeDoctrineSchema(Application $application, array $arguments = []): bool
     {
         $statusCode = $application

@@ -7,6 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 use DateInterval;
 use Defuse\Crypto\Key;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -16,6 +17,7 @@ use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
 use LogicException;
+use RuntimeException;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\FileLocator;
@@ -40,12 +42,15 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
+use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\IdTokenResponse;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
     /**
      * {@inheritdoc}
+     *
+     * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -59,6 +64,9 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
         $this->configureOpenIDConnect($container, $config['openid_connect']);
+
+        $container->getDefinition(OAuth2TokenFactory::class)
+            ->setArgument(0, $config['role_prefix']);
 
         $container->getDefinition(ConvertExceptionToResponseListener::class)
             ->addTag('kernel.event_listener', [
@@ -111,12 +119,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         foreach ($requiredBundles as $bundleAlias => $requiredBundle) {
             if (!$container->hasExtension($bundleAlias)) {
-                throw new LogicException(
-                    sprintf(
-                        'Bundle \'%s\' needs to be enabled in your application kernel.',
-                        $requiredBundle
-                    )
-                );
+                throw new LogicException(sprintf('Bundle \'%s\' needs to be enabled in your application kernel.', $requiredBundle));
             }
         }
     }
@@ -135,7 +138,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             $authorizationServer->replaceArgument('$encryptionKey', $config['encryption_key']);
         } elseif ('defuse' === $config['encryption_key_type']) {
             if (!class_exists(Key::class)) {
-                throw new \RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
+                throw new RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
             }
 
             $keyDefinition = (new Definition(Key::class))
@@ -201,13 +204,16 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             ])
         ;
 
-        $container
-            ->getDefinition(AuthCodeGrant::class)
-            ->replaceArgument('$authCodeTTL', new Definition(DateInterval::class, [$config['auth_code_ttl']]))
+        $authCodeGrantDefinition = $container->getDefinition(AuthCodeGrant::class);
+        $authCodeGrantDefinition->replaceArgument('$authCodeTTL', new Definition(DateInterval::class, [$config['auth_code_ttl']]))
             ->addMethodCall('setRefreshTokenTTL', [
                 new Definition(DateInterval::class, [$config['refresh_token_ttl']]),
             ])
         ;
+
+        if (false === $config['require_code_challenge_for_public_clients']) {
+            $authCodeGrantDefinition->addMethodCall('disableRequireCodeChallengeForPublicClients');
+        }
 
         $container
             ->getDefinition(ImplicitGrant::class)
@@ -215,6 +221,9 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         ;
     }
 
+    /**
+     * @throws Exception
+     */
     private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config): void
     {
         if (\count($config) > 1) {
@@ -289,7 +298,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     {
         $scopeManager = $container
             ->getDefinition(
-                $container->getAlias(ScopeManagerInterface::class)
+                (string) $container->getAlias(ScopeManagerInterface::class)
             )
         ;
 

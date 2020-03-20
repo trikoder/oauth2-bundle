@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
+use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 
 final class OAuth2Provider implements AuthenticationProviderInterface
 {
@@ -26,10 +27,26 @@ final class OAuth2Provider implements AuthenticationProviderInterface
      */
     private $resourceServer;
 
-    public function __construct(UserProviderInterface $userProvider, ResourceServer $resourceServer)
-    {
+    /**
+     * @var OAuth2TokenFactory
+     */
+    private $oauth2TokenFactory;
+
+    /**
+     * @var string
+     */
+    private $providerKey;
+
+    public function __construct(
+        UserProviderInterface $userProvider,
+        ResourceServer $resourceServer,
+        OAuth2TokenFactory $oauth2TokenFactory,
+        string $providerKey
+    ) {
         $this->userProvider = $userProvider;
         $this->resourceServer = $resourceServer;
+        $this->oauth2TokenFactory = $oauth2TokenFactory;
+        $this->providerKey = $providerKey;
     }
 
     /**
@@ -38,12 +55,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
     public function authenticate(TokenInterface $token)
     {
         if (!$this->supports($token)) {
-            throw new RuntimeException(
-                sprintf(
-                    'This authentication provider can only handle tokes of type \'%s\'.',
-                    OAuth2Token::class
-                )
-            );
+            throw new RuntimeException(sprintf('This authentication provider can only handle tokes of type \'%s\'.', OAuth2Token::class));
         }
 
         try {
@@ -58,7 +70,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
             $request->getAttribute('oauth_user_id')
         );
 
-        $token = new OAuth2Token($request, $user);
+        $token = $this->oauth2TokenFactory->createOAuth2Token($request, $user, $this->providerKey);
         $token->setAuthenticated(true);
 
         return $token;
@@ -69,7 +81,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
      */
     public function supports(TokenInterface $token)
     {
-        return $token instanceof OAuth2Token;
+        return $token instanceof OAuth2Token && $this->providerKey === $token->getProviderKey();
     }
 
     private function getAuthenticatedUser(string $userIdentifier): ?UserInterface

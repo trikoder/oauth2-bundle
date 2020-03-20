@@ -28,11 +28,11 @@ use OpenIDConnectServer\IdTokenResponse;
 use OpenIDConnectServer\Repositories\IdentityProviderInterface;
 use League\OAuth2\Server\ResourceServer;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
 use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\User;
@@ -56,7 +56,6 @@ use Trikoder\Bundle\OAuth2Bundle\OpenIDConnect\Repository\IdentityProvider;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
-use Trikoder\Bundle\OAuth2Bundle\Service\BCEventDispatcher;
 use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 abstract class AbstractIntegrationTest extends TestCase
@@ -107,6 +106,11 @@ abstract class AbstractIntegrationTest extends TestCase
     private $psrFactory;
 
     /**
+     * @var bool
+     */
+    private $requireCodeChallengeForPublicClients = true;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -116,7 +120,7 @@ abstract class AbstractIntegrationTest extends TestCase
         $this->accessTokenManager = new AccessTokenManager();
         $this->refreshTokenManager = new RefreshTokenManager();
         $this->authCodeManager = new AuthorizationCodeManager();
-        $this->eventDispatcher = new BCEventDispatcher(new EventDispatcher());
+        $this->eventDispatcher = new EventDispatcher();
 
         $scopeConverter = new ScopeConverter();
         $scopeRepository = new ScopeRepository($this->scopeManager, $this->clientManager, $scopeConverter, $this->eventDispatcher);
@@ -264,6 +268,16 @@ abstract class AbstractIntegrationTest extends TestCase
         return $data;
     }
 
+    protected function enableRequireCodeChallengeForPublicClients(): void
+    {
+        $this->requireCodeChallengeForPublicClients = true;
+    }
+
+    protected function disableRequireCodeChallengeForPublicClients(): void
+    {
+        $this->requireCodeChallengeForPublicClients = false;
+    }
+
     private function createAuthorizationServer(
         ScopeRepositoryInterface $scopeRepository,
         ClientRepositoryInterface $clientRepository,
@@ -282,10 +296,16 @@ abstract class AbstractIntegrationTest extends TestCase
             new IdTokenResponse($identityRepository, new ClaimExtractor())
         );
 
+        $authCodeGrant = new AuthCodeGrant($authCodeRepository, $refreshTokenRepository, new DateInterval('PT10M'));
+
+        if (!$this->requireCodeChallengeForPublicClients) {
+            $authCodeGrant->disableRequireCodeChallengeForPublicClients();
+        }
+
         $authorizationServer->enableGrantType(new ClientCredentialsGrant());
         $authorizationServer->enableGrantType(new RefreshTokenGrant($refreshTokenRepository));
         $authorizationServer->enableGrantType(new PasswordGrant($userRepository, $refreshTokenRepository));
-        $authorizationServer->enableGrantType(new AuthCodeGrant($authCodeRepository, $refreshTokenRepository, new DateInterval('PT10M')));
+        $authorizationServer->enableGrantType($authCodeGrant);
         $authorizationServer->enableGrantType(new ImplicitGrant(new DateInterval('PT10M')));
 
         return $authorizationServer;

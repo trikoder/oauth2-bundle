@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Trikoder\Bundle\OAuth2Bundle\DependencyInjection\TrikoderOAuth2Extension;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager;
-use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationDecision\AlwaysAllowDecisionStrategy;
 
 final class ExtensionTest extends TestCase
 {
@@ -65,7 +66,53 @@ final class ExtensionTest extends TestCase
         ];
     }
 
-    private function getValidConfiguration(array $options): array
+    /**
+     * @dataProvider requireCodeChallengeForPublicClientsProvider
+     */
+    public function testAuthCodeGrantDisableRequireCodeChallengeForPublicClientsConfig(
+        ?bool $requireCodeChallengeForPublicClients,
+        bool $shouldTheRequirementBeDisabled
+    ): void {
+        $container = new ContainerBuilder();
+
+        $this->setupContainer($container);
+
+        $extension = new TrikoderOAuth2Extension();
+
+        $configuration = $this->getValidConfiguration();
+        $configuration[0]['authorization_server']['require_code_challenge_for_public_clients'] = $requireCodeChallengeForPublicClients;
+
+        $extension->load($configuration, $container);
+
+        $authorizationServer = $container->getDefinition(AuthCodeGrant::class);
+        $methodCalls = $authorizationServer->getMethodCalls();
+
+        $isRequireCodeChallengeForPublicClientsDisabled = false;
+
+        foreach ($methodCalls as $methodCall) {
+            if ('disableRequireCodeChallengeForPublicClients' === $methodCall[0]) {
+                $isRequireCodeChallengeForPublicClientsDisabled = true;
+                break;
+            }
+        }
+
+        $this->assertSame($shouldTheRequirementBeDisabled, $isRequireCodeChallengeForPublicClientsDisabled);
+    }
+
+    public function requireCodeChallengeForPublicClientsProvider(): iterable
+    {
+        yield 'when not requiring code challenge for public clients the requirement should be disabled' => [
+            false, true,
+        ];
+        yield 'when code challenge for public clients is required the requirement should not be disabled' => [
+            true, false,
+        ];
+        yield 'with the default value the requirement should not be disabled' => [
+            null, false,
+        ];
+    }
+
+    private function getValidConfiguration(array $options = []): array
     {
         return [
             [
@@ -75,11 +122,15 @@ final class ExtensionTest extends TestCase
                     'enable_client_credentials_grant' => $options['enable_client_credentials_grant'] ?? true,
                     'enable_password_grant' => $options['enable_password_grant'] ?? true,
                     'enable_refresh_token_grant' => $options['enable_refresh_token_grant'] ?? true,
+                    'authorization_strategy' => AlwaysAllowDecisionStrategy::class,
+                    'consent_route' => 'oauth2_consent'
                 ],
                 'resource_server' => [
                     'public_key' => 'foo',
                 ],
-                'persistence' => [],
+                //Pick one for valid config:
+                //'persistence' => ['doctrine' => []]
+                'persistence' => ['in_memory' => 1],
             ],
         ];
     }
@@ -87,6 +138,5 @@ final class ExtensionTest extends TestCase
     private function setupContainer(ContainerBuilder $container): void
     {
         $container->register(ScopeManager::class);
-        $container->setAlias(ScopeManagerInterface::class, ScopeManager::class);
     }
 }

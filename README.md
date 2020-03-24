@@ -153,51 +153,9 @@ security:
 * [Password grant handling](docs/password-grant-handling.md)
 * [Implementing custom grant type](docs/implementing-custom-grant-type.md)
 
-## Development
+## Contributing
 
-[Docker](https://www.docker.com/) 18.03+ and [Docker Compose](https://github.com/docker/compose) 1.13+ are required for the development environment.
-
-### Building the environment
-
-Make sure your Docker images are all built and up-to-date using the following command:
-
-```sh
-dev/bin/docker-compose build
-```
-
-> **NOTE:** You can target a different version of PHP during development by appending the `--build-arg PHP_VERSION=<version>` argument.
-
-After that, install all the needed packages required to develop the project:
-
-```sh
-dev/bin/php composer install
-```
-
-### Testing
-
-You can run the test suite using the following command:
-
-```sh
-dev/bin/php-test composer test
-```
-
-### Debugging
-
-You can run the debugger using the following command:
-
-```sh
-dev/bin/php-debug vendor/bin/phpunit
-```
-
-Make sure your IDE is setup properly, for more information check out the [dedicated documentation](docs/debugging.md).
-
-### Code linting
-
-This bundle enforces the PSR-2 and Symfony code standards during development using the [PHP CS Fixer](https://cs.sensiolabs.org/) utility. Before committing any code, you can run the utility so it can fix any potential rule violations for you:
-
-```sh
-dev/bin/php composer lint
-```
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Versioning
 

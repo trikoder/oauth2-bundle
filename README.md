@@ -199,6 +199,12 @@ This bundle enforces the PSR-2 and Symfony code standards during development usi
 dev/bin/php composer lint
 ```
 
+## Versioning
+
+This project adheres to [Semantic Versioning 2.0.0](http://semver.org/). Randomly breaking public APIs is not an option.
+
+However, starting with version 4, we only promise to follow SemVer on structural elements marked with the [@api tag](https://github.com/php-fig/fig-standards/blob/2668020622d9d9eaf11d403bc1d26664dfc3ef8e/proposed/phpdoc-tags.md#51-api).
+
 ## Changes
 
 All the package releases are recorded in the [CHANGELOG](CHANGELOG.md) file.

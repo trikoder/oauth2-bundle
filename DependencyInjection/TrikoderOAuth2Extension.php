@@ -41,6 +41,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
+use Trikoder\Bundle\OAuth2Bundle\Service\CredentialsRevoker\DoctrineCredentialsRevoker;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
@@ -265,6 +266,11 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         $container
             ->getDefinition(AuthorizationCodeManager::class)
+            ->replaceArgument('$entityManager', $entityManager)
+        ;
+
+        $container
+            ->getDefinition(DoctrineCredentialsRevoker::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 

@@ -64,7 +64,27 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
         $this->assertCount(2, $client->getScopes());
     }
 
-    public function testDeactivate(): void
+    public function testSetClientActive(): void
+    {
+        $client = $this->fakeAClient('foobar');
+        $client->setActive(false);
+        $this->getClientManager()->save($client);
+        $this->assertFalse($client->isActive());
+
+        $command = $this->application->find('trikoder:oauth2:update-client');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
+            'command' => $command->getName(),
+            'identifier' => $client->getIdentifier(),
+            '--active' => 1,
+        ]);
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Given oAuth2 client updated successfully', $output);
+        $updatedClient = $this->getClientManager()->find($client->getIdentifier());
+        $this->assertTrue($updatedClient->isActive());
+    }
+
+    public function testSetClientInactive(): void
     {
         $client = $this->fakeAClient('foobar');
         $this->getClientManager()->save($client);
@@ -75,7 +95,7 @@ final class UpdateClientCommandTest extends AbstractAcceptanceTest
         $commandTester->execute([
             'command' => $command->getName(),
             'identifier' => $client->getIdentifier(),
-            '--deactivated' => true,
+            '--active' => 0,
         ]);
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Given oAuth2 client updated successfully', $output);

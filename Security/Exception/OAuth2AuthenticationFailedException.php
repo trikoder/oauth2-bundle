@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class Oauth2AuthenticationFailedException extends AuthenticationException
+class OAuth2AuthenticationFailedException extends AuthenticationException
 {
     public static function create(string $message): self
     {

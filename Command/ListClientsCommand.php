@@ -114,7 +114,7 @@ final class ListClientsCommand extends Command
                 'grant type' => implode(', ', $client->getGrants()),
             ];
 
-            return array_map(static function (string $column) use ($values): string {
+            return array_map(static function (string $column) use ($values): ?string {
                 return $values[$column];
             }, $columns);
         }, $clients);

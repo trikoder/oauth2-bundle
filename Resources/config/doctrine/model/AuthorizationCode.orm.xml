@@ -17,5 +17,8 @@
         <many-to-one field="client" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\Client">
             <join-column name="client" referenced-column-name="identifier" nullable="false" />
         </many-to-one>
+        <indexes>
+            <index columns="userIdentifier" />
+        </indexes>
     </entity>
 </doctrine-mapping>

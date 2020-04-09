@@ -12,6 +12,11 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager" />
 
         <!-- Services -->
+        <service id="Trikoder\Bundle\OAuth2Bundle\Service\CredentialsRevokerInterface" alias="Trikoder\Bundle\OAuth2Bundle\Service\CredentialsRevoker\DoctrineCredentialsRevoker" />
+        <service id="Trikoder\Bundle\OAuth2Bundle\Service\CredentialsRevoker\DoctrineCredentialsRevoker">
+            <argument key="$entityManager" />
+        </service>
+
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager">
             <argument key="$entityManager" />
         </service>

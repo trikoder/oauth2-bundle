@@ -1,7 +1,21 @@
 # Upgrade
 Here you will find upgrade steps between releases.
 
-## From 3.0 to 3.1
+## From 3.1.0 to 3.1.1
+
+The bundle makes modifications to the existing schema. You will need to run the Doctrine schema update process to sync the changes:
+
+```sh
+bin/console doctrine:schema:update
+```
+
+The schema changes include:
+
+* Removed the `userIdentifier` index from `oauth2_access_token` and `oauth2_authorization_code` tables
+
+## ~~From 3.0 to 3.1.0~~
+
+> **NOTE:** This is now obsolete due to issue [#196](https://github.com/trikoder/oauth2-bundle/issues/196). You can safely ignore it.
 
 ### SQL schema changes
 
@@ -13,7 +27,7 @@ bin/console doctrine:schema:update
 
 The schema changes include:
 
-* New `userIdentifier` index on the `oauth2_access_token` table
+* New `userIdentifier` index on the `oauth2_access_token` and `oauth2_authorization_code` tables
 
 ## From 2.x to 3.0
 

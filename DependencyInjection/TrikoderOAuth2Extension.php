@@ -34,6 +34,7 @@ use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
 use Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener;
+use Trikoder\Bundle\OAuth2Bundle\League\AuthorizationServer\GrantTypeInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager;
@@ -41,6 +42,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
+use Trikoder\Bundle\OAuth2Bundle\Service\CredentialsRevoker\DoctrineCredentialsRevoker;
 
 final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
@@ -70,6 +72,9 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
                 'method' => 'onKernelException',
                 'priority' => $config['exception_event_listener_priority'],
             ]);
+
+        $container->registerForAutoconfiguration(GrantTypeInterface::class)
+            ->addTag('trikoder.oauth2.authorization_server.grant');
     }
 
     /**
@@ -265,6 +270,11 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         $container
             ->getDefinition(AuthorizationCodeManager::class)
+            ->replaceArgument('$entityManager', $entityManager)
+        ;
+
+        $container
+            ->getDefinition(DoctrineCredentialsRevoker::class)
             ->replaceArgument('$entityManager', $entityManager)
         ;
 

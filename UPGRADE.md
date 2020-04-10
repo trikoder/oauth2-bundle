@@ -1,7 +1,21 @@
 # Upgrade
-Here you will find upgrade steps between major releases.
+Here you will find upgrade steps between releases.
 
-## From 2.x to 3.x
+## From 3.0 to 3.1
+
+### SQL schema changes
+
+The bundle makes modifications to the existing schema. You will need to run the Doctrine schema update process to sync the changes:
+
+```sh
+bin/console doctrine:schema:update
+```
+
+The schema changes include:
+
+* New `userIdentifier` index on the `oauth2_access_token` table
+
+## From 2.x to 3.0
 
 ### Console command changes
 

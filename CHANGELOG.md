@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2020-04-09
+### Added
+- Ability to revoke credentials (access tokens, authorization codes and refresh tokens) programmatically ([fee109d](https://github.com/trikoder/oauth2-bundle/commit/fee109da2d52d73dfc81501d0af3d66216f09de6))
+- Support for registering custom grant types ([6b37588](https://github.com/trikoder/oauth2-bundle/commit/6b3758807b7cca6835c00504f1632ea78de563a5))
+
+### Fixed
+- Console command `trikoder:oauth2:list-clients` not being able to list clients without a secret ([da38b7a](https://github.com/trikoder/oauth2-bundle/commit/da38b7ab77060b4d43aca405559d5ffbd7a34d8d))
+
 ## [3.0.0] - 2020-02-26
 ### Added
 - Ability to restrict clients from using the `plain` challenge method during PKCE ([4562a1f](https://github.com/trikoder/oauth2-bundle/commit/4562a1ff306375fd651aa91c85d0d4fd6f4c1b13))

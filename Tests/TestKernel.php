@@ -27,6 +27,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FakeGrant;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Support\SqlitePlatform;
@@ -196,6 +197,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
         $this->configureControllers($container);
         $this->configurePsrHttpFactory($container);
         $this->configureDatabaseServices($container);
+        $this->registerFakeGrant($container);
     }
 
     private function exposeManagerServices(ContainerBuilder $container): void
@@ -296,6 +298,11 @@ final class TestKernel extends Kernel implements CompilerPassInterface
             ->setAutoconfigured(true)
             ->setAutowired(true)
         ;
+    }
+
+    private function registerFakeGrant(ContainerBuilder $container): void
+    {
+        $container->register(FakeGrant::class)->setAutoconfigured(true);
     }
 
     private function determinePsrHttpFactory(): void

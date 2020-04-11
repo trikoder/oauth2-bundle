@@ -13,6 +13,11 @@ use Trikoder\Bundle\OAuth2Bundle\DependencyInjection\TrikoderOAuth2Extension;
 
 final class TrikoderOAuth2Bundle extends Bundle
 {
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -44,7 +49,7 @@ final class TrikoderOAuth2Bundle extends Bundle
         $container->addCompilerPass(
             DoctrineOrmMappingsPass::createXmlMappingDriver(
                 [
-                    realpath(__DIR__ . '/Resources/config/doctrine/model') => 'Trikoder\Bundle\OAuth2Bundle\Model',
+                    realpath(__DIR__ . '/../config/doctrine/model') => 'Trikoder\Bundle\OAuth2Bundle\Model',
                 ],
                 [
                     'trikoder.oauth2.persistence.doctrine.manager',

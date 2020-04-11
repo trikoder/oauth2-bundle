@@ -74,7 +74,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
      */
     public function getCacheDir()
     {
-        return sprintf('%s/Tests/.kernel/cache', $this->getProjectDir());
+        return sprintf('%s/tests/.kernel/cache', $this->getProjectDir());
     }
 
     /**
@@ -82,7 +82,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
      */
     public function getLogDir()
     {
-        return sprintf('%s/Tests/.kernel/logs', $this->getProjectDir());
+        return sprintf('%s/tests/.kernel/logs', $this->getProjectDir());
     }
 
     /**
@@ -108,7 +108,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
      */
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
-        $routes->import('@TrikoderOAuth2Bundle/Resources/config/routes.xml');
+        $routes->import('@TrikoderOAuth2Bundle/config/routes.xml');
 
         $routes
             ->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:helloAction')

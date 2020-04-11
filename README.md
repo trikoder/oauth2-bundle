@@ -131,7 +131,7 @@ This package is currently in the active development.
 
     ```yaml
     oauth2:
-        resource: '@TrikoderOAuth2Bundle/Resources/config/routes.xml'
+        resource: '@TrikoderOAuth2Bundle/config/routes.xml'
     ```
 
 You can verify that everything is working by issuing a `POST` request to the `/token` endpoint.

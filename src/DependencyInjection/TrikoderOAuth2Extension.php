@@ -53,7 +53,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.xml');
 
         $config = $this->processConfiguration(new Configuration(), $configs);

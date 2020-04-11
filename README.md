@@ -50,48 +50,102 @@ This package is currently in the active development.
             # How to generate a private key: https://oauth2.thephpleague.com/installation/#generating-public-and-private-keys
             private_key:          ~ # Required, Example: /var/oauth/private.key
 
-            # Passphrase of the private key, if any
+            # Passphrase of the private key, if any.
             private_key_passphrase: null
 
             # The plain string or the ascii safe string used to create a Defuse\Crypto\Key to be used as an encryption key.
             # How to generate an encryption key: https://oauth2.thephpleague.com/installation/#string-password
             encryption_key:       ~ # Required
 
-            # The type of value of 'encryption_key'
+            # The type of value of "encryption_key".
             encryption_key_type:  plain # One of "plain"; "defuse"
 
-            # How long the issued access token should be valid for.
+            # How long the issued access token should be valid for, used as a default if there is no grant type specific value set.
             # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
             access_token_ttl:     PT1H
 
-            # How long the issued refresh token should be valid for.
+            # How long the issued refresh token should be valid for, used as a default if there is no grant type specific value set.
             # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
             refresh_token_ttl:    P1M
 
-            # How long the issued auth code should be valid for.
+            # How long the issued authorization code should be valid for.
             # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
-            auth_code_ttl:        PT10M
+            auth_code_ttl:        ~ # Deprecated ("trikoder_oauth2.authorization_server.auth_code_ttl" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.authorization_code.auth_code_ttl" instead.)
 
-            # Whether to enable the client credentials grant
-            enable_client_credentials_grant: true
+            # Whether to require code challenge for public clients for the authorization code grant.
+            require_code_challenge_for_public_clients: ~ # Deprecated ("trikoder_oauth2.authorization_server.require_code_challenge_for_public_clients" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.authorization_code.require_code_challenge_for_public_clients" instead.)
 
-            # Whether to enable the password grant
-            enable_password_grant: true
+            # Whether to enable the authorization code grant.
+            enable_auth_code_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_auth_code_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.authorization_code.enable" instead.)
 
-            # Whether to enable the refresh token grant
-            enable_refresh_token_grant: true
+            # Whether to enable the client credentials grant.
+            enable_client_credentials_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_client_credentials_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.client_credentials.enable" instead.)
 
-            # Whether to enable the authorization code grant
-            enable_auth_code_grant: true
+            # Whether to enable the implicit grant.
+            enable_implicit_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_implicit_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.implicit.enable" instead.)
 
-            # Whether to require code challenge for public clients for the auth code grant
-            require_code_challenge_for_public_clients: true
+            # Whether to enable the password grant.
+            enable_password_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_password_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.password.enable" instead.)
 
-            # Whether to enable the implicit grant
-            enable_implicit_grant: true
+            # Whether to enable the refresh token grant.
+            enable_refresh_token_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_refresh_token_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.refresh_token.enable" instead.)
+
+            # Enable and configure grant types.
+            grant_types:
+                authorization_code:
+
+                    # Whether to enable the authorization code grant.
+                    enable:               true
+
+                    # How long the issued access token should be valid for the authorization code grant.
+                    access_token_ttl:     ~
+
+                    # How long the issued refresh token should be valid for the authorization code grant.
+                    refresh_token_ttl:    ~
+
+                    # How long the issued authorization code should be valid for.
+                    # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
+                    auth_code_ttl:        PT10M
+
+                    # Whether to require code challenge for public clients for the authorization code grant.
+                    require_code_challenge_for_public_clients: true
+                client_credentials:
+
+                    # Whether to enable the client credentials grant.
+                    enable:               true
+
+                    # How long the issued access token should be valid for the client credentials grant.
+                    access_token_ttl:     ~
+                implicit:
+
+                    # Whether to enable the implicit grant.
+                    enable:               true
+
+                    # How long the issued access token should be valid for the implicit grant.
+                    access_token_ttl:     ~
+                password:
+
+                    # Whether to enable the password grant.
+                    enable:               true
+
+                    # How long the issued access token should be valid for the password grant.
+                    access_token_ttl:     ~
+
+                    # How long the issued refresh token should be valid for the password grant.
+                    refresh_token_ttl:    ~
+                refresh_token:
+
+                    # Whether to enable the refresh token grant.
+                    enable:               true
+
+                    # How long the issued access token should be valid for the refresh token grant.
+                    access_token_ttl:     ~
+
+                    # How long the issued refresh token should be valid for the refresh token grant.
+                    refresh_token_ttl:    ~
         resource_server:      # Required
 
-            # Full path to the public key file
+            # Full path to the public key file.
             # How to generate a public key: https://oauth2.thephpleague.com/installation/#generating-public-and-private-keys
             public_key:           ~ # Required, Example: /var/oauth/public.key
 
@@ -108,10 +162,10 @@ This package is currently in the active development.
                 entity_manager:       default
             in_memory:            ~
 
-        # The priority of the event listener that converts an Exception to a Response
+        # The priority of the event listener that converts an Exception to a Response.
         exception_event_listener_priority: 10
 
-        # Set a custom prefix that replaces the default 'ROLE_OAUTH2_' role prefix
+        # Set a custom prefix that replaces the default "ROLE_OAUTH2_" role prefix.
         role_prefix:          ROLE_OAUTH2_
     ```
 

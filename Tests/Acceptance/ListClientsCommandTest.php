@@ -24,7 +24,7 @@ final class ListClientsCommandTest extends AbstractAcceptanceTest
             'command' => $command->getName(),
         ]);
         $output = $commandTester->getDisplay();
-        $expected = <<<TABLE
+        $expected = <<<'TABLE'
  ------------ -------- ------- -------------- ------------ 
   identifier   secret   scope   redirect uri   grant type  
  ------------ -------- ------- -------------- ------------ 
@@ -46,7 +46,7 @@ TABLE;
             'command' => $command->getName(),
         ]);
         $output = $commandTester->getDisplay();
-        $expected = <<<TABLE
+        $expected = <<<'TABLE'
  ------------ -------- ------- -------------- ------------ 
   identifier   secret   scope   redirect uri   grant type  
  ------------ -------- ------- -------------- ------------ 
@@ -65,7 +65,7 @@ TABLE;
             'command' => $command->getName(),
         ]);
         $output = $commandTester->getDisplay();
-        $expected = <<<TABLE
+        $expected = <<<'TABLE'
  ------------ -------- ------- -------------- ------------ 
   identifier   secret   scope   redirect uri   grant type  
  ------------ -------- ------- -------------- ------------
@@ -101,7 +101,7 @@ TABLE;
         ]);
         $output = $commandTester->getDisplay();
 
-        $expected = <<<TABLE
+        $expected = <<<'TABLE'
  ------------ -------------------------------- 
   identifier   scope                           
  ------------ -------------------------------- 
@@ -132,7 +132,7 @@ TABLE;
         ]);
         $output = $commandTester->getDisplay();
 
-        $expected = <<<TABLE
+        $expected = <<<'TABLE'
  ------------ ----------------- ---------------- -------------- ------------ 
   identifier   secret            scope            redirect uri   grant type  
  ------------ ----------------- ---------------- -------------- ------------ 

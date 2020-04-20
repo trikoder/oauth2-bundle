@@ -33,6 +33,8 @@ RUN apk add --update --no-cache --virtual .build-deps \
         timecop \
     && apk del --purge .build-deps
 
+RUN mv ${PHP_INI_DIR}/php.ini-development ${PHP_INI_DIR}/php.ini
+
 RUN echo '[xdebug]' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
     && echo 'xdebug.remote_autostart = ${XDEBUG_REMOTE_AUTOSTART}' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
     && echo 'xdebug.remote_enable = 1' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \

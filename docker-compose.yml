@@ -5,6 +5,7 @@ services:
         environment:
             HOST_USER_ID: ${HOST_USER_ID}
             HOST_GROUP_ID: ${HOST_GROUP_ID}
+            HOST_IP: ${HOST_IP:-}
             PSR_HTTP_PROVIDER: ${PSR_HTTP_PROVIDER:-nyholm}
             SYMFONY_REQUIRE: ${SYMFONY_REQUIRE:-4.4.*}
         image: trikoder/oauth2-bundle

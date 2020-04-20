@@ -54,6 +54,7 @@ final class FixtureFactory
     public const FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD = 'bar_public';
 
     public const FIXTURE_CLIENT_FIRST_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri';
+    public const FIXTURE_CLIENT_SECOND_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri/second';
     public const FIXTURE_PUBLIC_CLIENT_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri-foo-test';
     public const FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD_REDIRECT_URI = 'https://example.org/oauth2/redirect-uri-bar-test';
 
@@ -259,7 +260,8 @@ final class FixtureFactory
         $clients[] = (new Client(self::FIXTURE_CLIENT_FIRST, 'secret'))
             ->setRedirectUris(new RedirectUri(self::FIXTURE_CLIENT_FIRST_REDIRECT_URI));
 
-        $clients[] = new Client(self::FIXTURE_CLIENT_SECOND, 'top_secret');
+        $clients[] = (new Client(self::FIXTURE_CLIENT_SECOND, 'top_secret'))
+            ->setRedirectUris(new RedirectUri(self::FIXTURE_CLIENT_SECOND_REDIRECT_URI));
 
         $clients[] = (new Client(self::FIXTURE_CLIENT_INACTIVE, 'woah'))
             ->setActive(false);

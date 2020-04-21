@@ -153,51 +153,15 @@ security:
 * [Password grant handling](docs/password-grant-handling.md)
 * [Implementing custom grant type](docs/implementing-custom-grant-type.md)
 
-## Development
+## Contributing
 
-[Docker](https://www.docker.com/) 18.03+ and [Docker Compose](https://github.com/docker/compose) 1.13+ are required for the development environment.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
-### Building the environment
+## Versioning
 
-Make sure your Docker images are all built and up-to-date using the following command:
+This project adheres to [Semantic Versioning 2.0.0](http://semver.org/). Randomly breaking public APIs is not an option.
 
-```sh
-dev/bin/docker-compose build
-```
-
-> **NOTE:** You can target a different version of PHP during development by appending the `--build-arg PHP_VERSION=<version>` argument.
-
-After that, install all the needed packages required to develop the project:
-
-```sh
-dev/bin/php composer install
-```
-
-### Testing
-
-You can run the test suite using the following command:
-
-```sh
-dev/bin/php-test composer test
-```
-
-### Debugging
-
-You can run the debugger using the following command:
-
-```sh
-dev/bin/php-debug vendor/bin/phpunit
-```
-
-Make sure your IDE is setup properly, for more information check out the [dedicated documentation](docs/debugging.md).
-
-### Code linting
-
-This bundle enforces the PSR-2 and Symfony code standards during development using the [PHP CS Fixer](https://cs.sensiolabs.org/) utility. Before committing any code, you can run the utility so it can fix any potential rule violations for you:
-
-```sh
-dev/bin/php composer lint
-```
+However, starting with version 4, we only promise to follow SemVer on structural elements marked with the [@api tag](https://github.com/php-fig/fig-standards/blob/2668020622d9d9eaf11d403bc1d26664dfc3ef8e/proposed/phpdoc-tags.md#51-api).
 
 ## Changes
 

@@ -6,6 +6,7 @@ use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
+    ->append([__FILE__])
 ;
 
 return PhpCsFixer\Config::create()

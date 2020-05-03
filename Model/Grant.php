@@ -17,9 +17,7 @@ class Grant
     public function __construct(string $grant)
     {
         if (!OAuth2Grants::has($grant)) {
-            throw new RuntimeException(
-                sprintf('The \'%s\' grant is not supported.', $grant)
-            );
+            throw new RuntimeException(sprintf('The \'%s\' grant is not supported.', $grant));
         }
 
         $this->grant = $grant;

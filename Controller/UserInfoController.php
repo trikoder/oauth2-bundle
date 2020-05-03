@@ -6,9 +6,9 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
 use OpenIDConnectServer\ClaimExtractor;
 use OpenIDConnectServer\Repositories\IdentityProviderInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Zend\Diactoros\Response as Psr7Response;
 
 final class UserInfoController
 {
@@ -23,14 +23,14 @@ final class UserInfoController
         $this->claimExtractor = $claimExtractor;
     }
 
-    public function indexAction(ServerRequestInterface $serverRequest)
+    public function indexAction(ServerRequestInterface $serverRequest, ResponseFactoryInterface $responseFactory)
     {
         $request = $this->serverRequestWithBearerToken($serverRequest);
 
         try {
             $validatedRequest = $this->server->validateAuthenticatedRequest($request);
         } catch (OAuthServerException $e) {
-            return $e->generateHttpResponse(new Psr7Response());
+            return $e->generateHttpResponse($responseFactory->createResponse());
         }
 
         $userEntity = $this->identityProvider->getUserEntityByIdentifier($validatedRequest->getAttribute('oauth_user_id'));

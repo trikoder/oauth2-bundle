@@ -8,13 +8,26 @@ use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 final class OpenIDProviderTest extends AbstractIntegrationTest
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        FixtureFactory::initializeFixtures(
+            $this->scopeManager,
+            $this->clientManager,
+            $this->accessTokenManager,
+            $this->refreshTokenManager,
+            $this->authCodeManager
+        );
+    }
+
     public function testSuccessfulIDTokenRequest(): void
     {
         $openIdAuthCode = $this->authCodeManager->find(FixtureFactory::FIXTURE_AUTH_CODE_OPENID);
 
         $request = $this->createAuthorizationRequest('foo:secret', [
             'grant_type' => 'authorization_code',
-            'code' => TestHelper::generateEncryptedAuthCodePayload($openIdAuthCode),
+            'code' => TestHelper::generateEncryptedAuthCodePayload($openIdAuthCode, false),
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 

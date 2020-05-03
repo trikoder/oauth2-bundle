@@ -6,16 +6,16 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
+use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedException;
 
-final class OAuth2Listener implements ListenerInterface
+final class OAuth2Listener
 {
     /**
      * @var TokenStorageInterface
@@ -32,25 +32,31 @@ final class OAuth2Listener implements ListenerInterface
      */
     private $httpMessageFactory;
 
+    /**
+     * @var OAuth2TokenFactory
+     */
+    private $oauth2TokenFactory;
+
+    /**
+     * @var string
+     */
+    private $providerKey;
+
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
-        HttpMessageFactoryInterface $httpMessageFactory
+        HttpMessageFactoryInterface $httpMessageFactory,
+        OAuth2TokenFactory $oauth2TokenFactory,
+        string $providerKey
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->httpMessageFactory = $httpMessageFactory;
+        $this->oauth2TokenFactory = $oauth2TokenFactory;
+        $this->providerKey = $providerKey;
     }
 
-    /**
-     * BC layer for Symfony < 4.3
-     */
-    public function handle(GetResponseEvent $event)
-    {
-        $this->__invoke($event);
-    }
-
-    public function __invoke(GetResponseEvent $event)
+    public function __invoke(RequestEvent $event)
     {
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
 
@@ -60,7 +66,7 @@ final class OAuth2Listener implements ListenerInterface
 
         try {
             /** @var OAuth2Token $authenticatedToken */
-            $authenticatedToken = $this->authenticationManager->authenticate(new OAuth2Token($request, null));
+            $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
             throw Oauth2AuthenticationFailedException::create($e->getMessage());
         }

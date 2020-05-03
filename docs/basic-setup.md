@@ -23,6 +23,8 @@ Options:
       --redirect-uri[=REDIRECT-URI]  Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs. (multiple values allowed)
       --grant-type[=GRANT-TYPE]      Sets allowed grant type for client. Use this option multiple times to set multiple grant types. (multiple values allowed)
       --scope[=SCOPE]                Sets allowed scope for client. Use this option multiple times to set multiple scopes. (multiple values allowed)
+      --public                       Creates a public client (a client which does not have a secret)
+      --allow-plain-text-pkce        Creates a client which is allowed to create an authorization code grant PKCE request with the "plain" code challenge method
 ```
 
 
@@ -129,7 +131,8 @@ oauth2_restricted:
 
 ## Security roles
 
-Once the user gets past the `oauth2` firewall, they will be granted additional roles based on their granted [token scopes](controlling-token-scopes.md). The roles are named in the following format:
+Once the user gets past the `oauth2` firewall, they will be granted additional roles based on their granted [token scopes](controlling-token-scopes.md).
+By default, the roles are named in the following format:
 
 ```
 ROLE_OAUTH2_<scope>
@@ -147,29 +150,35 @@ public function indexAction()
 }
 ```
 
+> **NOTE:** You can change the `ROLE_OAUTH2_` prefix via the `role_prefix` configuration option described in [Installation section](../README.md#installation)
+
 ## Auth
 
 There are two possible reasons for the authentication server to reject a request:
 - Provided token is expired or invalid (HTTP response 401 `Unauthorized`)
 - Provided token is valid but scopes are insufficient (HTTP response 403 `Forbidden`)
 
-## Clearing expired access & refresh tokens
+## Clearing expired access, refresh tokens and auth codes
 
-To clear expired access & refresh tokens you can use the `trikoder:oauth2:clear-expired-tokens` command.
+To clear expired access and refresh tokens and auth codes you can use the `trikoder:oauth2:clear-expired-tokens` command.
 
 The command removes all tokens whose expiry time is lesser than the current.
 
 ```sh
 Description:
-  Clears all expired access and/or refresh tokens
+  Clears all expired access and/or refresh tokens and/or auth codes
 
 Usage:
   trikoder:oauth2:clear-expired-tokens [options]
 
 Options:
-  -a, --access-tokens-only   Clear only access tokens.
-  -r, --refresh-tokens-only  Clear only refresh tokens.
+  -a, --access-tokens   Clear expired access tokens.
+  -r, --refresh-tokens  Clear expired refresh tokens.
+  -c, --auth-codes  Clear expired auth codes.
 ```
+
+Not passing any option means that both expired access and refresh tokens as well as expired auth codes
+will be cleared.
 
 ## CORS requests
 

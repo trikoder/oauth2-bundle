@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine;
 
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
@@ -43,7 +43,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
         return $this->entityManager->createQueryBuilder()
             ->delete(AccessToken::class, 'at')
             ->where('at.expiry < :expiry')
-            ->setParameter('expiry', new DateTime())
+            ->setParameter('expiry', new DateTimeImmutable())
             ->getQuery()
             ->execute();
     }

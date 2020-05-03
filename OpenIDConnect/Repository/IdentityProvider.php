@@ -26,8 +26,8 @@ class IdentityProvider implements IdentityProviderInterface
         $user->setIdentifier($identifier);
 
         $event = $this->eventDispatcher->dispatch(
-            OAuth2Events::AUTHORIZATION_CLAIMS_RESOLVE,
-            new ClaimsResolveEvent($identifier)
+            new ClaimsResolveEvent($identifier),
+            OAuth2Events::AUTHORIZATION_CLAIMS_RESOLVE
         );
 
         $user->setClaims($event->getClaims());

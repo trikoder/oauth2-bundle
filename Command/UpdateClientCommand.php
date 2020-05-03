@@ -93,19 +93,19 @@ final class UpdateClientCommand extends Command
         $client->setActive(!$input->getOption('deactivated'));
 
         $redirectUris = array_map(
-            function (string $redirectUri): RedirectUri { return new RedirectUri($redirectUri); },
+            static function (string $redirectUri): RedirectUri { return new RedirectUri($redirectUri); },
             $input->getOption('redirect-uri')
         );
         $client->setRedirectUris(...$redirectUris);
 
         $grants = array_map(
-            function (string $grant): Grant { return new Grant($grant); },
+            static function (string $grant): Grant { return new Grant($grant); },
             $input->getOption('grant-type')
         );
         $client->setGrants(...$grants);
 
         $scopes = array_map(
-            function (string $scope): Scope { return new Scope($scope); },
+            static function (string $scope): Scope { return new Scope($scope); },
             $input->getOption('scope')
         );
         $client->setScopes(...$scopes);

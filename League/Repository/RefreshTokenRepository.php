@@ -90,12 +90,10 @@ final class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     {
         $accessToken = $this->accessTokenManager->find($refreshTokenEntity->getAccessToken()->getIdentifier());
 
-        $refreshToken = new RefreshTokenModel(
+        return new RefreshTokenModel(
             $refreshTokenEntity->getIdentifier(),
             $refreshTokenEntity->getExpiryDateTime(),
             $accessToken
         );
-
-        return $refreshToken;
     }
 }

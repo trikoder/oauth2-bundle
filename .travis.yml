@@ -33,7 +33,8 @@ env:
     - PHP_VERSION=7.4 COMPOSER_FLAGS="--prefer-lowest" SYMFONY_REQUIRE=5.0.*
 
 install:
-    - dev/bin/docker-compose build --build-arg PHP_VERSION=${PHP_VERSION} php
+    - dev/bin/docker-compose pull
+    - dev/bin/php -v
 
 before_script:
     # Our docker image has symfony/flex installed to make sure SYMFONY_REQUIRE is working

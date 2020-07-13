@@ -15,13 +15,16 @@ final class OAuth2Token extends AbstractToken
      */
     private $providerKey;
 
+    private $serverRequest;
+
     public function __construct(
         ServerRequestInterface $serverRequest,
         ?UserInterface $user,
         string $rolePrefix,
         string $providerKey
     ) {
-        $this->setAttribute('server_request', $serverRequest);
+        $this->serverRequest = $serverRequest;
+        
         $this->setAttribute('role_prefix', $rolePrefix);
 
         $roles = $this->buildRolesFromScopes();
@@ -43,7 +46,7 @@ final class OAuth2Token extends AbstractToken
      */
     public function getCredentials()
     {
-        return $this->getAttribute('server_request')->getAttribute('oauth_access_token_id');
+        return $this->getServerRequest()->getAttribute('oauth_access_token_id');
     }
 
     public function getProviderKey(): string
@@ -67,10 +70,15 @@ final class OAuth2Token extends AbstractToken
         $prefix = $this->getAttribute('role_prefix');
         $roles = [];
 
-        foreach ($this->getAttribute('server_request')->getAttribute('oauth_scopes', []) as $scope) {
+        foreach ($this->getServerRequest()->getAttribute('oauth_scopes', []) as $scope) {
             $roles[] = strtoupper(trim($prefix . $scope));
         }
 
         return $roles;
+    }
+
+    public function getServerRequest(): ServerRequestInterface
+    {
+        return $this->serverRequest;
     }
 }

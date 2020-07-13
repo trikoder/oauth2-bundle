@@ -87,7 +87,7 @@ final class OAuth2Listener
         }
 
         $tokenScopes = $token
-            ->getAttribute('server_request')
+            ->getServerRequest()
             ->getAttribute('oauth_scopes');
 
         /*

@@ -60,7 +60,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
 
         try {
             $request = $this->resourceServer->validateAuthenticatedRequest(
-                $token->getAttribute('server_request')
+                $token->getServerRequest()
             );
         } catch (OAuthServerException $e) {
             throw new AuthenticationException('The resource server rejected the request.', 0, $e);

@@ -141,7 +141,18 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                 ],
                 'platform_service' => SqlitePlatform::class,
             ],
-            'orm' => null,
+            'orm' => [
+                'auto_mapping' => true,
+                'mappings' => [
+                    'App' => [
+                        'type' => 'annotation',
+                        'dir' => '../docs/resources/entities',
+                        'is_bundle' => false,
+                        'prefix' => 'App\Entity',
+                        'alias' => 'App',
+                    ],
+                ],
+            ],
         ]);
 
         $container->loadFromExtension('framework', [

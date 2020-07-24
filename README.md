@@ -121,11 +121,90 @@ This package is currently in the active development.
     Trikoder\Bundle\OAuth2Bundle\TrikoderOAuth2Bundle::class => ['all' => true]
     ```
 
-1. Update the database so bundle entities can be persisted using Doctrine:
+1. Create the database entities using Doctrine:
+
+    ```php
+    <?php declare(strict_types=1);
+
+    namespace App\Entity;
+
+    use Doctrine\ORM\Mapping as ORM;
+    use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken as BaseAccessToken;
+
+    /**
+     * @ORM\Entity()
+     * @ORM\Table(name="oauth2_access_token")
+     */
+    class AccessToken extends BaseAccessToken
+    {
+    }
+    ```
+
+    ```php
+    <?php declare(strict_types=1);
+
+    namespace App\Entity;
+
+    use Doctrine\ORM\Mapping as ORM;
+    use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode as BaseAuthorizationCode;
+
+    /**
+     * @ORM\Entity()
+     * @ORM\Table(name="oauth2_authorization_code")
+     */
+    class AuthorizationCode extends BaseAuthorizationCode
+    {
+    }
+    ```
+
+    ```php
+    <?php declare(strict_types=1);
+
+    namespace App\Entity;
+
+    use Doctrine\ORM\Mapping as ORM;
+    use Trikoder\Bundle\OAuth2Bundle\Model\Client as BaseClient;
+
+    /**
+     * @ORM\Entity()
+     * @ORM\Table(name="oauth2_client")
+     */
+    class Client extends BaseClient
+    {
+    }
+    ```
+
+    ```php
+    <?php declare(strict_types=1);
+
+    namespace App\Entity;
+
+    use Doctrine\ORM\Mapping as ORM;
+    use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken as BaseRefreshToken;
+
+    /**
+     * @ORM\Entity()
+     * @ORM\Table(name="oauth2_refresh_token")
+     */
+    class RefreshToken extends BaseRefreshToken
+    {
+    }
+    ```
+
+    Update the database so the entities can be persisted:
 
     ```sh
     bin/console doctrine:schema:update --force
     ```
+
+    If you are using Doctrine Migrations, generate and execute a migration:
+
+    ```sh
+    bin/console doctrine:migrations:diff
+    bin/console doctrine:migrations:migrate
+    ```
+
+    You can also find copy ready files in `docs/resources/entities/`.
 
 1. Import the routes inside your `config/routes.yaml` file:
 

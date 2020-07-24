@@ -4,7 +4,7 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
-    <entity name="Trikoder\Bundle\OAuth2Bundle\Model\AccessToken" table="oauth2_access_token">
+    <mapped-superclass name="Trikoder\Bundle\OAuth2Bundle\Model\AccessToken" table="oauth2_access_token">
         <id name="identifier" type="string" length="80">
             <options>
                 <option name="fixed">true</option>
@@ -17,5 +17,5 @@
         <many-to-one field="client" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\Client">
             <join-column name="client" referenced-column-name="identifier" nullable="false" on-delete="CASCADE" />
         </many-to-one>
-    </entity>
+    </mapped-superclass>
 </doctrine-mapping>

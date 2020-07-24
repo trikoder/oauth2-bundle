@@ -4,7 +4,7 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
-    <entity name="Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken" table="oauth2_refresh_token">
+    <mapped-superclass name="Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken" table="oauth2_refresh_token">
         <id name="identifier" type="string" length="80">
             <options>
                 <option name="fixed">true</option>
@@ -15,5 +15,5 @@
         <many-to-one field="accessToken" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\AccessToken">
             <join-column name="access_token" referenced-column-name="identifier" on-delete="SET NULL" />
         </many-to-one>
-    </entity>
+    </mapped-superclass>
 </doctrine-mapping>

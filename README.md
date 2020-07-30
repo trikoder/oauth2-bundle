@@ -33,7 +33,7 @@ This package is currently in the active development.
 1. Require the bundle and a PSR 7/17 implementation with Composer:
 
     ```sh
-    composer require trikoder/oauth2-bundle nyholm/psr7
+    composer require trikoder/oauth2-bundle nyholm/psr7 symfony-bundles/json-request-bundle
     ```
 
     If your project is managed using [Symfony Flex](https://github.com/symfony/flex), the rest of the steps are not required. Just follow the post-installation instructions instead! :tada:

@@ -22,7 +22,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         /** @var EntityManagerInterface $em */
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
 
-        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em);
+        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em, false);
 
         $client = new Client('client', 'secret');
         $em->persist($client);
@@ -45,6 +45,38 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
 
         $this->assertSame(
             $testData['output'],
+            $em->getRepository(AccessToken::class)->findBy([], ['identifier' => 'ASC'])
+        );
+    }
+
+    public function testClearExpiredWithoutSavingAccessToken(): void
+    {
+        /** @var EntityManagerInterface $em */
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+
+        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em, true);
+
+        $client = new Client('client', 'secret');
+        $em->persist($client);
+        $em->flush();
+
+        timecop_freeze(new DateTimeImmutable());
+
+        try {
+            $testData = $this->buildClearExpiredTestData($client);
+
+            /** @var AccessToken $token */
+            foreach ($testData['input'] as $token) {
+                $doctrineAccessTokenManager->save($token);
+            }
+
+            $this->assertSame(0, $doctrineAccessTokenManager->clearExpired());
+        } finally {
+            timecop_return();
+        }
+
+        $this->assertSame(
+            [],
             $em->getRepository(AccessToken::class)->findBy([], ['identifier' => 'ASC'])
         );
     }
@@ -85,7 +117,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     {
         /** @var EntityManagerInterface $em */
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em);
+        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em, false);
 
         $client = new Client('client', 'secret');
         $em->persist($client);
@@ -105,6 +137,40 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
             $em->flush();
 
             $this->assertSame(3, $doctrineAccessTokenManager->clearExpired());
+        } finally {
+            timecop_return();
+        }
+
+        $this->assertSame(
+            $testData['output'],
+            $em->getRepository(RefreshToken::class)->findBy(['accessToken' => null], ['identifier' => 'ASC'])
+        );
+    }
+
+    public function testClearExpiredWithRefreshTokenWithoutSavingAccessToken(): void
+    {
+        /** @var EntityManagerInterface $em */
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em, true);
+
+        $client = new Client('client', 'secret');
+        $em->persist($client);
+        $em->flush();
+
+        timecop_freeze(new DateTimeImmutable());
+
+        try {
+            $testData = $this->buildClearExpiredTestDataWithRefreshToken($client);
+
+            /** @var RefreshToken $token */
+            foreach ($testData['input'] as $token) {
+                $doctrineAccessTokenManager->save($token->getAccessToken());
+                $em->persist($token);
+            }
+
+            $em->flush();
+
+            $this->assertSame(0, $doctrineAccessTokenManager->clearExpired());
         } finally {
             timecop_return();
         }

@@ -10,28 +10,14 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
         </service>
-        <service id="trikoder.oauth2.league.repository.client_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.league.repository.client_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository" />
         <service id="League\OAuth2\Server\Repositories\ClientRepositoryInterface" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository" />
-
-        <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository">
-            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
-            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
-            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
-        </service>
-        <service id="trikoder.oauth2.league.repository.access_token_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
-        <service id="League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\RefreshTokenRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
         </service>
-        <service id="trikoder.oauth2.league.repository.refresh_token_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\RefreshTokenRepository">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.league.repository.refresh_token_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\RefreshTokenRepository" />
         <service id="League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\RefreshTokenRepository" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository">
@@ -40,9 +26,7 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
         </service>
-        <service id="trikoder.oauth2.league.repository.scope_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.league.repository.scope_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository" />
         <service id="League\OAuth2\Server\Repositories\ScopeRepositoryInterface" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository">
@@ -50,9 +34,7 @@
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
         </service>
-        <service id="trikoder.oauth2.league.repository.user_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.league.repository.user_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository" />
         <service id="League\OAuth2\Server\Repositories\UserRepositoryInterface" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository">
@@ -60,9 +42,7 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
         </service>
-        <service id="trikoder.oauth2.league.repository.auth_code_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.league.repository.auth_code_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository" />
         <service id="League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository" />
 
         <!-- Security layer -->
@@ -71,14 +51,10 @@
             <argument key="$resourceServer" type="service" id="League\OAuth2\Server\ResourceServer" />
             <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
-        <service id="trikoder.oauth2.security.authentication.provider.oauth2_provider" alias="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.security.authentication.provider.oauth2_provider" alias="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Provider\OAuth2Provider" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Security\EntryPoint\OAuth2EntryPoint" />
-        <service id="trikoder.oauth2.security.entry_point.oauth2_entry_point" alias="Trikoder\Bundle\OAuth2Bundle\Security\EntryPoint\OAuth2EntryPoint">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.security.entry_point.oauth2_entry_point" alias="Trikoder\Bundle\OAuth2Bundle\Security\EntryPoint\OAuth2EntryPoint" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener">
             <argument type="service" id="security.token_storage" />
@@ -86,9 +62,7 @@
             <argument type="service" id="sensio_framework_extra.psr7.http_message_factory" />
             <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
-        <service id="trikoder.oauth2.security.firewall.oauth2_listener" alias="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.security.firewall.oauth2_listener" alias="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\League\AuthorizationServer\GrantConfigurator">
             <argument key="$grants" type="tagged_iterator" tag="trikoder.oauth2.authorization_server.grant" />
@@ -148,65 +122,49 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="controller.service_arguments" />
         </service>
-        <service id="trikoder.oauth2.controller.authorization_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.controller.authorization_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController" />
 
         <!-- Authorization listeners -->
         <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestUserResolvingListener">
             <argument type="service" id="Symfony\Component\Security\Core\Security" />
             <tag name="kernel.event_listener" event="trikoder.oauth2.authorization_request_resolve" method="onAuthorizationRequest" priority="1024" />
         </service>
-        <service id="trikoder.oauth2.event_listener.authorization.user" alias="Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestUserResolvingListener">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.event_listener.authorization.user" alias="Trikoder\Bundle\OAuth2Bundle\EventListener\AuthorizationRequestUserResolvingListener" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener" />
-        <service id="trikoder.oauth2.event_listener.authorization.convert_to_response" alias="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.event_listener.authorization.convert_to_response" alias="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener" />
 
         <!-- Token controller -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
             <tag name="controller.service_arguments" />
         </service>
-        <service id="trikoder.oauth2.controller.token_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.controller.token_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController" />
 
         <!-- Commands -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Command\CreateClientCommand">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="console.command" />
         </service>
-        <service id="trikoder.oauth2.command.create_client_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\CreateClientCommand">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.command.create_client_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\CreateClientCommand" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Command\UpdateClientCommand">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="console.command" />
         </service>
-        <service id="trikoder.oauth2.command.update_client_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\UpdateClientCommand">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.command.update_client_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\UpdateClientCommand" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Command\DeleteClientCommand">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="console.command" />
         </service>
-        <service id="trikoder.oauth2.command.delete_client_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\DeleteClientCommand">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.command.delete_client_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\DeleteClientCommand" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Command\ListClientsCommand">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="console.command" />
         </service>
-        <service id="trikoder.oauth2.command.list_clients_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\ListClientsCommand">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.command.list_clients_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\ListClientsCommand" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Command\ClearExpiredTokensCommand">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
@@ -214,30 +172,22 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" />
             <tag name="console.command" />
         </service>
-        <service id="trikoder.oauth2.command.clear_expired_tokens_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\ClearExpiredTokensCommand">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.command.clear_expired_tokens_command" alias="Trikoder\Bundle\OAuth2Bundle\Command\ClearExpiredTokensCommand" />
 
         <!-- Utility services -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
-        <service id="trikoder.oauth2.converter.user_converter" alias="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.converter.user_converter" alias="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface" alias="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
-        <service id="trikoder.oauth2.converter.scope_converter" alias="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.converter.scope_converter" alias="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface" alias="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
         </service>
-        <service id="trikoder.oauth2.event.authorization_request_resolve_event_factory" alias="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.event.authorization_request_resolve_event_factory" alias="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory">
             <argument type="string" />

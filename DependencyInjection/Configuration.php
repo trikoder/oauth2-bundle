@@ -234,6 +234,10 @@ final class Configuration implements ConfigurationInterface
                         ->defaultTrue()
                     ->end()
                 ->end()
+                ->booleanNode('disable_access_token_saving')
+                    ->info('Whether to disable access token saving to persistence layer')
+                    ->defaultFalse()
+                ->end()
             ->end()
         ;
 

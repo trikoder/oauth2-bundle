@@ -13,28 +13,20 @@
 
         <!-- Services -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ClientManager" />
-        <service id="trikoder.oauth2.manager.in_memory.client_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ClientManager">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.manager.in_memory.client_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ClientManager" />
 
-        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager" />
-        <service id="trikoder.oauth2.manager.in_memory.access_token_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
+        <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager">
+            <argument key="$disableAccessTokenSaving"/>
         </service>
+        <service id="trikoder.oauth2.manager.in_memory.access_token_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager" />
-        <service id="trikoder.oauth2.manager.in_memory.refresh_token_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.manager.in_memory.refresh_token_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
-        <service id="trikoder.oauth2.manager.in_memory.scope_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.manager.in_memory.scope_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\ScopeManager" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager" />
-        <service id="trikoder.oauth2.manager.in_memory.authorization_code_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
+        <service id="trikoder.oauth2.manager.in_memory.authorization_code_manager" alias="Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager" />
     </services>
 </container>

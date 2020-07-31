@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Contracts\EventDispatcher\Event;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant;
 
-final class UserResolveEvent extends Event
+final class UserResolveEvent extends AbstractUserResolveEvent
 {
     /**
      * @var string
@@ -30,11 +28,6 @@ final class UserResolveEvent extends Event
      * @var Client
      */
     private $client;
-
-    /**
-     * @var UserInterface|null
-     */
-    private $user;
 
     public function __construct(string $username, string $password, Grant $grant, Client $client)
     {
@@ -62,17 +55,5 @@ final class UserResolveEvent extends Event
     public function getClient(): Client
     {
         return $this->client;
-    }
-
-    public function getUser(): ?UserInterface
-    {
-        return $this->user;
-    }
-
-    public function setUser(?UserInterface $user): self
-    {
-        $this->user = $user;
-
-        return $this;
     }
 }

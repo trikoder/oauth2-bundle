@@ -45,7 +45,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Service\CredentialsRevoker\DoctrineCredentialsRevoker;
 
-final class     TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
+final class TrikoderOAuth2Extension extends Extension implements PrependExtensionInterface, CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -66,17 +66,17 @@ final class     TrikoderOAuth2Extension extends Extension implements PrependExte
         $this->configureScopes($container, $config['scopes']);
 
         $container->getDefinition(OAuth2TokenFactory::class)
-            ->setArgument(0, $config['role_prefix']);
+                  ->setArgument(0, $config['role_prefix']);
 
         $container->getDefinition(ConvertExceptionToResponseListener::class)
-            ->addTag('kernel.event_listener', [
-                'event' => KernelEvents::EXCEPTION,
-                'method' => 'onKernelException',
-                'priority' => $config['exception_event_listener_priority'],
-            ]);
+                  ->addTag('kernel.event_listener', [
+                      'event' => KernelEvents::EXCEPTION,
+                      'method' => 'onKernelException',
+                      'priority' => $config['exception_event_listener_priority'],
+                  ]);
 
         $container->registerForAutoconfiguration(GrantTypeInterface::class)
-            ->addTag('trikoder.oauth2.authorization_server.grant');
+                  ->addTag('trikoder.oauth2.authorization_server.grant');
     }
 
     /**
@@ -228,13 +228,15 @@ final class     TrikoderOAuth2Extension extends Extension implements PrependExte
         ;
     }
 
-    private function configureAccessTokenSaving(LoaderInterface $loader, ContainerBuilder $containerBuilder, array $config): void
+    private function configureAccessTokenSaving(LoaderInterface $loader, ContainerBuilder $container, array $config): void
     {
         if ($config['disable_access_token_saving']) {
             $loader->load('access_token/null.xml');
         } else {
             $loader->load('access_token/default.xml');
         }
+
+        $container->setParameter('trikoder.oauth2.authorization_server.disable_access_token_saving', $config['disable_access_token_saving']);
     }
 
     /**
@@ -299,6 +301,12 @@ final class     TrikoderOAuth2Extension extends Extension implements PrependExte
 
         $container->setParameter('trikoder.oauth2.persistence.doctrine.enabled', true);
         $container->setParameter('trikoder.oauth2.persistence.doctrine.manager', $entityManagerName);
+
+        if ($disableAccessTokenSaving) {
+            $container->setParameter('trikoder.oauth2.persistence.doctrine.access_token.disabled', true);
+        } else {
+            $container->setParameter('trikoder.oauth2.persistence.doctrine.access_token.enabled', true);
+        }
     }
 
     private function configureInMemoryPersistence(ContainerBuilder $container, bool $disableAccessTokenSaving): void

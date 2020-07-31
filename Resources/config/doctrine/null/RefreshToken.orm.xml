@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                   https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
+    <entity name="Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken" table="oauth2_refresh_token">
+        <id name="identifier" type="string" length="80">
+            <options>
+                <option name="fixed">true</option>
+            </options>
+        </id>
+        <field name="expiry" type="datetime_immutable" />
+        <field name="revoked" type="boolean" />
+    </entity>
+</doctrine-mapping>

@@ -211,11 +211,10 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         timecop_freeze(new DateTimeImmutable());
 
         try {
-            $testData = $this->buildClearExpiredTestDataWithRefreshToken($client);
+            $testData = $this->buildClearExpiredTestDataWithRefreshToken($client, false);
 
             /** @var RefreshToken $token */
             foreach ($testData['input'] as $token) {
-                $doctrineAccessTokenManager->save($token->getAccessToken());
                 $em->persist($token);
             }
 
@@ -227,24 +226,24 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         }
 
         $this->assertSame(
-            $testData['output'],
+            $testData['input'],
             $em->getRepository(RefreshToken::class)->findBy(['accessToken' => null], ['identifier' => 'ASC'])
         );
     }
 
-    private function buildClearExpiredTestDataWithRefreshToken(Client $client): array
+    private function buildClearExpiredTestDataWithRefreshToken(Client $client, bool $withAccessToken = true): array
     {
         $validRefreshTokens = [
-            $this->buildRefreshToken('1111', '+1 day', $client),
-            $this->buildRefreshToken('2222', '+1 hour', $client),
-            $this->buildRefreshToken('3333', '+1 second', $client),
-            $this->buildRefreshToken('4444', 'now', $client),
+            $this->buildRefreshToken('1111', '+1 day', $client, $withAccessToken),
+            $this->buildRefreshToken('2222', '+1 hour', $client, $withAccessToken),
+            $this->buildRefreshToken('3333', '+1 second', $client, $withAccessToken),
+            $this->buildRefreshToken('4444', 'now', $client, $withAccessToken),
         ];
 
         $expiredRefreshTokens = [
-            $this->buildRefreshToken('5555', '-1 day', $client),
-            $this->buildRefreshToken('6666', '-1 hour', $client),
-            $this->buildRefreshToken('7777', '-1 second', $client),
+            $this->buildRefreshToken('5555', '-1 day', $client, $withAccessToken),
+            $this->buildRefreshToken('6666', '-1 hour', $client, $withAccessToken),
+            $this->buildRefreshToken('7777', '-1 second', $client, $withAccessToken),
         ];
 
         return [

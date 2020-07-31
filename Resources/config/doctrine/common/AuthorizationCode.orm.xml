@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                   https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
+    <entity name="Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode" table="oauth2_authorization_code">
+        <id name="identifier" type="string" length="80">
+            <options>
+                <option name="fixed">true</option>
+            </options>
+        </id>
+        <field name="expiry" type="datetime_immutable" />
+        <field name="userIdentifier" type="string" length="128" nullable="true" />
+        <field name="scopes" type="oauth2_scope" nullable="true" />
+        <field name="revoked" type="boolean" />
+        <many-to-one field="client" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\Client">
+            <join-column name="client" referenced-column-name="identifier" nullable="false" />
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

@@ -68,7 +68,7 @@ final class OAuth2Listener
             /** @var OAuth2Token $authenticatedToken */
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
-            throw OAuth2AuthenticationFailedException::create($e->getMessage());
+            throw new OAuth2AuthenticationFailedException($e->getMessage(), 401, $e);
         }
 
         if (!$this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {

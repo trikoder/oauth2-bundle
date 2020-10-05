@@ -41,14 +41,27 @@ final class OAuth2Grants
      */
     public const REFRESH_TOKEN = 'refresh_token';
 
+    public const WITH_REFRESH_TOKEN = [
+        'authorization_code',
+        'password',
+        'refresh_token',
+    ];
+
+    public const ALL = [
+        self::AUTHORIZATION_CODE => 'authorization code',
+        self::CLIENT_CREDENTIALS => 'client credentials',
+        self::IMPLICIT => 'implicit',
+        self::PASSWORD => 'password',
+        self::REFRESH_TOKEN => 'refresh token',
+    ];
+
+    /**
+     * @deprecated Will be removed in v4, use {@see OAuth2Grants::ALL} instead
+     *
+     * @TODO Remove in v4.
+     */
     public static function has(string $grant): bool
     {
-        return \in_array($grant, [
-            self::CLIENT_CREDENTIALS,
-            self::PASSWORD,
-            self::REFRESH_TOKEN,
-            self::AUTHORIZATION_CODE,
-            self::IMPLICIT,
-        ]);
+        return isset(self::ALL[$grant]);
     }
 }

@@ -265,44 +265,12 @@ final class ExtensionTest extends TestCase
         yield 'Refresh token grant can be disabled' => [
             RefreshTokenGrant::class, 'refresh_token.enable', false,
         ];
-
-        yield 'Legacy authorization code grant can be enabled' => [
-            AuthCodeGrant::class, 'enable_auth_code_grant', true,
-        ];
-        yield 'Legacy authorization code grant can be disabled' => [
-            AuthCodeGrant::class, 'enable_auth_code_grant', false,
-        ];
-        yield 'Legacy client credentials grant can be enabled' => [
-            ClientCredentialsGrant::class, 'enable_client_credentials_grant', true,
-        ];
-        yield 'Legacy client credentials grant can be disabled' => [
-            ClientCredentialsGrant::class, 'enable_client_credentials_grant', false,
-        ];
-        yield 'Legacy implicit grant can be enabled' => [
-            ImplicitGrant::class, 'enable_implicit_grant', true,
-        ];
-        yield 'Legacy implicit grant can be disabled' => [
-            ImplicitGrant::class, 'enable_implicit_grant', false,
-        ];
-        yield 'Legacy password grant can be enabled' => [
-            PasswordGrant::class, 'enable_password_grant', true,
-        ];
-        yield 'Legacy password grant can be disabled' => [
-            PasswordGrant::class, 'enable_password_grant', false,
-        ];
-        yield 'Legacy refresh token grant can be enabled' => [
-            RefreshTokenGrant::class, 'enable_refresh_token_grant', true,
-        ];
-        yield 'Legacy refresh token grant can be disabled' => [
-            RefreshTokenGrant::class, 'enable_refresh_token_grant', false,
-        ];
     }
 
     /**
      * @dataProvider requireCodeChallengeForPublicClientsProvider
      */
     public function testAuthCodeGrantDisableRequireCodeChallengeForPublicClientsConfig(
-        string $configKey,
         ?bool $requireCodeChallengeForPublicClients,
         bool $shouldTheRequirementBeDisabled
     ): void {
@@ -313,7 +281,7 @@ final class ExtensionTest extends TestCase
         $extension = new TrikoderOAuth2Extension();
 
         $configuration = $this->getValidConfiguration([
-            $configKey => $requireCodeChallengeForPublicClients,
+            'authorization_code.require_code_challenge_for_public_clients' => $requireCodeChallengeForPublicClients,
         ]);
 
         $extension->load($configuration, $container);
@@ -336,23 +304,13 @@ final class ExtensionTest extends TestCase
     public function requireCodeChallengeForPublicClientsProvider(): iterable
     {
         yield 'When not requiring code challenge for public clients the requirement should be disabled' => [
-            'authorization_code.require_code_challenge_for_public_clients', false, true,
+            false, true,
         ];
         yield 'When code challenge for public clients is required the requirement should not be disabled' => [
-            'authorization_code.require_code_challenge_for_public_clients', true, false,
+            true, false,
         ];
         yield 'With the default value the requirement should not be disabled' => [
-            'authorization_code.require_code_challenge_for_public_clients', null, false,
-        ];
-
-        yield 'Legacy when not requiring code challenge for public clients the requirement should be disabled' => [
-            'require_code_challenge_for_public_clients', false, true,
-        ];
-        yield 'Legacy when code challenge for public clients is required the requirement should not be disabled' => [
-            'require_code_challenge_for_public_clients', true, false,
-        ];
-        yield 'Legacy with the default value the requirement should not be disabled' => [
-            'require_code_challenge_for_public_clients', null, false,
+            null, false,
         ];
     }
 
@@ -360,7 +318,6 @@ final class ExtensionTest extends TestCase
      * @dataProvider authCodeTTLProvider
      */
     public function testAuthCodeTTLConfig(
-        string $configKey,
         ?string $authCodeTTL,
         string $expectedAuthCodeTTL
     ): void {
@@ -371,7 +328,7 @@ final class ExtensionTest extends TestCase
         $extension = new TrikoderOAuth2Extension();
 
         $configuration = $this->getValidConfiguration([
-            $configKey => $authCodeTTL,
+            'authorization_code.auth_code_ttl' => $authCodeTTL,
         ]);
 
         $extension->load($configuration, $container);
@@ -384,17 +341,10 @@ final class ExtensionTest extends TestCase
     public function authCodeTTLProvider(): iterable
     {
         yield 'Authorization code TTL can be set' => [
-            'authorization_code.auth_code_ttl', 'PT20M', 'PT20M',
+            'PT20M', 'PT20M',
         ];
         yield 'When no authorization code TTL is set, the default is used' => [
-            'authorization_code.auth_code_ttl', null, 'PT10M',
-        ];
-
-        yield 'Legacy authorization code TTL can be set' => [
-            'auth_code_ttl', 'PT20M', 'PT20M',
-        ];
-        yield 'Legacy when no authorization code TTL is set, the default is used' => [
-            'auth_code_ttl', null, 'PT10M',
+            null, 'PT10M',
         ];
     }
 
@@ -405,15 +355,8 @@ final class ExtensionTest extends TestCase
                 'authorization_server' => [
                     'private_key' => 'foo',
                     'encryption_key' => 'foo',
-                    'enable_auth_code_grant' => $options['enable_auth_code_grant'] ?? null,
                     'access_token_ttl' => $options['access_token_ttl'] ?? 'PT1H',
                     'refresh_token_ttl' => $options['refresh_token_ttl'] ?? 'P1M',
-                    'enable_client_credentials_grant' => $options['enable_client_credentials_grant'] ?? null,
-                    'enable_implicit_grant' => $options['enable_implicit_grant'] ?? null,
-                    'enable_password_grant' => $options['enable_password_grant'] ?? null,
-                    'enable_refresh_token_grant' => $options['enable_refresh_token_grant'] ?? null,
-                    'require_code_challenge_for_public_clients' => $options['require_code_challenge_for_public_clients'] ?? null,
-                    'auth_code_ttl' => $options['auth_code_ttl'] ?? null,
                     'grant_types' => [
                         'authorization_code' => [
                             'enable' => $options['authorization_code.enable'] ?? true,

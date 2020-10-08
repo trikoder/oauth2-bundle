@@ -16,9 +16,15 @@ final class ClientRepository implements ClientRepositoryInterface
      */
     private $clientManager;
 
-    public function __construct(ClientManagerInterface $clientManager)
+    /**
+     * @var bool
+     */
+    private $cryptClientSecret;
+
+    public function __construct(ClientManagerInterface $clientManager, bool $cryptClientSecret = false)
     {
         $this->clientManager = $clientManager;
+        $this->cryptClientSecret = $cryptClientSecret;
     }
 
     /**
@@ -54,11 +60,15 @@ final class ClientRepository implements ClientRepositoryInterface
             return false;
         }
 
-        if (!$client->isConfidential() || hash_equals($client->getSecret(), (string) $clientSecret)) {
+        if (!$client->isConfidential()) {
             return true;
         }
 
-        return false;
+        if ($this->cryptClientSecret) {
+            return password_verify((string) $clientSecret, $client->getSecret());
+        }
+
+        return hash_equals($client->getSecret(), (string) $clientSecret);
     }
 
     private function buildClientEntity(ClientModel $client): ClientEntity

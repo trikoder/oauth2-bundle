@@ -30,11 +30,13 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Trikoder\Bundle\OAuth2Bundle\Command\CreateClientCommand;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
 use Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener;
 use Trikoder\Bundle\OAuth2Bundle\League\AuthorizationServer\GrantTypeInterface;
+use Trikoder\Bundle\OAuth2Bundle\League\Repository\ClientRepository;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager;
@@ -62,6 +64,12 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $this->configureAuthorizationServer($container, $config['authorization_server']);
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
+
+        $container->getDefinition(CreateClientCommand::class)
+            ->setArgument(1, $config['crypt_client_secret']);
+
+        $container->getDefinition(ClientRepository::class)
+            ->setArgument(1, true/*$config['crypt_client_secret']*/);
 
         $container->getDefinition(OAuth2TokenFactory::class)
             ->setArgument(0, $config['role_prefix']);

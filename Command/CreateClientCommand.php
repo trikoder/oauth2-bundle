@@ -26,11 +26,17 @@ final class CreateClientCommand extends Command
      */
     private $clientManager;
 
-    public function __construct(ClientManagerInterface $clientManager)
+    /**
+     * @var bool
+     */
+    private $cryptClientSecret;
+
+    public function __construct(ClientManagerInterface $clientManager, bool $cryptClientSecret = false)
     {
         parent::__construct();
 
         $this->clientManager = $clientManager;
+        $this->cryptClientSecret = $cryptClientSecret;
     }
 
     protected function configure(): void
@@ -88,26 +94,28 @@ final class CreateClientCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $client = $this->buildClientFromInput($input);
+            $clientData = $this->buildClientFromInput($input);
         } catch (InvalidArgumentException $exception) {
             $io->error($exception->getMessage());
 
             return 1;
         }
 
+        /** @var Client $client */
+        $client = $clientData['client'];
         $this->clientManager->save($client);
         $io->success('New oAuth2 client created successfully.');
 
         $headers = ['Identifier', 'Secret'];
         $rows = [
-            [$client->getIdentifier(), $client->getSecret()],
+            [$client->getIdentifier(), $clientData['plain_secret']],
         ];
         $io->table($headers, $rows);
 
         return 0;
     }
 
-    private function buildClientFromInput(InputInterface $input): Client
+    private function buildClientFromInput(InputInterface $input): array
     {
         $identifier = $input->getArgument('identifier') ?? hash('md5', random_bytes(16));
 
@@ -119,7 +127,12 @@ final class CreateClientCommand extends Command
 
         $secret = $isPublic ? null : $input->getArgument('secret') ?? hash('sha512', random_bytes(32));
 
-        $client = new Client($identifier, $secret);
+        $cryptSecret = null;
+        if ($secret !== null) {
+            $cryptSecret = $this->cryptClientSecret ? password_hash($secret, PASSWORD_DEFAULT) : $secret;
+        }
+
+        $client = new Client($identifier, $cryptSecret);
         $client->setActive(true);
         $client->setAllowPlainTextPkce($input->getOption('allow-plain-text-pkce'));
 
@@ -141,6 +154,6 @@ final class CreateClientCommand extends Command
         );
         $client->setScopes(...$scopes);
 
-        return $client;
+        return ['client' => $client, 'plain_secret' => $secret];
     }
 }

@@ -36,6 +36,10 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue('ROLE_OAUTH2_')
                     ->cannotBeEmpty()
                 ->end()
+                ->booleanNode('crypt_client_secret')
+                    ->info('Crypt the client secret in database')
+                    ->defaultFalse() // to prevent BC Break
+                ->end()
             ->end();
 
         return $treeBuilder;

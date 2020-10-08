@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use Symfony\Component\Console\Tester\CommandTester;
+use Trikoder\Bundle\OAuth2Bundle\Command\CreateClientCommand;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
@@ -99,7 +100,7 @@ final class CreateClientCommandTest extends AbstractAcceptanceTest
         $this->assertNull($client);
     }
 
-    public function testCreateClientWithSecret(): void
+    public function testCreateClientWithPlainSecret(): void
     {
         $command = $this->application->find('trikoder:oauth2:create-client');
         $commandTester = new CommandTester($command);
@@ -119,6 +120,33 @@ final class CreateClientCommandTest extends AbstractAcceptanceTest
             ->find('foobar');
         $this->assertInstanceOf(Client::class, $client);
         $this->assertSame('quzbaz', $client->getSecret());
+        $this->assertTrue($client->isConfidential());
+        $this->assertFalse($client->isPlainTextPkceAllowed());
+    }
+
+    public function testCreateClientWithCryptSecret(): void
+    {
+        $this->application->add(
+            new CreateClientCommand($this->client->getContainer()->get(ClientManagerInterface::class), true)
+        );
+        $command = $this->application->find('trikoder:oauth2:create-client');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
+            'command' => $command->getName(),
+            'identifier' => 'foobar',
+            'secret' => 'quzbaz',
+        ]);
+
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('New oAuth2 client created successfully', $output);
+
+        /** @var Client $client */
+        $client = $this->client
+            ->getContainer()
+            ->get(ClientManagerInterface::class)
+            ->find('foobar');
+        $this->assertInstanceOf(Client::class, $client);
+        $this->assertTrue(password_verify('quzbaz', $client->getSecret()));
         $this->assertTrue($client->isConfidential());
         $this->assertFalse($client->isPlainTextPkceAllowed());
     }

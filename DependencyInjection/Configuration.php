@@ -98,6 +98,9 @@ final class Configuration implements ConfigurationInterface
                         ->ifNull()
                         ->thenUnset()
                     ->end()
+                ->booleanNode('disable_access_token_saving')
+                    ->info('Whether to disable access token saving to persistence layer')
+                    ->defaultFalse()
                 ->end()
             ->end()
         ;
@@ -233,10 +236,6 @@ final class Configuration implements ConfigurationInterface
                         ->info('Whether to require code challenge for public clients for the authorization code grant.')
                         ->defaultTrue()
                     ->end()
-                ->end()
-                ->booleanNode('disable_access_token_saving')
-                    ->info('Whether to disable access token saving to persistence layer')
-                    ->defaultFalse()
                 ->end()
             ->end()
         ;

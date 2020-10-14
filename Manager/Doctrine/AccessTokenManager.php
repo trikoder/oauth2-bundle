@@ -47,4 +47,13 @@ final class AccessTokenManager implements AccessTokenManagerInterface
             ->getQuery()
             ->execute();
     }
+
+    public function clearRevoked(): int
+    {
+        return $this->entityManager->createQueryBuilder()
+            ->delete(AccessToken::class, 'at')
+            ->where('at.revoked = 1')
+            ->getQuery()
+            ->execute();
+    }
 }

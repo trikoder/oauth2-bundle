@@ -36,4 +36,15 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
 
         return $count - \count($this->authorizationCodes);
     }
+
+    public function clearRevoked(): int
+    {
+        $count = \count($this->authorizationCodes);
+
+        $this->accessTokens = array_filter($this->authorizationCodes, static function (AuthorizationCode $accessToken): bool {
+            return !$accessToken->isRevoked();
+        });
+
+        return $count - \count($this->accessTokens);
+    }
 }

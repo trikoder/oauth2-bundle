@@ -47,4 +47,13 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
             ->getQuery()
             ->execute();
     }
+
+    public function clearRevoked(): int
+    {
+        return $this->entityManager->createQueryBuilder()
+            ->delete(AuthorizationCode::class, 'at')
+            ->where('at.revoked = 1')
+            ->getQuery()
+            ->execute();
+    }
 }

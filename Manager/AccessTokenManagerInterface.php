@@ -6,6 +6,9 @@ namespace Trikoder\Bundle\OAuth2Bundle\Manager;
 
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 
+/**
+ * @method int clearRevoked()
+ */
 interface AccessTokenManagerInterface
 {
     public function find(string $identifier): ?AccessToken;

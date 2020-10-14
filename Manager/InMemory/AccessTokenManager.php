@@ -42,4 +42,15 @@ final class AccessTokenManager implements AccessTokenManagerInterface
 
         return $count - \count($this->accessTokens);
     }
+
+    public function clearRevoked(): int
+    {
+        $count = \count($this->accessTokens);
+
+        $this->accessTokens = array_filter($this->accessTokens, static function (AccessToken $accessToken): bool {
+            return !$accessToken->isRevoked();
+        });
+
+        return $count - \count($this->accessTokens);
+    }
 }

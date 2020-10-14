@@ -14,6 +14,11 @@
         <field name="userIdentifier" type="string" length="128" nullable="true" />
         <field name="scopes" type="oauth2_scope" nullable="true" />
         <field name="revoked" type="boolean" />
+        <indexes>
+            <index name="idx_oauth2_access_token_client" columns="client"/>
+            <index name="idx_oauth2_access_token_userIdentifier" columns="userIdentifier"/>
+            <index name="idx_oauth2_access_token_revoked" columns="revoked"/>
+        </indexes>
         <many-to-one field="client" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\Client">
             <join-column name="client" referenced-column-name="identifier" nullable="false" on-delete="CASCADE" />
         </many-to-one>

@@ -12,11 +12,6 @@
         </id>
         <field name="expiry" type="datetime_immutable" />
         <field name="revoked" type="boolean" />
-        <indexes>
-            <index name="idx_oauth2_refresh_token_access_token" columns="access_token"/>
-            <index name="idx_oauth2_refresh_token_expiry" columns="expiry"/>
-            <index name="idx_oauth2_refresh_token_revoked" columns="revoked"/>
-        </indexes>
         <many-to-one field="accessToken" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\AccessToken">
             <join-column name="access_token" referenced-column-name="identifier" on-delete="SET NULL" />
         </many-to-one>

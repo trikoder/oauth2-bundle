@@ -110,7 +110,7 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
         );
     }
 
-    public function testClearExpiredRefreshTokens(): void
+    public function testClearRevokedRefreshTokens(): void
     {
         $output = $this->executeCommand([
             '--refresh-tokens' => true,
@@ -139,7 +139,7 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
         );
     }
 
-    public function testClearExpiredAuthCodes(): void
+    public function testClearRevokedAuthCodes(): void
     {
         $output = $this->executeCommand([
             '--auth-codes' => true,

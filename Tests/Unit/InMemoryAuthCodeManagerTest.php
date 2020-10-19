@@ -20,53 +20,134 @@ final class InMemoryAuthCodeManagerTest extends TestCase
         timecop_freeze(new DateTimeImmutable());
 
         try {
-            $testData = $this->buildClearExpiredTestData();
+            $testData = $this->buildTestData(
+                function (array $item): bool {
+                    return !$item['expired'];
+                }
+            );
 
-            /** @var AuthorizationCode $authCode */
-            foreach ($testData['input'] as $authCode) {
-                $inMemoryAuthCodeManager->save($authCode);
+            foreach ($testData['input'] as $token) {
+                $inMemoryAuthCodeManager->save($token);
             }
 
             $this->assertSame(3, $inMemoryAuthCodeManager->clearExpired());
+            $this->compareOutput($testData['output'], $inMemoryAuthCodeManager);
         } finally {
             timecop_return();
         }
-
-        $reflectionProperty = new ReflectionProperty(InMemoryAuthCodeManager::class, 'authorizationCodes');
-        $reflectionProperty->setAccessible(true);
-
-        $this->assertSame($testData['output'], $reflectionProperty->getValue($inMemoryAuthCodeManager));
     }
 
-    private function buildClearExpiredTestData(): array
+    public function testClearRevoked(): void
     {
-        $validAuthCodes = [
-            '1111' => $this->buildAuthCode('1111', '+1 day'),
-            '2222' => $this->buildAuthCode('2222', '+1 hour'),
-            '3333' => $this->buildAuthCode('3333', '+1 second'),
-            '4444' => $this->buildAuthCode('4444', 'now'),
-        ];
+        $inMemoryAuthCodeManager = new InMemoryAuthCodeManager();
 
-        $expiredAuthCodes = [
-            '5555' => $this->buildAuthCode('5555', '-1 day'),
-            '6666' => $this->buildAuthCode('6666', '-1 hour'),
-            '7777' => $this->buildAuthCode('7777', '-1 second'),
-        ];
+        timecop_freeze(new DateTimeImmutable());
 
-        return [
-            'input' => $validAuthCodes + $expiredAuthCodes,
-            'output' => $validAuthCodes,
-        ];
+        try {
+            $testData = $this->buildTestData(
+                function (array $item): bool {
+                    return !$item['revoked'];
+                }
+            );
+
+            foreach ($testData['input'] as $token) {
+                $inMemoryAuthCodeManager->save($token);
+            }
+
+            $this->assertSame(4, $inMemoryAuthCodeManager->clearRevoked());
+            $this->compareOutput($testData['output'], $inMemoryAuthCodeManager);
+        } finally {
+            timecop_return();
+        }
     }
 
-    private function buildAuthCode(string $identifier, string $modify): AuthorizationCode
+    private function buildTestData(callable $successFunction): array
     {
-        return new AuthorizationCode(
+        $data = [
+            [
+                'identifier' => '1111',
+                'dateOffset' => '+1 day',
+                'revoked' => true,
+                'expired' => false,
+            ],
+            [
+                'identifier' => '2222',
+                'dateOffset' => '+1 hour',
+                'revoked' => false,
+                'expired' => false,
+            ],
+            [
+                'identifier' => '3333',
+                'dateOffset' => '+1 second',
+                'revoked' => true,
+                'expired' => false,
+            ],
+            [
+                'identifier' => '4444',
+                'dateOffset' => 'now',
+                'revoked' => false,
+                'expired' => false,
+            ],
+            [
+                'identifier' => '5555',
+                'dateOffset' => '-1 day',
+                'revoked' => true,
+                'expired' => true,
+            ],
+            [
+                'identifier' => '6666',
+                'dateOffset' => '-1 hour',
+                'revoked' => false,
+                'expired' => true,
+            ],
+            [
+                'identifier' => '7777',
+                'dateOffset' => '-1 second',
+                'revoked' => true,
+                'expired' => true,
+            ]
+        ];
+
+        $response = [];
+        foreach ($data as $item) {
+            $identifier = $item['identifier'];
+            $AuthCode = $this->buildAuthCode(
+                $identifier,
+                $item['dateOffset'],
+                $item['revoked']
+            );
+            $response['input'][$identifier] = $AuthCode;
+
+            if ($successFunction($item)) {
+                $response['output'][$identifier] = $AuthCode;
+            }
+        }
+
+        return $response;
+    }
+
+    private function buildAuthCode(string $identifier, string $modify, bool $revoked): AuthorizationCode
+    {
+        $authorizationCode = new AuthorizationCode(
             $identifier,
             new DateTimeImmutable($modify),
             new Client('client', 'secret'),
             null,
             []
         );
+
+        if ($revoked) {
+            $authorizationCode->revoke();
+        }
+
+        return $authorizationCode;
+    }
+
+    private function compareOutput(array $output, InMemoryAuthCodeManager $inMemoryAuthCodeManager): void
+    {
+        $reflectionProperty = new ReflectionProperty(InMemoryAuthCodeManager::class, 'authorizationCodes');
+        $reflectionProperty->setAccessible(true);
+
+        $this->assertSame($output, $reflectionProperty->getValue($inMemoryAuthCodeManager));
     }
 }

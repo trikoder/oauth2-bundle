@@ -52,7 +52,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
     {
         return $this->entityManager->createQueryBuilder()
             ->delete(AccessToken::class, 'at')
-            ->where('at.revoked = 1')
+            ->where('at.revoked = true')
             ->getQuery()
             ->execute();
     }

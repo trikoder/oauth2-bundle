@@ -47,10 +47,10 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     {
         $count = \count($this->refreshTokens);
 
-        $this->accessTokens = array_filter($this->refreshTokens, static function (RefreshToken $accessToken): bool {
-            return !$accessToken->isRevoked();
+        $this->refreshTokens = array_filter($this->refreshTokens, static function (RefreshToken $refreshToken): bool {
+            return !$refreshToken->isRevoked();
         });
 
-        return $count - \count($this->accessTokens);
+        return $count - \count($this->refreshTokens);
     }
 }

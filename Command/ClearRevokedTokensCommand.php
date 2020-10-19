@@ -70,17 +70,17 @@ final class ClearRevokedTokensCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $clearExpiredAccessTokens = $input->getOption('access-tokens');
-        $clearExpiredRefreshTokens = $input->getOption('refresh-tokens');
-        $clearExpiredAuthCodes = $input->getOption('auth-codes');
+        $clearRevokedAccessTokens = $input->getOption('access-tokens');
+        $clearRevokedRefreshTokens = $input->getOption('refresh-tokens');
+        $clearRevokedAuthCodes = $input->getOption('auth-codes');
 
-        if (!$clearExpiredAccessTokens && !$clearExpiredRefreshTokens && !$clearExpiredAuthCodes) {
-            $clearExpiredAccessTokens = true;
-            $clearExpiredRefreshTokens = true;
-            $clearExpiredAuthCodes = true;
+        if (!$clearRevokedAccessTokens && !$clearRevokedRefreshTokens && !$clearRevokedAuthCodes) {
+            $clearRevokedAccessTokens = true;
+            $clearRevokedRefreshTokens = true;
+            $clearRevokedAuthCodes = true;
         }
 
-        if (true === $clearExpiredAccessTokens) {
+        if (true === $clearRevokedAccessTokens && $this->checkMethod($output, $this->accessTokenManager)) {
             $affected = $this->accessTokenManager->clearRevoked();
             $output->writeln(
                 sprintf(
@@ -90,7 +90,7 @@ final class ClearRevokedTokensCommand extends Command
             );
         }
 
-        if (true === $clearExpiredRefreshTokens) {
+        if (true === $clearRevokedRefreshTokens && $this->checkMethod($output, $this->refreshTokenManager)) {
             $affected = $this->refreshTokenManager->clearRevoked();
             $output->writeln(
                 sprintf(
@@ -100,7 +100,7 @@ final class ClearRevokedTokensCommand extends Command
             );
         }
 
-        if (true === $clearExpiredAuthCodes) {
+        if (true === $clearRevokedAuthCodes && $this->checkMethod($output, $this->authorizationCodeManager)) {
             $affected = $this->authorizationCodeManager->clearRevoked();
             $output->writeln(
                 sprintf(
@@ -111,5 +111,22 @@ final class ClearRevokedTokensCommand extends Command
         }
 
         return 0;
+    }
+
+    private function checkMethod(OutputInterface $output, object $obj, string $methodName = 'clearRevoked'): bool
+    {
+        $exists = method_exists($obj, $methodName);
+
+        if (!$exists) {
+            $output->writeln(
+                sprintf(
+                    '<comment>Method "%s:%s()" will be required in the next release. Skipping for now...</comment>',
+                    get_class($obj),
+                    $methodName
+                )
+            );
+        }
+
+        return $exists;
     }
 }

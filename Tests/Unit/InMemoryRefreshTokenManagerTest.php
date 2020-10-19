@@ -21,47 +21,115 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
         timecop_freeze(new DateTimeImmutable());
 
         try {
-            $testData = $this->buildClearExpiredTestData();
+            $testData = $this->buildTestData(
+                function (array $item): bool {
+                    return !$item['expired'];
+                }
+            );
 
             foreach ($testData['input'] as $token) {
                 $inMemoryRefreshTokenManager->save($token);
             }
 
             $this->assertSame(3, $inMemoryRefreshTokenManager->clearExpired());
+            $this->compareOutput($testData['output'], $inMemoryRefreshTokenManager);
         } finally {
             timecop_return();
         }
-
-        $reflectionProperty = new ReflectionProperty(InMemoryRefreshTokenManager::class, 'refreshTokens');
-        $reflectionProperty->setAccessible(true);
-
-        $this->assertSame($testData['output'], $reflectionProperty->getValue($inMemoryRefreshTokenManager));
     }
 
-    private function buildClearExpiredTestData(): array
+    public function testClearRevoked(): void
     {
-        $validRefreshTokens = [
-            '1111' => $this->buildRefreshToken('1111', '+1 day'),
-            '2222' => $this->buildRefreshToken('2222', '+1 hour'),
-            '3333' => $this->buildRefreshToken('3333', '+1 second'),
-            '4444' => $this->buildRefreshToken('4444', 'now'),
-        ];
+        $inMemoryRefreshTokenManager = new InMemoryRefreshTokenManager();
 
-        $expiredRefreshTokens = [
-            '5555' => $this->buildRefreshToken('5555', '-1 day'),
-            '6666' => $this->buildRefreshToken('6666', '-1 hour'),
-            '7777' => $this->buildRefreshToken('7777', '-1 second'),
-        ];
+        timecop_freeze(new DateTimeImmutable());
 
-        return [
-            'input' => $validRefreshTokens + $expiredRefreshTokens,
-            'output' => $validRefreshTokens,
-        ];
+        try {
+            $testData = $this->buildTestData(
+                function (array $item): bool {
+                    return !$item['revoked'];
+                }
+            );
+
+            foreach ($testData['input'] as $token) {
+                $inMemoryRefreshTokenManager->save($token);
+            }
+
+            $this->assertSame(4, $inMemoryRefreshTokenManager->clearRevoked());
+            $this->compareOutput($testData['output'], $inMemoryRefreshTokenManager);
+        } finally {
+            timecop_return();
+        }
     }
 
-    private function buildRefreshToken(string $identifier, string $modify): RefreshToken
+    private function buildTestData(callable $successFunction): array
     {
-        return new RefreshToken(
+        $data = [
+            [
+                'identifier' => '1111',
+                'dateOffset' => '+1 day',
+                'revoked' => true,
+                'expired' => false,
+            ],
+            [
+                'identifier' => '2222',
+                'dateOffset' => '+1 hour',
+                'revoked' => false,
+                'expired' => false,
+            ],
+            [
+                'identifier' => '3333',
+                'dateOffset' => '+1 second',
+                'revoked' => true,
+                'expired' => false,
+            ],
+            [
+                'identifier' => '4444',
+                'dateOffset' => 'now',
+                'revoked' => false,
+                'expired' => false,
+            ],
+            [
+                'identifier' => '5555',
+                'dateOffset' => '-1 day',
+                'revoked' => true,
+                'expired' => true,
+            ],
+            [
+                'identifier' => '6666',
+                'dateOffset' => '-1 hour',
+                'revoked' => false,
+                'expired' => true,
+            ],
+            [
+                'identifier' => '7777',
+                'dateOffset' => '-1 second',
+                'revoked' => true,
+                'expired' => true,
+            ]
+        ];
+
+        $response = [];
+        foreach ($data as $item) {
+            $identifier = $item['identifier'];
+            $RefreshToken = $this->buildRefreshToken(
+                $identifier,
+                $item['dateOffset'],
+                $item['revoked']
+            );
+            $response['input'][$identifier] = $RefreshToken;
+
+            if ($successFunction($item)) {
+                $response['output'][$identifier] = $RefreshToken;
+            }
+        }
+
+        return $response;
+    }
+
+    private function buildRefreshToken(string $identifier, string $modify, bool $revoked): RefreshToken
+    {
+        $refreshToken = new RefreshToken(
             $identifier,
             new DateTimeImmutable($modify),
             new AccessToken(
@@ -72,5 +140,19 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
                 []
             )
         );
+
+        if ($revoked) {
+            $refreshToken->revoke();
+        }
+
+        return $refreshToken;
+    }
+
+    private function compareOutput(array $output, InMemoryRefreshTokenManager $inMemoryRefreshTokenManager): void
+    {
+        $reflectionProperty = new ReflectionProperty(InMemoryRefreshTokenManager::class, 'refreshTokens');
+        $reflectionProperty->setAccessible(true);
+
+        $this->assertSame($output, $reflectionProperty->getValue($inMemoryRefreshTokenManager));
     }
 }

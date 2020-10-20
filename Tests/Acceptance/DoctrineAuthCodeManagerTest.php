@@ -29,12 +29,7 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         timecop_freeze(new DateTimeImmutable());
 
         try {
-            $testData = $this->buildTestData(
-                $client,
-                function (array $item): bool {
-                    return !$item['expired'];
-                }
-            );
+            $testData = $this->buildClearExpiredTestData($client);
 
             /** @var AuthorizationCode $authCode */
             foreach ($testData['input'] as $authCode) {
@@ -54,6 +49,27 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         );
     }
 
+    private function buildClearExpiredTestData(Client $client): array
+    {
+        $validAuthCodes = [
+            $this->buildAuthCode($client, '1111', '+1 day'),
+            $this->buildAuthCode($client, '2222', '+1 hour'),
+            $this->buildAuthCode($client, '3333', '+1 second'),
+            $this->buildAuthCode($client, '4444', 'now'),
+        ];
+
+        $expiredAuthCodes = [
+            $this->buildAuthCode($client, '5555', '-1 day'),
+            $this->buildAuthCode($client, '6666', '-1 hour'),
+            $this->buildAuthCode($client, '7777', '-1 second'),
+        ];
+
+        return [
+            'input' => array_merge($validAuthCodes, $expiredAuthCodes),
+            'output' => $validAuthCodes,
+        ];
+    }
+
     public function testClearRevoked(): void
     {
         /** @var EntityManagerInterface $em */
@@ -64,27 +80,16 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         $client = new Client('client', 'secret');
         $em->persist($client);
 
-        timecop_freeze(new DateTimeImmutable());
+        $testData = $this->buildClearRevokedTestData($client);
 
-        try {
-            $testData = $this->buildTestData(
-                $client,
-                function (array $item): bool {
-                    return !$item['revoked'];
-                }
-            );
-
-            /** @var AuthorizationCode $authCode */
-            foreach ($testData['input'] as $authCode) {
-                $doctrineAuthCodeManager->save($authCode);
-            }
-
-            $em->flush();
-
-            $this->assertSame(4, $doctrineAuthCodeManager->clearRevoked());
-        } finally {
-            timecop_return();
+        /** @var AuthorizationCode $authCode */
+        foreach ($testData['input'] as $authCode) {
+            $doctrineAuthCodeManager->save($authCode);
         }
+
+        $em->flush();
+
+        $this->assertSame(2, $doctrineAuthCodeManager->clearRevoked());
 
         $this->assertSame(
             $testData['output'],
@@ -92,76 +97,26 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         );
     }
 
-    private function getData(): array
+    private function buildClearRevokedTestData(Client $client): array
     {
+        $validAuthCodes = [
+            $this->buildAuthCode($client, '1111', '+1 day'),
+            $this->buildAuthCode($client, '2222', '-1 hour'),
+            $this->buildAuthCode($client, '3333', '+1 second'),
+        ];
+
+        $revokedAuthCodes = [
+            $this->buildAuthCode($client, '5555', '-1 day', true),
+            $this->buildAuthCode($client, '6666', '+1 hour', true),
+        ];
+
         return [
-            [
-                'identifier' => '1111',
-                'dateOffset' => '+1 day',
-                'revoked' => true,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '2222',
-                'dateOffset' => '+1 hour',
-                'revoked' => false,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '3333',
-                'dateOffset' => '+1 second',
-                'revoked' => true,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '4444',
-                'dateOffset' => 'now',
-                'revoked' => false,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '5555',
-                'dateOffset' => '-1 day',
-                'revoked' => true,
-                'expired' => true,
-            ],
-            [
-                'identifier' => '6666',
-                'dateOffset' => '-1 hour',
-                'revoked' => false,
-                'expired' => true,
-            ],
-            [
-                'identifier' => '7777',
-                'dateOffset' => '-1 second',
-                'revoked' => true,
-                'expired' => true,
-            ]
+            'input' => array_merge($validAuthCodes, $revokedAuthCodes),
+            'output' => $validAuthCodes,
         ];
     }
 
-    private function buildTestData(Client $client, callable $successFunction): array
-    {
-        $response = [];
-        foreach ($this->getData() as $item) {
-            $identifier = $item['identifier'];
-            $accessToken = $this->buildAuthCode(
-                $client,
-                $identifier,
-                $item['dateOffset'],
-                $item['revoked']
-            );
-            $response['input'][] = $accessToken;
-
-            if ($successFunction($item)) {
-                $response['output'][] = $accessToken;
-            }
-        }
-
-        return $response;
-    }
-
-    private function buildAuthCode(Client $client, string $identifier, string $modify, bool $revoked): AuthorizationCode
+    private function buildAuthCode(Client $client, string $identifier, string $modify, bool $revoked = false): AuthorizationCode
     {
         $authorizationCode = new AuthorizationCode(
             $identifier,

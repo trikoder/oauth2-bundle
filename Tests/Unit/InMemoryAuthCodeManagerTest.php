@@ -31,7 +31,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
             }
 
             $this->assertSame(3, $inMemoryAuthCodeManager->clearExpired());
-            $this->compareOutput($testData['output'], $inMemoryAuthCodeManager);
+            $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAuthCodeManager);
         } finally {
             timecop_return();
         }
@@ -41,24 +41,18 @@ final class InMemoryAuthCodeManagerTest extends TestCase
     {
         $inMemoryAuthCodeManager = new InMemoryAuthCodeManager();
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $testData = $this->buildTestData(
-                function (array $item): bool {
-                    return !$item['revoked'];
-                }
-            );
-
-            foreach ($testData['input'] as $token) {
-                $inMemoryAuthCodeManager->save($token);
+        $testData = $this->buildTestData(
+            function (array $item): bool {
+                return !$item['revoked'];
             }
+        );
 
-            $this->assertSame(4, $inMemoryAuthCodeManager->clearRevoked());
-            $this->compareOutput($testData['output'], $inMemoryAuthCodeManager);
-        } finally {
-            timecop_return();
+        foreach ($testData['input'] as $token) {
+            $inMemoryAuthCodeManager->save($token);
         }
+
+        $this->assertSame(4, $inMemoryAuthCodeManager->clearRevoked());
+        $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAuthCodeManager);
     }
 
     private function buildTestData(callable $successFunction): array
@@ -105,21 +99,21 @@ final class InMemoryAuthCodeManagerTest extends TestCase
                 'dateOffset' => '-1 second',
                 'revoked' => true,
                 'expired' => true,
-            ]
+            ],
         ];
 
         $response = [];
         foreach ($data as $item) {
             $identifier = $item['identifier'];
-            $AuthCode = $this->buildAuthCode(
+            $authCode = $this->buildAuthCode(
                 $identifier,
                 $item['dateOffset'],
                 $item['revoked']
             );
-            $response['input'][$identifier] = $AuthCode;
+            $response['input'][$identifier] = $authCode;
 
             if ($successFunction($item)) {
-                $response['output'][$identifier] = $AuthCode;
+                $response['output'][$identifier] = $authCode;
             }
         }
 
@@ -143,7 +137,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
         return $authorizationCode;
     }
 
-    private function compareOutput(array $output, InMemoryAuthCodeManager $inMemoryAuthCodeManager): void
+    private function assertManagerContainsExpectedData(array $output, InMemoryAuthCodeManager $inMemoryAuthCodeManager): void
     {
         $reflectionProperty = new ReflectionProperty(InMemoryAuthCodeManager::class, 'authorizationCodes');
         $reflectionProperty->setAccessible(true);

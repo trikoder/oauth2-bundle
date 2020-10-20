@@ -31,7 +31,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
             }
 
             $this->assertSame(3, $inMemoryAccessTokenManager->clearExpired());
-            $this->compareOutput($testData['output'], $inMemoryAccessTokenManager);
+            $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAccessTokenManager);
         } finally {
             timecop_return();
         }
@@ -41,24 +41,18 @@ final class InMemoryAccessTokenManagerTest extends TestCase
     {
         $inMemoryAccessTokenManager = new InMemoryAccessTokenManager();
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $testData = $this->buildTestData(
-                function (array $item): bool {
-                    return !$item['revoked'];
-                }
-            );
-
-            foreach ($testData['input'] as $token) {
-                $inMemoryAccessTokenManager->save($token);
+        $testData = $this->buildTestData(
+            function (array $item): bool {
+                return !$item['revoked'];
             }
+        );
 
-            $this->assertSame(4, $inMemoryAccessTokenManager->clearRevoked());
-            $this->compareOutput($testData['output'], $inMemoryAccessTokenManager);
-        } finally {
-            timecop_return();
+        foreach ($testData['input'] as $token) {
+            $inMemoryAccessTokenManager->save($token);
         }
+
+        $this->assertSame(4, $inMemoryAccessTokenManager->clearRevoked());
+        $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAccessTokenManager);
     }
 
     private function buildTestData(callable $successFunction): array
@@ -105,7 +99,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
                 'dateOffset' => '-1 second',
                 'revoked' => true,
                 'expired' => true,
-            ]
+            ],
         ];
 
         $response = [];
@@ -143,7 +137,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
         return $accessToken;
     }
 
-    private function compareOutput(array $output, InMemoryAccessTokenManager $inMemoryAccessTokenManager): void
+    private function assertManagerContainsExpectedData(array $output, InMemoryAccessTokenManager $inMemoryAccessTokenManager): void
     {
         $reflectionProperty = new ReflectionProperty(InMemoryAccessTokenManager::class, 'accessTokens');
         $reflectionProperty->setAccessible(true);

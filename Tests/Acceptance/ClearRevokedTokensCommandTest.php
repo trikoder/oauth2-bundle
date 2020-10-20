@@ -22,8 +22,6 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
-        timecop_freeze(new \DateTimeImmutable());
-
         FixtureFactory::initializeFixtures(
             $this->client->getContainer()->get(ScopeManagerInterface::class),
             $this->client->getContainer()->get(ClientManagerInterface::class),
@@ -31,13 +29,6 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
             $this->client->getContainer()->get(RefreshTokenManagerInterface::class),
             $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class)
         );
-    }
-
-    protected function tearDown(): void
-    {
-        timecop_return();
-
-        parent::tearDown();
     }
 
     public function testClearRevokedAccessAndRefreshTokensAndAuthCodes(): void

@@ -31,12 +31,7 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
         timecop_freeze(new DateTimeImmutable());
 
         try {
-            $testData = $this->buildTestData(
-                $client,
-                function (array $item): bool {
-                    return !$item['expired'];
-                }
-            );
+            $testData = $this->buildClearExpiredTestData($client);
 
             /** @var RefreshToken $token */
             foreach ($testData['input'] as $token) {
@@ -57,6 +52,27 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
         );
     }
 
+    private function buildClearExpiredTestData(Client $client): array
+    {
+        $validRefreshTokens = [
+            $this->buildRefreshToken($client, '1111', '+1 day'),
+            $this->buildRefreshToken($client, '2222', '+1 hour'),
+            $this->buildRefreshToken($client, '3333', '+1 second'),
+            $this->buildRefreshToken($client, '4444', 'now'),
+        ];
+
+        $expiredRefreshTokens = [
+            $this->buildRefreshToken($client, '5555', '-1 day'),
+            $this->buildRefreshToken($client, '6666', '-1 hour'),
+            $this->buildRefreshToken($client, '7777', '-1 second'),
+        ];
+
+        return [
+            'input' => array_merge($validRefreshTokens, $expiredRefreshTokens),
+            'output' => $validRefreshTokens,
+        ];
+    }
+
     public function testClearRevoked(): void
     {
         /** @var EntityManagerInterface $em */
@@ -68,28 +84,17 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        timecop_freeze(new DateTimeImmutable());
+        $testData = $this->buildClearRevokedTestData($client);
 
-        try {
-            $testData = $this->buildTestData(
-                $client,
-                function (array $item): bool {
-                    return !$item['revoked'];
-                }
-            );
-
-            /** @var RefreshToken $token */
-            foreach ($testData['input'] as $token) {
-                $em->persist($token->getAccessToken());
-                $doctrineRefreshTokenManager->save($token);
-            }
-
-            $em->flush();
-
-            $this->assertSame(4, $doctrineRefreshTokenManager->clearRevoked());
-        } finally {
-            timecop_return();
+        /** @var RefreshToken $token */
+        foreach ($testData['input'] as $token) {
+            $em->persist($token->getAccessToken());
+            $doctrineRefreshTokenManager->save($token);
         }
+
+        $em->flush();
+
+        $this->assertSame(2, $doctrineRefreshTokenManager->clearRevoked());
 
         $this->assertSame(
             $testData['output'],
@@ -97,76 +102,26 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
         );
     }
 
-    private function getData(): array
+    private function buildClearRevokedTestData(Client $client): array
     {
+        $validRefreshTokens = [
+            $this->buildRefreshToken($client, '1111', '+1 day'),
+            $this->buildRefreshToken($client, '2222', '-1 hour'),
+            $this->buildRefreshToken($client, '3333', '+1 second'),
+        ];
+
+        $revokedRefreshTokens = [
+            $this->buildRefreshToken($client, '5555', '-1 day', true),
+            $this->buildRefreshToken($client, '6666', '+1 hour', true),
+        ];
+
         return [
-            [
-                'identifier' => '1111',
-                'dateOffset' => '+1 day',
-                'revoked' => true,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '2222',
-                'dateOffset' => '+1 hour',
-                'revoked' => false,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '3333',
-                'dateOffset' => '+1 second',
-                'revoked' => true,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '4444',
-                'dateOffset' => 'now',
-                'revoked' => false,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '5555',
-                'dateOffset' => '-1 day',
-                'revoked' => true,
-                'expired' => true,
-            ],
-            [
-                'identifier' => '6666',
-                'dateOffset' => '-1 hour',
-                'revoked' => false,
-                'expired' => true,
-            ],
-            [
-                'identifier' => '7777',
-                'dateOffset' => '-1 second',
-                'revoked' => true,
-                'expired' => true,
-            ]
+            'input' => array_merge($validRefreshTokens, $revokedRefreshTokens),
+            'output' => $validRefreshTokens,
         ];
     }
 
-    private function buildTestData(Client $client, callable $successFunction): array
-    {
-        $response = [];
-        foreach ($this->getData() as $item) {
-            $identifier = $item['identifier'];
-            $accessToken = $this->buildRefreshToken(
-                $client,
-                $identifier,
-                $item['dateOffset'],
-                $item['revoked']
-            );
-            $response['input'][] = $accessToken;
-
-            if ($successFunction($item)) {
-                $response['output'][] = $accessToken;
-            }
-        }
-
-        return $response;
-    }
-
-    private function buildRefreshToken(Client $client, string $identifier, string $modify, bool $revoked): RefreshToken
+    private function buildRefreshToken(Client $client, string $identifier, string $modify, bool $revoked = false): RefreshToken
     {
         $refreshToken = new RefreshToken(
             $identifier,

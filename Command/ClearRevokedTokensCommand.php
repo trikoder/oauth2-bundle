@@ -80,7 +80,7 @@ final class ClearRevokedTokensCommand extends Command
             $clearRevokedAuthCodes = true;
         }
 
-        if (true === $clearRevokedAccessTokens && $this->checkMethod($output, $this->accessTokenManager)) {
+        if (true === $clearRevokedAccessTokens && $this->clearRevokedMethodExists($output, $this->accessTokenManager)) {
             $affected = $this->accessTokenManager->clearRevoked();
             $output->writeln(
                 sprintf(
@@ -90,7 +90,7 @@ final class ClearRevokedTokensCommand extends Command
             );
         }
 
-        if (true === $clearRevokedRefreshTokens && $this->checkMethod($output, $this->refreshTokenManager)) {
+        if (true === $clearRevokedRefreshTokens && $this->clearRevokedMethodExists($output, $this->refreshTokenManager)) {
             $affected = $this->refreshTokenManager->clearRevoked();
             $output->writeln(
                 sprintf(
@@ -100,7 +100,7 @@ final class ClearRevokedTokensCommand extends Command
             );
         }
 
-        if (true === $clearRevokedAuthCodes && $this->checkMethod($output, $this->authorizationCodeManager)) {
+        if (true === $clearRevokedAuthCodes && $this->clearRevokedMethodExists($output, $this->authorizationCodeManager)) {
             $affected = $this->authorizationCodeManager->clearRevoked();
             $output->writeln(
                 sprintf(
@@ -113,15 +113,16 @@ final class ClearRevokedTokensCommand extends Command
         return 0;
     }
 
-    private function checkMethod(OutputInterface $output, object $obj, string $methodName = 'clearRevoked'): bool
+    private function clearRevokedMethodExists(OutputInterface $output, object $manager): bool
     {
-        $exists = method_exists($obj, $methodName);
+        $methodName = 'clearRevoked';
+        $exists = method_exists($manager, $methodName);
 
         if (!$exists) {
             $output->writeln(
                 sprintf(
-                    '<comment>Method "%s:%s()" will be required in the next release. Skipping for now...</comment>',
-                    get_class($obj),
+                    '<comment>Method "%s:%s()" will be required in the next major release. Skipping for now...</comment>',
+                    \get_class($manager),
                     $methodName
                 )
             );

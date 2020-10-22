@@ -20,11 +20,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
         timecop_freeze(new DateTimeImmutable());
 
         try {
-            $testData = $this->buildTestData(
-                function (array $item): bool {
-                    return !$item['expired'];
-                }
-            );
+            $testData = $this->buildClearExpiredTestData();
 
             foreach ($testData['input'] as $token) {
                 $inMemoryAuthCodeManager->save($token);
@@ -37,90 +33,61 @@ final class InMemoryAuthCodeManagerTest extends TestCase
         }
     }
 
+    private function buildClearExpiredTestData(): array
+    {
+        $validAuthCodes = [
+            '1111' => $this->buildAuthCode('1111', '+1 day'),
+            '2222' => $this->buildAuthCode('2222', '+1 hour'),
+            '3333' => $this->buildAuthCode('3333', '+1 second'),
+            '4444' => $this->buildAuthCode('4444', 'now'),
+        ];
+
+        $expiredAuthCodes = [
+            '5555' => $this->buildAuthCode('5555', '-1 day'),
+            '6666' => $this->buildAuthCode('6666', '-1 hour'),
+            '7777' => $this->buildAuthCode('7777', '-1 second'),
+        ];
+
+        return [
+            'input' => $validAuthCodes + $expiredAuthCodes,
+            'output' => $validAuthCodes,
+        ];
+    }
+
     public function testClearRevoked(): void
     {
         $inMemoryAuthCodeManager = new InMemoryAuthCodeManager();
 
-        $testData = $this->buildTestData(
-            function (array $item): bool {
-                return !$item['revoked'];
-            }
-        );
+        $testData = $this->buildClearRevokedTestData();
 
         foreach ($testData['input'] as $token) {
             $inMemoryAuthCodeManager->save($token);
         }
 
-        $this->assertSame(4, $inMemoryAuthCodeManager->clearRevoked());
+        $this->assertSame(2, $inMemoryAuthCodeManager->clearRevoked());
         $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAuthCodeManager);
     }
 
-    private function buildTestData(callable $successFunction): array
+    private function buildClearRevokedTestData(): array
     {
-        $data = [
-            [
-                'identifier' => '1111',
-                'dateOffset' => '+1 day',
-                'revoked' => true,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '2222',
-                'dateOffset' => '+1 hour',
-                'revoked' => false,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '3333',
-                'dateOffset' => '+1 second',
-                'revoked' => true,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '4444',
-                'dateOffset' => 'now',
-                'revoked' => false,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '5555',
-                'dateOffset' => '-1 day',
-                'revoked' => true,
-                'expired' => true,
-            ],
-            [
-                'identifier' => '6666',
-                'dateOffset' => '-1 hour',
-                'revoked' => false,
-                'expired' => true,
-            ],
-            [
-                'identifier' => '7777',
-                'dateOffset' => '-1 second',
-                'revoked' => true,
-                'expired' => true,
-            ],
+        $validAuthCodes = [
+            '1111' => $this->buildAuthCode('1111', '+1 day'),
+            '2222' => $this->buildAuthCode('2222', '+1 hour'),
+            '3333' => $this->buildAuthCode('3333', '+1 second'),
         ];
 
-        $response = [];
-        foreach ($data as $item) {
-            $identifier = $item['identifier'];
-            $authCode = $this->buildAuthCode(
-                $identifier,
-                $item['dateOffset'],
-                $item['revoked']
-            );
-            $response['input'][$identifier] = $authCode;
+        $revokedAuthCodes = [
+            '5555' => $this->buildAuthCode('5555', '-1 day', true),
+            '6666' => $this->buildAuthCode('6666', '-1 hour', true),
+        ];
 
-            if ($successFunction($item)) {
-                $response['output'][$identifier] = $authCode;
-            }
-        }
-
-        return $response;
+        return [
+            'input' => $validAuthCodes + $revokedAuthCodes,
+            'output' => $validAuthCodes,
+        ];
     }
 
-    private function buildAuthCode(string $identifier, string $modify, bool $revoked): AuthorizationCode
+    private function buildAuthCode(string $identifier, string $modify, bool $revoked = false): AuthorizationCode
     {
         $authorizationCode = new AuthorizationCode(
             $identifier,

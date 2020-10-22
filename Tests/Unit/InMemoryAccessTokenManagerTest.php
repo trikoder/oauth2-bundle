@@ -20,11 +20,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
         timecop_freeze(new DateTimeImmutable());
 
         try {
-            $testData = $this->buildTestData(
-                function (array $item): bool {
-                    return !$item['expired'];
-                }
-            );
+            $testData = $this->buildClearExpiredTestData();
 
             foreach ($testData['input'] as $token) {
                 $inMemoryAccessTokenManager->save($token);
@@ -37,90 +33,61 @@ final class InMemoryAccessTokenManagerTest extends TestCase
         }
     }
 
+    private function buildClearExpiredTestData(): array
+    {
+        $validAccessTokens = [
+            '1111' => $this->buildAccessToken('1111', '+1 day'),
+            '2222' => $this->buildAccessToken('2222', '+1 hour'),
+            '3333' => $this->buildAccessToken('3333', '+1 second'),
+            '4444' => $this->buildAccessToken('4444', 'now'),
+        ];
+
+        $expiredAccessTokens = [
+            '5555' => $this->buildAccessToken('5555', '-1 day'),
+            '6666' => $this->buildAccessToken('6666', '-1 hour'),
+            '7777' => $this->buildAccessToken('7777', '-1 second'),
+        ];
+
+        return [
+            'input' => $validAccessTokens + $expiredAccessTokens,
+            'output' => $validAccessTokens,
+        ];
+    }
+
     public function testClearRevoked(): void
     {
         $inMemoryAccessTokenManager = new InMemoryAccessTokenManager();
 
-        $testData = $this->buildTestData(
-            function (array $item): bool {
-                return !$item['revoked'];
-            }
-        );
+        $testData = $this->buildClearRevokedTestData();
 
         foreach ($testData['input'] as $token) {
             $inMemoryAccessTokenManager->save($token);
         }
 
-        $this->assertSame(4, $inMemoryAccessTokenManager->clearRevoked());
+        $this->assertSame(2, $inMemoryAccessTokenManager->clearRevoked());
         $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAccessTokenManager);
     }
 
-    private function buildTestData(callable $successFunction): array
+    private function buildClearRevokedTestData(): array
     {
-        $data = [
-            [
-                'identifier' => '1111',
-                'dateOffset' => '+1 day',
-                'revoked' => true,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '2222',
-                'dateOffset' => '+1 hour',
-                'revoked' => false,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '3333',
-                'dateOffset' => '+1 second',
-                'revoked' => true,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '4444',
-                'dateOffset' => 'now',
-                'revoked' => false,
-                'expired' => false,
-            ],
-            [
-                'identifier' => '5555',
-                'dateOffset' => '-1 day',
-                'revoked' => true,
-                'expired' => true,
-            ],
-            [
-                'identifier' => '6666',
-                'dateOffset' => '-1 hour',
-                'revoked' => false,
-                'expired' => true,
-            ],
-            [
-                'identifier' => '7777',
-                'dateOffset' => '-1 second',
-                'revoked' => true,
-                'expired' => true,
-            ],
+        $validAccessTokens = [
+            '1111' => $this->buildAccessToken('1111', '+1 day'),
+            '2222' => $this->buildAccessToken('2222', '-1 hour'),
+            '3333' => $this->buildAccessToken('3333', '+1 second'),
         ];
 
-        $response = [];
-        foreach ($data as $item) {
-            $identifier = $item['identifier'];
-            $accessToken = $this->buildAccessToken(
-                $identifier,
-                $item['dateOffset'],
-                $item['revoked']
-            );
-            $response['input'][$identifier] = $accessToken;
+        $revokedAccessTokens = [
+            '5555' => $this->buildAccessToken('5555', '-1 day', true),
+            '6666' => $this->buildAccessToken('6666', '+1 hour', true),
+        ];
 
-            if ($successFunction($item)) {
-                $response['output'][$identifier] = $accessToken;
-            }
-        }
-
-        return $response;
+        return [
+            'input' => $validAccessTokens + $revokedAccessTokens,
+            'output' => $validAccessTokens,
+        ];
     }
 
-    private function buildAccessToken(string $identifier, string $modify, bool $revoked): AccessToken
+    private function buildAccessToken(string $identifier, string $modify, bool $revoked = false): AccessToken
     {
         $accessToken = new AccessToken(
             $identifier,

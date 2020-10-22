@@ -52,16 +52,16 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     private function buildClearExpiredTestData(Client $client): array
     {
         $validAccessTokens = [
-            $this->buildAccessToken($client, '1111', '+1 day'),
-            $this->buildAccessToken($client, '2222', '+1 hour'),
-            $this->buildAccessToken($client, '3333', '+1 second'),
-            $this->buildAccessToken($client, '4444', 'now'),
+            $this->buildAccessToken('1111', '+1 day', $client),
+            $this->buildAccessToken('2222', '+1 hour', $client),
+            $this->buildAccessToken('3333', '+1 second', $client),
+            $this->buildAccessToken('4444', 'now', $client),
         ];
 
         $expiredAccessTokens = [
-            $this->buildAccessToken($client, '5555', '-1 day'),
-            $this->buildAccessToken($client, '6666', '-1 hour'),
-            $this->buildAccessToken($client, '7777', '-1 second'),
+            $this->buildAccessToken('5555', '-1 day', $client),
+            $this->buildAccessToken('6666', '-1 hour', $client),
+            $this->buildAccessToken('7777', '-1 second', $client),
         ];
 
         return [
@@ -99,14 +99,14 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     private function buildClearRevokedTestData(Client $client): array
     {
         $validAccessTokens = [
-            $this->buildAccessToken($client, '1111', '+1 day'),
-            $this->buildAccessToken($client, '2222', '-1 hour'),
-            $this->buildAccessToken($client, '3333', '+1 second'),
+            $this->buildAccessToken('1111', '+1 day', $client),
+            $this->buildAccessToken('2222', '-1 hour', $client),
+            $this->buildAccessToken('3333', '+1 second', $client),
         ];
 
         $revokedAccessTokens = [
-            $this->buildAccessToken($client, '5555', '-1 day', true),
-            $this->buildAccessToken($client, '6666', '+1 hour', true),
+            $this->buildAccessToken('5555', '-1 day', $client, true),
+            $this->buildAccessToken('6666', '+1 hour', $client, true),
         ];
 
         return [
@@ -115,7 +115,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         ];
     }
 
-    private function buildAccessToken(Client $client, string $identifier, string $modify, bool $revoked = false): AccessToken
+    private function buildAccessToken(string $identifier, string $modify, Client $client, bool $revoked = false): AccessToken
     {
         $accessToken = new AccessToken(
             $identifier,
@@ -160,7 +160,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
             timecop_return();
         }
 
-        $mapFunction = function (RefreshToken $refreshToken): string {
+        $mapFunction = static function (RefreshToken $refreshToken): string {
             return $refreshToken->getIdentifier();
         };
 
@@ -173,16 +173,16 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     private function buildClearExpiredTestDataWithRefreshToken(Client $client): array
     {
         $validRefreshTokens = [
-            $this->buildRefreshToken($client, '1111', '+1 day'),
-            $this->buildRefreshToken($client, '2222', '+1 hour'),
-            $this->buildRefreshToken($client, '3333', '+1 second'),
-            $this->buildRefreshToken($client, '4444', 'now'),
+            $this->buildRefreshToken('1111', '+1 day', $client),
+            $this->buildRefreshToken('2222', '+1 hour', $client),
+            $this->buildRefreshToken('3333', '+1 second', $client),
+            $this->buildRefreshToken('4444', 'now', $client),
         ];
 
         $expiredRefreshTokens = [
-            $this->buildRefreshToken($client, '5555', '-1 day'),
-            $this->buildRefreshToken($client, '6666', '-1 hour'),
-            $this->buildRefreshToken($client, '7777', '-1 second'),
+            $this->buildRefreshToken('5555', '-1 day', $client),
+            $this->buildRefreshToken('6666', '-1 hour', $client),
+            $this->buildRefreshToken('7777', '-1 second', $client),
         ];
 
         return [
@@ -224,14 +224,14 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     private function buildClearRevokedTestDataWithRefreshToken(Client $client): array
     {
         $validRefreshTokens = [
-            $this->buildRefreshToken($client, '1111', '+1 day'),
-            $this->buildRefreshToken($client, '2222', '+1 hour'),
-            $this->buildRefreshToken($client, '3333', '+1 second'),
+            $this->buildRefreshToken('1111', '+1 day', $client),
+            $this->buildRefreshToken('2222', '+1 hour', $client),
+            $this->buildRefreshToken('3333', '+1 second', $client),
         ];
 
         $revokedRefreshTokens = [
-            $this->buildRefreshToken($client, '5555', '-1 day', true),
-            $this->buildRefreshToken($client, '6666', '-1 hour', true),
+            $this->buildRefreshToken('5555', '-1 day', $client, true),
+            $this->buildRefreshToken('6666', '-1 hour', $client, true),
         ];
 
         return [
@@ -240,7 +240,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         ];
     }
 
-    private function buildRefreshToken(Client $client, string $identifier, string $modify, bool $revoked = false): RefreshToken
+    private function buildRefreshToken(string $identifier, string $modify, Client $client, bool $revoked = false): RefreshToken
     {
         $accessToken = new AccessToken(
             $identifier,

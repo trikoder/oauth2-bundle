@@ -52,16 +52,16 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
     private function buildClearExpiredTestData(Client $client): array
     {
         $validAuthCodes = [
-            $this->buildAuthCode($client, '1111', '+1 day'),
-            $this->buildAuthCode($client, '2222', '+1 hour'),
-            $this->buildAuthCode($client, '3333', '+1 second'),
-            $this->buildAuthCode($client, '4444', 'now'),
+            $this->buildAuthCode('1111', '+1 day', $client),
+            $this->buildAuthCode('2222', '+1 hour', $client),
+            $this->buildAuthCode('3333', '+1 second', $client),
+            $this->buildAuthCode('4444', 'now', $client),
         ];
 
         $expiredAuthCodes = [
-            $this->buildAuthCode($client, '5555', '-1 day'),
-            $this->buildAuthCode($client, '6666', '-1 hour'),
-            $this->buildAuthCode($client, '7777', '-1 second'),
+            $this->buildAuthCode('5555', '-1 day', $client),
+            $this->buildAuthCode('6666', '-1 hour', $client),
+            $this->buildAuthCode('7777', '-1 second', $client),
         ];
 
         return [
@@ -100,14 +100,14 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
     private function buildClearRevokedTestData(Client $client): array
     {
         $validAuthCodes = [
-            $this->buildAuthCode($client, '1111', '+1 day'),
-            $this->buildAuthCode($client, '2222', '-1 hour'),
-            $this->buildAuthCode($client, '3333', '+1 second'),
+            $this->buildAuthCode('1111', '+1 day', $client),
+            $this->buildAuthCode('2222', '-1 hour', $client),
+            $this->buildAuthCode('3333', '+1 second', $client),
         ];
 
         $revokedAuthCodes = [
-            $this->buildAuthCode($client, '5555', '-1 day', true),
-            $this->buildAuthCode($client, '6666', '+1 hour', true),
+            $this->buildAuthCode('5555', '-1 day', $client, true),
+            $this->buildAuthCode('6666', '+1 hour', $client, true),
         ];
 
         return [
@@ -116,7 +116,7 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         ];
     }
 
-    private function buildAuthCode(Client $client, string $identifier, string $modify, bool $revoked = false): AuthorizationCode
+    private function buildAuthCode(string $identifier, string $modify, Client $client, bool $revoked = false): AuthorizationCode
     {
         $authorizationCode = new AuthorizationCode(
             $identifier,

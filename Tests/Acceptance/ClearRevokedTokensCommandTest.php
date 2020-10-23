@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use Doctrine\ORM\EntityManagerInterface;
+use stdClass;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
+use Trikoder\Bundle\OAuth2Bundle\Command\ClearRevokedTokensCommand;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
@@ -157,6 +160,33 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
                 FixtureFactory::FIXTURE_AUTH_CODE_REVOKED
             )
         );
+    }
+
+    public function testWarningIsIssuedIfClearRevokedMethodIsNotImplemented(): void
+    {
+        $reflection = new \ReflectionClass(ClearRevokedTokensCommand::class);
+        $clearRevokedMethodExists = $reflection->getMethod('clearRevokedMethodExists');
+        $clearRevokedMethodExists->setAccessible(true);
+
+        $outputProphecy = $this->prophesize(OutputInterface::class);
+
+        $outputProphecy
+            ->writeln('<comment>Method "stdClass:clearRevoked()" will be required in the next major release. Skipping for now...</comment>')
+            ->shouldBeCalledOnce()
+        ;
+
+        $success = $clearRevokedMethodExists->invokeArgs(
+            new ClearRevokedTokensCommand(
+                $this->client->getContainer()->get(AccessTokenManagerInterface::class),
+                $this->client->getContainer()->get(RefreshTokenManagerInterface::class),
+                $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class),
+            ),
+            [
+                $outputProphecy->reveal(),
+                new stdClass(),
+            ]
+        );
+        $this->assertFalse($success);
     }
 
     private function executeCommand(array $params = [], int $expectedExitCode = 0): string

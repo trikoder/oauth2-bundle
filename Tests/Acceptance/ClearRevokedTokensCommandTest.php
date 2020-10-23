@@ -183,7 +183,7 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
             new ClearRevokedTokensCommand(
                 $this->client->getContainer()->get(AccessTokenManagerInterface::class),
                 $this->client->getContainer()->get(RefreshTokenManagerInterface::class),
-                $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class),
+                $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class)
             ),
             [
                 $outputProphecy->reveal(),

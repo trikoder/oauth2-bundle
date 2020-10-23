@@ -160,13 +160,9 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
             timecop_return();
         }
 
-        $mapFunction = static function (RefreshToken $refreshToken): string {
-            return $refreshToken->getIdentifier();
-        };
-
         $this->assertSame(
-            array_map($mapFunction, $testData['output']),
-            array_map($mapFunction, $em->getRepository(RefreshToken::class)->findBy(['accessToken' => null], ['identifier' => 'ASC']))
+            $testData['output'],
+            $em->getRepository(RefreshToken::class)->findBy(['accessToken' => null], ['identifier' => 'ASC'])
         );
     }
 

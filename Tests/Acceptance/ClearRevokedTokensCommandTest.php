@@ -53,6 +53,7 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
         );
 
         $output = $this->executeCommand();
+        $this->clearEntityManager();
 
         $this->assertStringContainsString('Access tokens deleted: 1.', $output);
         $this->assertStringContainsString('Refresh tokens deleted: 1.', $output);
@@ -80,6 +81,7 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
         $output = $this->executeCommand([
             '--access-tokens' => true,
         ]);
+        $this->clearEntityManager();
 
         $this->assertStringContainsString('Access tokens deleted: 1.', $output);
         $this->assertStringNotContainsString('Refresh tokens deleted', $output);
@@ -109,6 +111,7 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
         $output = $this->executeCommand([
             '--refresh-tokens' => true,
         ]);
+        $this->clearEntityManager();
 
         $this->assertStringNotContainsString('Access tokens deleted', $output);
         $this->assertStringContainsString('Refresh tokens deleted: 1.', $output);
@@ -138,6 +141,7 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
         $output = $this->executeCommand([
             '--auth-codes' => true,
         ]);
+        $this->clearEntityManager();
 
         $this->assertStringNotContainsString('Access tokens deleted', $output);
         $this->assertStringNotContainsString('Refresh tokens deleted', $output);
@@ -200,7 +204,6 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
             $params
         ));
         $this->assertSame($expectedExitCode, $exitCode);
-        $this->clearEntityManager();
 
         return $commandTester->getDisplay(true);
     }

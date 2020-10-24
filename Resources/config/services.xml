@@ -218,6 +218,13 @@
             <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
         </service>
 
+        <service id="Trikoder\Bundle\OAuth2Bundle\Command\ClearRevokedTokensCommand">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" />
+            <tag name="console.command" />
+        </service>
+
         <!-- Utility services -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
         <service id="trikoder.oauth2.converter.user_converter" alias="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter">

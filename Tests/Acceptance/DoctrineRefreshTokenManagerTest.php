@@ -73,9 +73,57 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
         ];
     }
 
-    private function buildRefreshToken(string $identifier, string $modify, Client $client): RefreshToken
+    public function testClearRevoked(): void
     {
-        return new RefreshToken(
+        /** @var EntityManagerInterface $em */
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+
+        $doctrineRefreshTokenManager = new DoctrineRefreshTokenManager($em);
+
+        $client = new Client('client', 'secret');
+        $em->persist($client);
+        $em->flush();
+
+        $testData = $this->buildClearRevokedTestData($client);
+
+        /** @var RefreshToken $token */
+        foreach ($testData['input'] as $token) {
+            $em->persist($token->getAccessToken());
+            $doctrineRefreshTokenManager->save($token);
+        }
+
+        $em->flush();
+
+        $this->assertSame(2, $doctrineRefreshTokenManager->clearRevoked());
+
+        $this->assertSame(
+            $testData['output'],
+            $em->getRepository(RefreshToken::class)->findBy([], ['identifier' => 'ASC'])
+        );
+    }
+
+    private function buildClearRevokedTestData(Client $client): array
+    {
+        $validRefreshTokens = [
+            $this->buildRefreshToken('1111', '+1 day', $client),
+            $this->buildRefreshToken('2222', '-1 hour', $client),
+            $this->buildRefreshToken('3333', '+1 second', $client),
+        ];
+
+        $revokedRefreshTokens = [
+            $this->buildRefreshToken('5555', '-1 day', $client, true),
+            $this->buildRefreshToken('6666', '+1 hour', $client, true),
+        ];
+
+        return [
+            'input' => array_merge($validRefreshTokens, $revokedRefreshTokens),
+            'output' => $validRefreshTokens,
+        ];
+    }
+
+    private function buildRefreshToken(string $identifier, string $modify, Client $client, bool $revoked = false): RefreshToken
+    {
+        $refreshToken = new RefreshToken(
             $identifier,
             new DateTimeImmutable($modify),
             new AccessToken(
@@ -86,5 +134,11 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
                 []
             )
         );
+
+        if ($revoked) {
+            $refreshToken->revoke();
+        }
+
+        return $refreshToken;
     }
 }

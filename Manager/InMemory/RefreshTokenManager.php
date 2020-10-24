@@ -42,4 +42,15 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
 
         return $count - \count($this->refreshTokens);
     }
+
+    public function clearRevoked(): int
+    {
+        $count = \count($this->refreshTokens);
+
+        $this->refreshTokens = array_filter($this->refreshTokens, static function (RefreshToken $refreshToken): bool {
+            return !$refreshToken->isRevoked();
+        });
+
+        return $count - \count($this->refreshTokens);
+    }
 }

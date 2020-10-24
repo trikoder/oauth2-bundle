@@ -27,14 +27,10 @@ final class InMemoryAccessTokenManagerTest extends TestCase
             }
 
             $this->assertSame(3, $inMemoryAccessTokenManager->clearExpired());
+            $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAccessTokenManager);
         } finally {
             timecop_return();
         }
-
-        $reflectionProperty = new ReflectionProperty(InMemoryAccessTokenManager::class, 'accessTokens');
-        $reflectionProperty->setAccessible(true);
-
-        $this->assertSame($testData['output'], $reflectionProperty->getValue($inMemoryAccessTokenManager));
     }
 
     private function buildClearExpiredTestData(): array
@@ -58,14 +54,61 @@ final class InMemoryAccessTokenManagerTest extends TestCase
         ];
     }
 
-    private function buildAccessToken(string $identifier, string $modify): AccessToken
+    public function testClearRevoked(): void
     {
-        return new AccessToken(
+        $inMemoryAccessTokenManager = new InMemoryAccessTokenManager();
+
+        $testData = $this->buildClearRevokedTestData();
+
+        foreach ($testData['input'] as $token) {
+            $inMemoryAccessTokenManager->save($token);
+        }
+
+        $this->assertSame(2, $inMemoryAccessTokenManager->clearRevoked());
+        $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAccessTokenManager);
+    }
+
+    private function buildClearRevokedTestData(): array
+    {
+        $validAccessTokens = [
+            '1111' => $this->buildAccessToken('1111', '+1 day'),
+            '2222' => $this->buildAccessToken('2222', '-1 hour'),
+            '3333' => $this->buildAccessToken('3333', '+1 second'),
+        ];
+
+        $revokedAccessTokens = [
+            '5555' => $this->buildAccessToken('5555', '-1 day', true),
+            '6666' => $this->buildAccessToken('6666', '+1 hour', true),
+        ];
+
+        return [
+            'input' => $validAccessTokens + $revokedAccessTokens,
+            'output' => $validAccessTokens,
+        ];
+    }
+
+    private function buildAccessToken(string $identifier, string $modify, bool $revoked = false): AccessToken
+    {
+        $accessToken = new AccessToken(
             $identifier,
             new DateTimeImmutable($modify),
             new Client('client', 'secret'),
             null,
             []
         );
+
+        if ($revoked) {
+            $accessToken->revoke();
+        }
+
+        return $accessToken;
+    }
+
+    private function assertManagerContainsExpectedData(array $output, InMemoryAccessTokenManager $inMemoryAccessTokenManager): void
+    {
+        $reflectionProperty = new ReflectionProperty(InMemoryAccessTokenManager::class, 'accessTokens');
+        $reflectionProperty->setAccessible(true);
+
+        $this->assertSame($output, $reflectionProperty->getValue($inMemoryAccessTokenManager));
     }
 }

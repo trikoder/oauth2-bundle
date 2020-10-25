@@ -62,6 +62,13 @@ class Client
         return $this->secret;
     }
 
+    public function setSecret(?string $secret): self
+    {
+        $this->secret = $secret;
+
+        return $this;
+    }
+
     /**
      * @return RedirectUri[]
      */

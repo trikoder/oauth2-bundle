@@ -1,6 +1,6 @@
 # Trikoder OAuth 2 Bundle
 
-[![Build Status](https://github.com/trikoder/oauth2-bundle/workflows/Tests/badge.svg)](https://github.com/trikoder/oauth2-bundle/actions)
+[![Build Status](https://github.com/trikoder/oauth2-bundle/workflows/Tests/badge.svg?branch=v3.x)](https://github.com/trikoder/oauth2-bundle/actions)
 [![Latest Stable Version](https://poser.pugx.org/trikoder/oauth2-bundle/v/stable)](https://packagist.org/packages/trikoder/oauth2-bundle)
 [![License](https://poser.pugx.org/trikoder/oauth2-bundle/license)](https://packagist.org/packages/trikoder/oauth2-bundle)
 [![Code coverage](https://codecov.io/gh/trikoder/oauth2-bundle/branch/master/graph/badge.svg)](https://codecov.io/gh/trikoder/oauth2-bundle)

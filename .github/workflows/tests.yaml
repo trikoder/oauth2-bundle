@@ -1,0 +1,52 @@
+name: Tests
+
+on:
+    push:
+    pull_request:
+    schedule:
+        -   cron: '0 8 * * *'
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            matrix:
+                php: [ '7.2', '7.3', '7.4' ]
+                symfony: [ '4.4', '5.0', '5.1' ]
+                composer-flags: [ '', '--prefer-lowest' ]
+                psr-http-provider: [ 'nyholm', 'zendframework' ]
+                exclude:
+                    -   psr-http-provider: 'zendframework'
+                        composer-flags: '--prefer-lowest'
+
+        env:
+            SYMFONY_REQUIRE: ${{ matrix.symfony }}.*
+            PSR_HTTP_PROVIDER: ${{ matrix.psr-http-provider }}
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+
+            -   name: Build the image
+                run: dev/bin/docker-compose build --build-arg PHP_VERSION=${{ matrix.php }} php
+
+            -   name: Install the dependencies
+                run: dev/bin/php composer update --ansi --prefer-dist ${{ matrix.composer-flags }}
+
+            -   name: Run the tests
+                run: dev/bin/php-test composer test -- --colors=always --coverage-clover=coverage.xml --debug
+
+            -   name: Check coding standards
+                run: dev/bin/php composer lint -- --ansi --diff --dry-run --using-cache=no --verbose
+
+            -   name: Clear docker volumes
+                if: ${{ always() }}
+                run: dev/bin/docker-compose down --volumes
+
+            -   name: Upload coverage to Codecov
+                if: ${{ success() }}
+                uses: codecov/codecov-action@v1
+                with:
+                    file: coverage.xml

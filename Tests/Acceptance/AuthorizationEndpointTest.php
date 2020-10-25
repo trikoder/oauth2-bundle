@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use DateTimeImmutable;
-use Nyholm\Psr7\Response;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
@@ -19,6 +19,11 @@ use Trikoder\Bundle\OAuth2Bundle\Tests\TestHelper;
 
 final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 {
+    /**
+     * @var ResponseFactoryInterface|null
+     */
+    private $responseFactory;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,6 +35,15 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
             $this->client->getContainer()->get(RefreshTokenManagerInterface::class),
             $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class)
         );
+
+        $this->responseFactory = $this->client->getContainer()->get(ResponseFactoryInterface::class);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->responseFactory = null;
+
+        parent::tearDown();
     }
 
     public function testSuccessfulCodeRequest(): void
@@ -339,8 +353,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $this->client
             ->getContainer()
             ->get('event_dispatcher')
-            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, static function (AuthorizationRequestResolveEvent $event): void {
-                $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
+            ->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
+                $response = $this->responseFactory->createResponse(302)->withHeader('Location', '/authorize/consent');
                 $event->setResponse($response);
             });
 
@@ -377,8 +391,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, static function (AuthorizationRequestResolveEvent $event): void {
             $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
         }, 100);
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, static function (AuthorizationRequestResolveEvent $event): void {
-            $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
+            $response = $this->responseFactory->createResponse(302)->withHeader('Location', '/authorize/consent');
             $event->setResponse($response);
         }, 200);
 
@@ -413,8 +427,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
         $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, static function (AuthorizationRequestResolveEvent $event): void {
             $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
         }, 200);
-        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, static function (AuthorizationRequestResolveEvent $event): void {
-            $response = (new Response())->withStatus(302)->withHeader('Location', '/authorize/consent');
+        $eventDispatcher->addListener(OAuth2Events::AUTHORIZATION_REQUEST_RESOLVE, function (AuthorizationRequestResolveEvent $event): void {
+            $response = $this->responseFactory->createResponse(302)->withHeader('Location', '/authorize/consent');
             $event->setResponse($response);
         }, 100);
 

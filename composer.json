@@ -35,7 +35,7 @@
         "ext-xdebug": "*",
         "laminas/laminas-diactoros": "^2.2",
         "nyholm/psr7": "^1.2",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^8.5|^9.4",
         "symfony/browser-kit": "^4.4|^5.0",
         "symfony/phpunit-bridge": "^5.0"
     },

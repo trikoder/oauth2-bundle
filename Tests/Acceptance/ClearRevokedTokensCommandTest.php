@@ -172,12 +172,10 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
         $clearRevokedMethodExists = $reflection->getMethod('clearRevokedMethodExists');
         $clearRevokedMethodExists->setAccessible(true);
 
-        $outputProphecy = $this->prophesize(OutputInterface::class);
-
-        $outputProphecy
-            ->writeln('<comment>Method "stdClass:clearRevoked()" will be required in the next major release. Skipping for now...</comment>')
-            ->shouldBeCalledOnce()
-        ;
+        $output = $this->createMock(OutputInterface::class);
+        $output->expects($this->once())
+            ->method('writeln')
+            ->with('<comment>Method "stdClass:clearRevoked()" will be required in the next major release. Skipping for now...</comment>');
 
         $success = $clearRevokedMethodExists->invokeArgs(
             new ClearRevokedTokensCommand(
@@ -186,7 +184,7 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
                 $this->client->getContainer()->get(AuthorizationCodeManagerInterface::class)
             ),
             [
-                $outputProphecy->reveal(),
+                $output,
                 new stdClass(),
             ]
         );

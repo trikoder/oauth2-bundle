@@ -70,15 +70,66 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         ];
     }
 
-    private function buildAccessToken(string $identifier, string $modify, Client $client): AccessToken
+    public function testClearRevoked(): void
     {
-        return new AccessToken(
+        /** @var EntityManagerInterface $em */
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+
+        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em);
+
+        $client = new Client('client', 'secret');
+        $em->persist($client);
+        $em->flush();
+
+        $testData = $this->buildClearRevokedTestData($client);
+
+        /** @var AccessToken $token */
+        foreach ($testData['input'] as $token) {
+            $doctrineAccessTokenManager->save($token);
+        }
+
+        $this->assertSame(2, $doctrineAccessTokenManager->clearRevoked());
+
+        $this->assertSame(
+            $testData['output'],
+            $em->getRepository(AccessToken::class)->findBy([], ['identifier' => 'ASC'])
+        );
+    }
+
+    private function buildClearRevokedTestData(Client $client): array
+    {
+        $validAccessTokens = [
+            $this->buildAccessToken('1111', '+1 day', $client),
+            $this->buildAccessToken('2222', '-1 hour', $client),
+            $this->buildAccessToken('3333', '+1 second', $client),
+        ];
+
+        $revokedAccessTokens = [
+            $this->buildAccessToken('5555', '-1 day', $client, true),
+            $this->buildAccessToken('6666', '+1 hour', $client, true),
+        ];
+
+        return [
+            'input' => array_merge($validAccessTokens, $revokedAccessTokens),
+            'output' => $validAccessTokens,
+        ];
+    }
+
+    private function buildAccessToken(string $identifier, string $modify, Client $client, bool $revoked = false): AccessToken
+    {
+        $accessToken = new AccessToken(
             $identifier,
             new DateTimeImmutable($modify),
             $client,
             null,
             []
         );
+
+        if ($revoked) {
+            $accessToken->revoke();
+        }
+
+        return $accessToken;
     }
 
     public function testClearExpiredWithRefreshToken(): void
@@ -136,18 +187,75 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         ];
     }
 
-    private function buildRefreshToken(string $identifier, string $modify, Client $client): RefreshToken
+    public function testClearRevokedWithRefreshToken(): void
     {
-        return new RefreshToken(
+        /** @var EntityManagerInterface $em */
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em);
+
+        $client = new Client('client', 'secret');
+        $em->persist($client);
+        $em->flush();
+
+        $testData = $this->buildClearRevokedTestDataWithRefreshToken($client);
+
+        /** @var RefreshToken $token */
+        foreach ($testData['input'] as $token) {
+            $doctrineAccessTokenManager->save($token->getAccessToken());
+            $em->persist($token);
+        }
+
+        $em->flush();
+
+        $this->assertSame(2, $doctrineAccessTokenManager->clearRevoked());
+
+        $savedData = $em->getRepository(RefreshToken::class)->findBy(['revoked' => true], ['identifier' => 'ASC']);
+
+        $this->assertSame(
+            $testData['output'],
+            $savedData
+        );
+    }
+
+    private function buildClearRevokedTestDataWithRefreshToken(Client $client): array
+    {
+        $validRefreshTokens = [
+            $this->buildRefreshToken('1111', '+1 day', $client),
+            $this->buildRefreshToken('2222', '+1 hour', $client),
+            $this->buildRefreshToken('3333', '+1 second', $client),
+        ];
+
+        $revokedRefreshTokens = [
+            $this->buildRefreshToken('5555', '-1 day', $client, true),
+            $this->buildRefreshToken('6666', '-1 hour', $client, true),
+        ];
+
+        return [
+            'input' => array_merge($validRefreshTokens, $revokedRefreshTokens),
+            'output' => $revokedRefreshTokens,
+        ];
+    }
+
+    private function buildRefreshToken(string $identifier, string $modify, Client $client, bool $revoked = false): RefreshToken
+    {
+        $accessToken = new AccessToken(
+            $identifier,
+            new DateTimeImmutable($modify),
+            $client,
+            null,
+            []
+        );
+        $refreshToken = new RefreshToken(
             $identifier,
             new DateTimeImmutable('+1 day'),
-            new AccessToken(
-                $identifier,
-                new DateTimeImmutable($modify),
-                $client,
-                null,
-                []
-            )
+            $accessToken
         );
+
+        if ($revoked) {
+            $refreshToken->revoke();
+            $accessToken->revoke();
+        }
+
+        return $refreshToken;
     }
 }

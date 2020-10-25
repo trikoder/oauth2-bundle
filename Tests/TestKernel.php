@@ -280,6 +280,11 @@ final class TestKernel extends Kernel implements CompilerPassInterface
             UploadedFileFactoryInterface::class => $uploadedFileFactory,
             ResponseFactoryInterface::class => $responseFactory,
         ]);
+
+        $container
+            ->getAlias(ResponseFactoryInterface::class)
+            ->setPublic(true)
+        ;
     }
 
     private function configureControllers(ContainerBuilder $container): void

@@ -70,14 +70,66 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         ];
     }
 
-    private function buildAuthCode(string $identifier, string $modify, Client $client): AuthorizationCode
+    public function testClearRevoked(): void
     {
-        return new AuthorizationCode(
+        /** @var EntityManagerInterface $em */
+        $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+
+        $doctrineAuthCodeManager = new DoctrineAuthCodeManager($em);
+
+        $client = new Client('client', 'secret');
+        $em->persist($client);
+
+        $testData = $this->buildClearRevokedTestData($client);
+
+        /** @var AuthorizationCode $authCode */
+        foreach ($testData['input'] as $authCode) {
+            $doctrineAuthCodeManager->save($authCode);
+        }
+
+        $em->flush();
+
+        $this->assertSame(2, $doctrineAuthCodeManager->clearRevoked());
+
+        $this->assertSame(
+            $testData['output'],
+            $em->getRepository(AuthorizationCode::class)->findBy([], ['identifier' => 'ASC'])
+        );
+    }
+
+    private function buildClearRevokedTestData(Client $client): array
+    {
+        $validAuthCodes = [
+            $this->buildAuthCode('1111', '+1 day', $client),
+            $this->buildAuthCode('2222', '-1 hour', $client),
+            $this->buildAuthCode('3333', '+1 second', $client),
+        ];
+
+        $revokedAuthCodes = [
+            $this->buildAuthCode('5555', '-1 day', $client, true),
+            $this->buildAuthCode('6666', '+1 hour', $client, true),
+        ];
+
+        return [
+            'input' => array_merge($validAuthCodes, $revokedAuthCodes),
+            'output' => $validAuthCodes,
+        ];
+    }
+
+    private function buildAuthCode(string $identifier, string $modify, Client $client, bool $revoked = false): AuthorizationCode
+    {
+        $authorizationCode = new AuthorizationCode(
             $identifier,
             new DateTimeImmutable($modify),
             $client,
             null,
             []
         );
+
+        if ($revoked) {
+            $authorizationCode->revoke();
+        }
+
+        return $authorizationCode;
     }
 }

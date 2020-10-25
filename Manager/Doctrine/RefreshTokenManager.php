@@ -47,4 +47,13 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
             ->getQuery()
             ->execute();
     }
+
+    public function clearRevoked(): int
+    {
+        return $this->entityManager->createQueryBuilder()
+            ->delete(RefreshToken::class, 'rt')
+            ->where('rt.revoked = true')
+            ->getQuery()
+            ->execute();
+    }
 }

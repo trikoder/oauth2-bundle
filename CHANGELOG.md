@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project [adheres to Semantic Versioning, but only for the public API](README.md#versioning).
 
+## [3.2.0] - 2020-10-26
+
+### Added
+- Jobs with the `prefer-lowest` composer flag to CI ([#204](https://github.com/trikoder/oauth2-bundle/pull/204))
+- On delete `CASCADE` on authorization code entity client association ([#216](https://github.com/trikoder/oauth2-bundle/pull/216))
+- `Trikoder\Bundle\OAuth2Bundle\Event\AbstractUserResolveEvent` abstract class for user resolve events ([#221](https://github.com/trikoder/oauth2-bundle/pull/221))
+- Add per grant type configuration options ([#199](https://github.com/trikoder/oauth2-bundle/pull/199))
+- CI testing - Symfony 5.1 ([#230](https://github.com/trikoder/oauth2-bundle/pull/230))
+- Cleanup command (`trikoder:oauth2:clear-revoked-tokens`) for revoked tokens ([#234](https://github.com/trikoder/oauth2-bundle/pull/234))
+- Setter for the `secret` property of the `Client` Doctrine entity ([#239](https://github.com/trikoder/oauth2-bundle/pull/239))
+
+### Changed
+- Pass previous exception to`Oauth2AuthenticationFailedException` exception ([#223](https://github.com/trikoder/oauth2-bundle/pull/223))
+- Allow PHPUnit 9 ([#238](https://github.com/trikoder/oauth2-bundle/pull/238))
+
+### Deprecated
+- legacy service aliases ([#203](https://github.com/trikoder/oauth2-bundle/pull/203))
+
 ## [3.1.1] - 2020-04-10
 ### Removed
 - `userIdentifier` index from `oauth2_access_token` and `oauth2_authorization_code` tables ([6108915](https://github.com/trikoder/oauth2-bundle/commit/6108915ee83c5597160d2be9669966b20d0e461f))

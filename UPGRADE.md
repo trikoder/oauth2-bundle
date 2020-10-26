@@ -1,7 +1,7 @@
 # Upgrade
 Here you will find upgrade steps between releases.
 
-## From 3.1.0 to 3.2.0
+## From 3.1.1 to 3.2.0
 
 The bundle makes modifications to the existing schema. You will need to run the Doctrine schema update process to sync the changes:
 

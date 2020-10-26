@@ -20,7 +20,7 @@ and this project [adheres to Semantic Versioning, but only for the public API](R
 - Allow PHPUnit 9 ([#238](https://github.com/trikoder/oauth2-bundle/pull/238))
 
 ### Deprecated
-- legacy service aliases ([#203](https://github.com/trikoder/oauth2-bundle/pull/203))
+- Legacy service aliases ([#203](https://github.com/trikoder/oauth2-bundle/pull/203))
 
 ## [3.1.1] - 2020-04-10
 ### Removed

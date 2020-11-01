@@ -5,6 +5,10 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
     <entity name="Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken" table="oauth2_refresh_token">
+        <indexes>
+            <index columns="expiry" />
+            <index columns="revoked" />
+        </indexes>
         <id name="identifier" type="string" length="80">
             <options>
                 <option name="fixed">true</option>

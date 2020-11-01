@@ -5,13 +5,18 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
     <entity name="Trikoder\Bundle\OAuth2Bundle\Model\AccessToken" table="oauth2_access_token">
+        <indexes>
+            <index columns="expiry" />
+            <index columns="user_identifier" />
+            <index columns="revoked" />
+        </indexes>
         <id name="identifier" type="string" length="80">
             <options>
                 <option name="fixed">true</option>
             </options>
         </id>
         <field name="expiry" type="datetime_immutable" />
-        <field name="userIdentifier" type="string" length="128" nullable="true" />
+        <field name="userIdentifier" column="user_identifier" type="string" length="128" nullable="true" />
         <field name="scopes" type="oauth2_scope" nullable="true" />
         <field name="revoked" type="boolean" />
         <many-to-one field="client" target-entity="Trikoder\Bundle\OAuth2Bundle\Model\Client">

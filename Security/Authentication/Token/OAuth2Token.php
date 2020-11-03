@@ -7,8 +7,9 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Guard\Token\GuardTokenInterface;
 
-final class OAuth2Token extends AbstractToken
+final class OAuth2Token extends AbstractToken implements GuardTokenInterface
 {
     /**
      * @var string

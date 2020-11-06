@@ -11,6 +11,7 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -45,9 +46,13 @@ final class OAuth2Authenticator implements AuthenticatorInterface
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
-        $exception = new UnauthorizedHttpException('Bearer');
+        if ($authException instanceof InsufficientScopesException || $authException instanceof Oauth2AuthenticationFailedException) {
+            $httpException = new HttpException($authException->getCode(), $authException->getMessage(), $authException);
+        } else {
+            $httpException = new UnauthorizedHttpException('Bearer', $authException ? $authException->getMessage() : null, $authException);
+        }
 
-        return new JsonResponse(['code' => $exception->getCode(), 'message' => $exception->getMessage()], $exception->getStatusCode(), $exception->getHeaders());
+        return new JsonResponse(['code' => $httpException->getCode(), 'message' => $httpException->getMessage()], $httpException->getStatusCode(), $httpException->getHeaders());
     }
 
     public function supports(Request $request): bool
@@ -102,13 +107,6 @@ final class OAuth2Authenticator implements AuthenticatorInterface
             $psr7Response = $previous->generateHttpResponse($this->httpMessageFactory->createResponse(new Response()));
 
             return $this->httpFoundationFactory->createResponse($psr7Response);
-        }
-
-        if ($exception instanceof InsufficientScopesException || $exception instanceof Oauth2AuthenticationFailedException) {
-            return new JsonResponse([
-                'code' => $exception->getCode(),
-                'message' => $exception->getMessage(),
-            ], JsonResponse::HTTP_FORBIDDEN);
         }
 
         return $this->start($request, $exception);

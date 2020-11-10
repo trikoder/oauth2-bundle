@@ -6,12 +6,9 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Guard\Authenticator;
 
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
-use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -21,7 +18,6 @@ use Symfony\Component\Security\Guard\AuthenticatorInterface;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedException;
 use Trikoder\Bundle\OAuth2Bundle\Security\User\NullUser;
 
 /**
@@ -33,26 +29,20 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     private $httpMessageFactory;
     private $resourceServer;
     private $oauth2TokenFactory;
-    private $httpFoundationFactory;
     private $psr7Request;
 
-    public function __construct(HttpMessageFactoryInterface $httpMessageFactory, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory, HttpFoundationFactoryInterface $httpFoundationFactory)
+    public function __construct(HttpMessageFactoryInterface $httpMessageFactory, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory)
     {
         $this->httpMessageFactory = $httpMessageFactory;
         $this->resourceServer = $resourceServer;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
-        $this->httpFoundationFactory = $httpFoundationFactory;
     }
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
-        if ($authException instanceof InsufficientScopesException || $authException instanceof Oauth2AuthenticationFailedException) {
-            $httpException = new HttpException($authException->getCode(), $authException->getMessage(), $authException);
-        } else {
-            $httpException = new UnauthorizedHttpException('Bearer', $authException ? $authException->getMessage() : null, $authException);
-        }
+        $exception = new UnauthorizedHttpException('Bearer');
 
-        return new JsonResponse(['code' => $httpException->getCode(), 'message' => $httpException->getMessage()], $httpException->getStatusCode(), $httpException->getHeaders());
+        return new Response('', $exception->getStatusCode(), $exception->getHeaders());
     }
 
     public function supports(Request $request): bool
@@ -102,14 +92,7 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     {
         $this->psr7Request = null;
 
-        $previous = $exception->getPrevious();
-        if ($previous instanceof OAuthServerException) {
-            $psr7Response = $previous->generateHttpResponse($this->httpMessageFactory->createResponse(new Response()));
-
-            return $this->httpFoundationFactory->createResponse($psr7Response);
-        }
-
-        return $this->start($request, $exception);
+        throw $exception;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response

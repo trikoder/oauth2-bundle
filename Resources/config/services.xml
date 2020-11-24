@@ -85,6 +85,7 @@
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="sensio_framework_extra.psr7.http_message_factory" />
             <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
         </service>
         <service id="trikoder.oauth2.security.firewall.oauth2_listener" alias="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener">
             <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>

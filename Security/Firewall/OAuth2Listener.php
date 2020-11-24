@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
@@ -38,6 +39,11 @@ final class OAuth2Listener
     private $oauth2TokenFactory;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * @var string
      */
     private $providerKey;
@@ -47,12 +53,14 @@ final class OAuth2Listener
         AuthenticationManagerInterface $authenticationManager,
         HttpMessageFactoryInterface $httpMessageFactory,
         OAuth2TokenFactory $oauth2TokenFactory,
+        EventDispatcherInterface $eventDispatcher,
         string $providerKey
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->httpMessageFactory = $httpMessageFactory;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
+        $this->eventDispatcher = $eventDispatcher;
         $this->providerKey = $providerKey;
     }
 

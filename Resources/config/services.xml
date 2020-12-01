@@ -94,6 +94,13 @@
             <argument key="$grants" type="tagged_iterator" tag="trikoder.oauth2.authorization_server.grant" />
         </service>
 
+        <!-- Guard Security Layer-->
+        <service id="Trikoder\Bundle\OAuth2Bundle\Security\Guard\Authenticator\OAuth2Authenticator">
+            <argument type="service" id="sensio_framework_extra.psr7.http_message_factory" />
+            <argument type="service" id="League\OAuth2\Server\ResourceServer" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
+        </service>
+
         <!-- The league authorization server -->
         <service id="League\OAuth2\Server\AuthorizationServer">
             <argument key="$clientRepository" type="service" id="League\OAuth2\Server\Repositories\ClientRepositoryInterface" />

@@ -54,14 +54,4 @@ final class OAuth2Grants
         self::PASSWORD => 'password',
         self::REFRESH_TOKEN => 'refresh token',
     ];
-
-    /**
-     * @deprecated Will be removed in v4, use {@see OAuth2Grants::ALL} instead
-     *
-     * @TODO Remove in v4.
-     */
-    public static function has(string $grant): bool
-    {
-        return isset(self::ALL[$grant]);
-    }
 }

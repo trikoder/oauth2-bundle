@@ -1,6 +1,6 @@
 # Trikoder OAuth 2 Bundle
 
-[![Build Status](https://github.com/trikoder/oauth2-bundle/workflows/Tests/badge.svg?branch=v3.x)](https://github.com/trikoder/oauth2-bundle/actions)
+[![Build Status](https://github.com/trikoder/oauth2-bundle/workflows/Tests/badge.svg?branch=master)](https://github.com/trikoder/oauth2-bundle/actions)
 [![Latest Stable Version](https://poser.pugx.org/trikoder/oauth2-bundle/v/stable)](https://packagist.org/packages/trikoder/oauth2-bundle)
 [![License](https://poser.pugx.org/trikoder/oauth2-bundle/license)](https://packagist.org/packages/trikoder/oauth2-bundle)
 [![Code coverage](https://codecov.io/gh/trikoder/oauth2-bundle/branch/master/graph/badge.svg)](https://codecov.io/gh/trikoder/oauth2-bundle)
@@ -67,28 +67,6 @@ This package is currently in the active development.
             # How long the issued refresh token should be valid for, used as a default if there is no grant type specific value set.
             # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
             refresh_token_ttl:    P1M
-
-            # How long the issued authorization code should be valid for.
-            # The value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters
-            auth_code_ttl:        ~ # Deprecated ("trikoder_oauth2.authorization_server.auth_code_ttl" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.authorization_code.auth_code_ttl" instead.)
-
-            # Whether to require code challenge for public clients for the authorization code grant.
-            require_code_challenge_for_public_clients: ~ # Deprecated ("trikoder_oauth2.authorization_server.require_code_challenge_for_public_clients" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.authorization_code.require_code_challenge_for_public_clients" instead.)
-
-            # Whether to enable the authorization code grant.
-            enable_auth_code_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_auth_code_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.authorization_code.enable" instead.)
-
-            # Whether to enable the client credentials grant.
-            enable_client_credentials_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_client_credentials_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.client_credentials.enable" instead.)
-
-            # Whether to enable the implicit grant.
-            enable_implicit_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_implicit_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.implicit.enable" instead.)
-
-            # Whether to enable the password grant.
-            enable_password_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_password_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.password.enable" instead.)
-
-            # Whether to enable the refresh token grant.
-            enable_refresh_token_grant: ~ # Deprecated ("trikoder_oauth2.authorization_server.enable_refresh_token_grant" is deprecated, use "trikoder_oauth2.authorization_server.grant_types.refresh_token.enable" instead.)
 
             # Enable and configure grant types.
             grant_types:

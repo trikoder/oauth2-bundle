@@ -7,10 +7,13 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
+use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
@@ -76,7 +79,16 @@ final class OAuth2Listener
             /** @var OAuth2Token $authenticatedToken */
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
-            throw OAuth2AuthenticationFailedException::create($e->getMessage(), $e);
+            $exception = new OAuth2AuthenticationFailedException("OAuth Token not found", 0, $e);
+            $response = new Response($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+
+            $authenticationFailureEvent = new AuthenticationFailureEvent($exception, $response);
+            $this->eventDispatcher->dispatch($authenticationFailureEvent, OAuth2Events::AUTHENTICATION_FAILURE);
+
+            if ($response = $authenticationFailureEvent->getResponse()) {
+                $event->setResponse($response);
+            }
+            return;
         }
 
         if (!$this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {

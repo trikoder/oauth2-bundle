@@ -52,15 +52,15 @@ final class OAuth2Listener
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
         HttpMessageFactoryInterface $httpMessageFactory,
-        OAuth2TokenFactory $oauth2TokenFactory,
         EventDispatcherInterface $eventDispatcher,
+        OAuth2TokenFactory $oauth2TokenFactory,
         string $providerKey
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->httpMessageFactory = $httpMessageFactory;
-        $this->oauth2TokenFactory = $oauth2TokenFactory;
         $this->eventDispatcher = $eventDispatcher;
+        $this->oauth2TokenFactory = $oauth2TokenFactory;
         $this->providerKey = $providerKey;
     }
 

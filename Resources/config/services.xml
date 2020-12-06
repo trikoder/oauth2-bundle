@@ -84,6 +84,7 @@
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="sensio_framework_extra.psr7.http_message_factory" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
         <service id="trikoder.oauth2.security.firewall.oauth2_listener" alias="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener">

@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
@@ -47,6 +48,11 @@ final class OAuth2Listener
     private $eventDispatcher;
 
     /**
+     * @var ResponseFormatter
+     */
+    private $responseFormatter;
+
+    /**
      * @var string
      */
     private $providerKey;
@@ -57,6 +63,7 @@ final class OAuth2Listener
         HttpMessageFactoryInterface $httpMessageFactory,
         EventDispatcherInterface $eventDispatcher,
         OAuth2TokenFactory $oauth2TokenFactory,
+        ResponseFormatter $responseFormatter,
         string $providerKey
     ) {
         $this->tokenStorage = $tokenStorage;
@@ -64,6 +71,7 @@ final class OAuth2Listener
         $this->httpMessageFactory = $httpMessageFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
+        $this->responseFormatter = $responseFormatter;
         $this->providerKey = $providerKey;
     }
 
@@ -80,7 +88,7 @@ final class OAuth2Listener
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
             $exception = new OAuth2AuthenticationFailedException("OAuth Token not found", 0, $e);
-            $response = new Response($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
 
             $authenticationFailureEvent = new AuthenticationFailureEvent($exception, $response);
             $this->eventDispatcher->dispatch($authenticationFailureEvent, OAuth2Events::AUTHENTICATION_FAILURE);

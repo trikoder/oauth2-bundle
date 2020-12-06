@@ -87,7 +87,7 @@ final class OAuth2Listener
             /** @var OAuth2Token $authenticatedToken */
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
-            $exception = new OAuth2AuthenticationFailedException("OAuth Token not found", 0, $e);
+            $exception = new OAuth2AuthenticationFailedException('OAuth Token not found', 0, $e);
             $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
 
             $authenticationFailureEvent = new AuthenticationFailureEvent($exception, $response);
@@ -96,6 +96,7 @@ final class OAuth2Listener
             if ($response = $authenticationFailureEvent->getResponse()) {
                 $event->setResponse($response);
             }
+
             return;
         }
 

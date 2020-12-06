@@ -68,7 +68,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             ->setArgument(0, $config['role_prefix']);
 
         $container->getDefinition(ResponseFormatter::class)
-            ->setArgument(0, $config["response_formatter"]);
+            ->setArgument(0, $config['response_formatter']);
 
         $container->getDefinition(ConvertExceptionToResponseListener::class)
             ->addTag('kernel.event_listener', [

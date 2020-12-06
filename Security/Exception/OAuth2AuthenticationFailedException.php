@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Security\Exception;
 
@@ -13,7 +15,8 @@ class OAuth2AuthenticationFailedException extends AuthenticationException
     /**
      * {@inheritdoc}
      */
-    public function getMessageKey(): string {
-        return "OAuth Token not found";
+    public function getMessageKey(): string
+    {
+        return 'OAuth Token not found';
     }
 }

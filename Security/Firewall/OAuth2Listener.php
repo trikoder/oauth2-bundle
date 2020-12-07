@@ -14,11 +14,13 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\MissingAuthorizationHeaderException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\OAuth2AuthenticationFailedException;
 
 final class OAuth2Listener
@@ -81,6 +83,14 @@ final class OAuth2Listener
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
 
         if (!$request->hasHeader('Authorization')) {
+            $exception = new MissingAuthorizationHeaderException();
+            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+
+            $missingAuthHeaderEvent = new MissingAuthorizationHeaderEvent($exception, $response);
+            $this->eventDispatcher->dispatch($missingAuthHeaderEvent, OAuth2Events::MISSING_AUTHORIZATION_HEADER);
+
+            $event->setResponse($missingAuthHeaderEvent->getResponse());
+
             return;
         }
 

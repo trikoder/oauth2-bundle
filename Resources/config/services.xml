@@ -101,6 +101,8 @@
             <argument type="service" id="sensio_framework_extra.psr7.http_message_factory" />
             <argument type="service" id="League\OAuth2\Server\ResourceServer" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter" />
         </service>
 
         <!-- The league authorization server -->

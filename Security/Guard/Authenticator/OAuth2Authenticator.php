@@ -7,6 +7,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Guard\Authenticator;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -15,14 +16,19 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AuthenticatorInterface;
+use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
+use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\MissingAuthorizationHeaderException;
 use Trikoder\Bundle\OAuth2Bundle\Security\User\NullUser;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  * @author Antonio J. García Lagar <aj@garcialagar.es>
+ * @author Benoit VIGNAL <github@benoit-vignal.fr>
  */
 final class OAuth2Authenticator implements AuthenticatorInterface
 {
@@ -30,19 +36,33 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     private $resourceServer;
     private $oauth2TokenFactory;
     private $psr7Request;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+    /**
+     * @var ResponseFormatter
+     */
+    private $responseFormatter;
 
-    public function __construct(HttpMessageFactoryInterface $httpMessageFactory, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory)
+    public function __construct(HttpMessageFactoryInterface $httpMessageFactory, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory, EventDispatcherInterface $eventDispatcher, ResponseFormatter $responseFormatter)
     {
         $this->httpMessageFactory = $httpMessageFactory;
         $this->resourceServer = $resourceServer;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->responseFormatter = $responseFormatter;
     }
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
-        $exception = new UnauthorizedHttpException('Bearer');
+        $exception = new MissingAuthorizationHeaderException();
+        $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
 
-        return new Response('', $exception->getStatusCode(), $exception->getHeaders());
+        $event = new MissingAuthorizationHeaderEvent($exception, $response);
+        $this->eventDispatcher->dispatch($event, OAuth2Events::MISSING_AUTHORIZATION_HEADER);
+
+        return $event->getResponse();
     }
 
     public function supports(Request $request): bool
@@ -57,9 +77,8 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         try {
             $this->psr7Request = $this->resourceServer->validateAuthenticatedRequest($psr7Request);
         } catch (OAuthServerException $e) {
-            throw new AuthenticationException('The resource server rejected the request.', 0, $e);
+            throw new AuthenticationException($e->getMessage(), 0, $e);
         }
-
         return $this->psr7Request->getAttribute('oauth_user_id');
     }
 

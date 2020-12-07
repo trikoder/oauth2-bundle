@@ -101,7 +101,7 @@ final class OAuth2Listener
             return;
         }
 
-        if ($this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {
+        if (!$this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {
             $exception = new InsufficientScopesException();
             $exception->setToken($authenticatedToken);
 

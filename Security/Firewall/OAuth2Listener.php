@@ -94,9 +94,7 @@ final class OAuth2Listener
             $authenticationFailureEvent = new AuthenticationFailureEvent($exception, $response);
             $this->eventDispatcher->dispatch($authenticationFailureEvent, OAuth2Events::AUTHENTICATION_FAILURE);
 
-            if ($response = $authenticationFailureEvent->getResponse()) {
-                $event->setResponse($response);
-            }
+            $event->setResponse($authenticationFailureEvent->getResponse());
 
             return;
         }
@@ -110,9 +108,7 @@ final class OAuth2Listener
             $authenticationFailureScopeEvent = new AuthenticationScopeFailureEvent($exception, $response, $authenticatedToken);
             $this->eventDispatcher->dispatch($authenticationFailureScopeEvent, OAuth2Events::AUTHENTICATION_SCOPE_FAILURE);
 
-            if ($response = $authenticationFailureScopeEvent->getResponse()) {
-                $event->setResponse($response);
-            }
+            $event->setResponse($authenticationFailureScopeEvent->getResponse());
 
             return;
         }

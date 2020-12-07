@@ -27,10 +27,6 @@ final class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('exception_event_listener_priority')
-                    ->info('The priority of the event listener that converts an Exception to a Response.')
-                    ->defaultValue(10)
-                ->end()
                 ->scalarNode('response_formatter')
                     ->info('Define a custom format in which any response will be converted.')
                     ->defaultValue('disabled')

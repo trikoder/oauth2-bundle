@@ -162,9 +162,6 @@ This package is currently in the active development.
                 entity_manager:       default
             in_memory:            ~
 
-        # The priority of the event listener that converts an Exception to a Response.
-        exception_event_listener_priority: 10
-
         # Define a custom format in which any response will be converted.
         # Supported by default: disabled, json
         response_formatter: disabled

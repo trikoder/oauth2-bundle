@@ -170,11 +170,6 @@
             <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
         </service>
 
-        <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener" />
-        <service id="trikoder.oauth2.event_listener.authorization.convert_to_response" alias="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
-        </service>
-
         <!-- Token controller -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />

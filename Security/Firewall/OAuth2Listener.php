@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterfac
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
@@ -87,7 +88,7 @@ final class OAuth2Listener
             /** @var OAuth2Token $authenticatedToken */
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
-            $exception = new OAuth2AuthenticationFailedException('OAuth Token not found', 0, $e);
+            $exception = new OAuth2AuthenticationFailedException();
             $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
 
             $authenticationFailureEvent = new AuthenticationFailureEvent($exception, $response);
@@ -100,8 +101,20 @@ final class OAuth2Listener
             return;
         }
 
-        if (!$this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {
-            throw InsufficientScopesException::create($authenticatedToken);
+        if ($this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {
+            $exception = new InsufficientScopesException();
+            $exception->setToken($authenticatedToken);
+
+            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
+
+            $authenticationFailureScopeEvent = new AuthenticationScopeFailureEvent($exception, $response, $authenticatedToken);
+            $this->eventDispatcher->dispatch($authenticationFailureScopeEvent, OAuth2Events::AUTHENTICATION_SCOPE_FAILURE);
+
+            if ($response = $authenticationFailureScopeEvent->getResponse()) {
+                $event->setResponse($response);
+            }
+
+            return;
         }
 
         $this->tokenStorage->setToken($authenticatedToken);

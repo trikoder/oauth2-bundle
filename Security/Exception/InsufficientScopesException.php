@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ * @author Benoit VIGNAL <github@benoit-vignal.fr>
  */
 class InsufficientScopesException extends AuthenticationException
 {
@@ -19,4 +20,13 @@ class InsufficientScopesException extends AuthenticationException
 
         return $exception;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessageKey(): string
+    {
+        return "The token has insufficient scopes.";
+    }
+
 }

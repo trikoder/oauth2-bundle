@@ -37,4 +37,11 @@ final class OAuth2Events
      * You can set a custom error message in the response body
      */
     public const AUTHENTICATION_FAILURE = 'trikoder.oauth2.autentication_failure';
+
+    /**
+     * The AUTHENTICATION_SCOPE_FAILURE event occurs when the scope validation for the token failed
+     *
+     * You can set a custom error message in the response body
+     */
+    public const AUTHENTICATION_SCOPE_FAILURE = 'trikoder.oauth2.autentication_scope_failure';
 }

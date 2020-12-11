@@ -208,6 +208,7 @@ security:
 * [Password grant handling](docs/password-grant-handling.md)
 * [Implementing custom grant type](docs/implementing-custom-grant-type.md)
 * [Implementing a custom response formatter](docs/custom-response-formatter.md)
+* [Data customization](docs/data-customization.md)
 
 ## Contributing
 

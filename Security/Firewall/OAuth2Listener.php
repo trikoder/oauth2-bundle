@@ -85,6 +85,7 @@ final class OAuth2Listener
         if (!$request->hasHeader('Authorization')) {
             $exception = new InvalidAuthorizationHeaderException();
             $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+            $response->headers->set("WWW-Authenticate", "Bearer");
 
             $missingAuthHeaderEvent = new InvalidAuthorizationHeaderEvent($exception, $response);
             $this->eventDispatcher->dispatch($missingAuthHeaderEvent, OAuth2Events::INVALID_AUTHORIZATION_HEADER);

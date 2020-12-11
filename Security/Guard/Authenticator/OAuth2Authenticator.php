@@ -62,6 +62,7 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         $exception->setPreviousException($authException);
 
         $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+        $response->headers->set("WWW-Authenticate", "Bearer");
 
         $event = new InvalidAuthorizationHeaderEvent($exception, $response);
         $this->eventDispatcher->dispatch($event, OAuth2Events::INVALID_AUTHORIZATION_HEADER);

@@ -16,13 +16,13 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AuthenticatorInterface;
-use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\InvalidAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\MissingAuthorizationHeaderException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InvalidAuthorizationHeaderException;
 use Trikoder\Bundle\OAuth2Bundle\Security\User\NullUser;
 
 /**
@@ -56,11 +56,13 @@ final class OAuth2Authenticator implements AuthenticatorInterface
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
-        $exception = new MissingAuthorizationHeaderException();
+        $exception = new InvalidAuthorizationHeaderException();
+        $exception->setPreviousException($authException);
+
         $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
 
-        $event = new MissingAuthorizationHeaderEvent($exception, $response);
-        $this->eventDispatcher->dispatch($event, OAuth2Events::MISSING_AUTHORIZATION_HEADER);
+        $event = new InvalidAuthorizationHeaderEvent($exception, $response);
+        $this->eventDispatcher->dispatch($event, OAuth2Events::INVALID_AUTHORIZATION_HEADER);
 
         return $event->getResponse();
     }

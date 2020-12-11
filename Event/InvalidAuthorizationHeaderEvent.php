@@ -11,7 +11,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * @author Benoit VIGNAL <github@benoit-vignal.fr>
  */
-class MissingAuthorizationHeaderEvent extends AuthenticationFailureEvent
+class InvalidAuthorizationHeaderEvent extends AuthenticationFailureEvent
 {
 
 }

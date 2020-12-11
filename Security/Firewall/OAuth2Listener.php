@@ -99,6 +99,7 @@ final class OAuth2Listener
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
             $exception = new OAuth2AuthenticationFailedException();
+            $exception->setPreviousException($e);
             $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
 
             $authenticationFailureEvent = new AuthenticationFailureEvent($exception, $response);

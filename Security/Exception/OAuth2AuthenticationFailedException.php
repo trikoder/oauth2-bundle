@@ -12,11 +12,23 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
  */
 class OAuth2AuthenticationFailedException extends AuthenticationException
 {
+    private $previousException;
+
     /**
      * {@inheritdoc}
      */
     public function getMessageKey(): string
     {
         return 'OAuth Token not found.';
+    }
+
+    public function getPreviousException(): ?\Exception
+    {
+        return $this->previousException;
+    }
+
+    public function setPreviousException(?\Exception $previousException): void
+    {
+        $this->previousException = $previousException;
     }
 }

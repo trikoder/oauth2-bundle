@@ -24,6 +24,7 @@ use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InvalidAuthorizationHeaderException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\OAuth2AuthenticationFailedException;
 use Trikoder\Bundle\OAuth2Bundle\Security\User\NullUser;
 
 /**
@@ -80,7 +81,9 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         try {
             $this->psr7Request = $this->resourceServer->validateAuthenticatedRequest($psr7Request);
         } catch (OAuthServerException $e) {
-            throw new AuthenticationException($e->getMessage(), 0, $e);
+            $exception = new OAuth2AuthenticationFailedException();
+            $exception->setPreviousException($e);
+            throw $exception;
         }
 
         return $this->psr7Request->getAttribute('oauth_user_id');
@@ -118,12 +121,13 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     {
         $this->psr7Request = null;
 
-        $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
-
         if ($exception instanceof InsufficientScopesException) {
+            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
             $event = new AuthenticationScopeFailureEvent($exception, $response, $exception->getToken());
             $eventName = OAuth2Events::AUTHENTICATION_SCOPE_FAILURE;
         } else {
+            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+
             $event = new AuthenticationFailureEvent($exception, $response);
             $eventName = OAuth2Events::AUTHENTICATION_FAILURE;
         }

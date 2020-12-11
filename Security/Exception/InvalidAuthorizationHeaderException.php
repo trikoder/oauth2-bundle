@@ -21,11 +21,13 @@ class InvalidAuthorizationHeaderException extends AuthenticationException
         return 'Invalid Authorization Bearer.';
     }
 
-    public function getPreviousException(): ?AuthenticationException {
+    public function getPreviousException(): ?AuthenticationException
+    {
         return $this->previousException;
     }
 
-    public function setPreviousException(?AuthenticationException $previousException): void {
+    public function setPreviousException(?AuthenticationException $previousException): void
+    {
         $this->previousException = $previousException;
     }
 }

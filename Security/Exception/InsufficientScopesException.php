@@ -17,7 +17,6 @@ class InsufficientScopesException extends AuthenticationException
      */
     public function getMessageKey(): string
     {
-        return "The token has insufficient scopes.";
+        return 'The token has insufficient scopes.';
     }
-
 }

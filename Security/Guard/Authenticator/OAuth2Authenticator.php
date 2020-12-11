@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AuthenticatorInterface;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\InvalidAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter;
@@ -101,7 +103,10 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         $oauth2Token = $this->oauth2TokenFactory->createOAuth2Token($this->psr7Request, $tokenUser, $providerKey);
 
         if (!$this->isAccessToRouteGranted($oauth2Token)) {
-            throw InsufficientScopesException::create($oauth2Token);
+            $exception = new InsufficientScopesException();
+            $exception->setToken($oauth2Token);
+
+            throw $exception;
         }
 
         $oauth2Token->setAuthenticated(true);
@@ -113,7 +118,19 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     {
         $this->psr7Request = null;
 
-        throw $exception;
+        $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
+
+        if ($exception instanceof InsufficientScopesException) {
+            $event = new AuthenticationScopeFailureEvent($exception, $response, $exception->getToken());
+            $eventName = OAuth2Events::AUTHENTICATION_SCOPE_FAILURE;
+        } else {
+            $event = new AuthenticationFailureEvent($exception, $response);
+            $eventName = OAuth2Events::AUTHENTICATION_FAILURE;
+        }
+
+        $this->eventDispatcher->dispatch($event, $eventName);
+
+        return $event->getResponse();
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response

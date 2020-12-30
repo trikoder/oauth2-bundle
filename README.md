@@ -206,7 +206,7 @@ security:
 * [Controlling token scopes](docs/controlling-token-scopes.md)
 * [Password grant handling](docs/password-grant-handling.md)
 * [Implementing custom grant type](docs/implementing-custom-grant-type.md)
-* [Data customization](docs/data-customization.md)
+* [Event/Data customization](docs/event-data-customization.md)
 
 ## Contributing
 

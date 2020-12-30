@@ -1,11 +1,11 @@
-# Data customization
+# Event/Data customization
 
 ## Table of contents
-- [Customizing the response on invalid authorization header](#customizing-the-response-on-invalid-authorization-header)
-- [Customizing the response on invalid scope](#customizing-the-response-on-invalid-scope)
-- [Customizing the response on authentication failure](#customizing-the-response-on-authentication-failure)
+- [INVALID_AUTHORIZATION_HEADER - Customizing the response on invalid authorization header](#oauth2eventsinvalid_authorization_header---customizing-the-response-on-invalid-authorization-header)
+- [AUTHENTICATION_SCOPE_FAILURE - Customizing the response on invalid scope](#oauth2eventsauthentication_scope_failure---customizing-the-response-on-invalid-scope)
+- [AUTHENTICATION_FAILURE - Customizing the response on authentication failure](#oauth2eventsauthentication_failure---customizing-the-response-on-authentication-failure)
 
-## Customizing the response on invalid authorization header
+## OAuth2Events::INVALID_AUTHORIZATION_HEADER - Customizing the response on invalid authorization header
 
 Called when the `Authorization Bearer` was not found or is malformed.
 
@@ -36,7 +36,7 @@ class OAuthListener implements EventSubscriberInterface {
 }
 ```
 
-## Customizing the response on invalid scope
+## OAuth2Events::AUTHENTICATION_SCOPE_FAILURE - Customizing the response on invalid scope
 
 Called when the user didn't have the right scope defined.
 
@@ -67,7 +67,7 @@ class OAuthListener implements EventSubscriberInterface {
 }
 ```
 
-## Customizing the response on authentication failure
+## OAuth2Events::AUTHENTICATION_FAILURE - Customizing the response on authentication failure
 
 Called when the authentication failed.
 

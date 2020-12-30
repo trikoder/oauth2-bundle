@@ -30,7 +30,8 @@ final class DoctrineCredentialsRevoker implements CredentialsRevokerInterface
 
         $this->entityManager->createQueryBuilder()
             ->update(AccessToken::class, 'at')
-            ->set('at.revoked', true)
+            ->set('at.revoked', ':revoked')
+            ->setParameter('revoked', true)
             ->where('at.userIdentifier = :userIdentifier')
             ->setParameter('userIdentifier', $userIdentifier)
             ->getQuery()
@@ -39,7 +40,8 @@ final class DoctrineCredentialsRevoker implements CredentialsRevokerInterface
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder
             ->update(RefreshToken::class, 'rt')
-            ->set('rt.revoked', true)
+            ->set('rt.revoked', ':revoked')
+            ->setParameter('revoked', true)
             ->where($queryBuilder->expr()->in(
                 'rt.accessToken',
                 $this->entityManager->createQueryBuilder()
@@ -54,7 +56,8 @@ final class DoctrineCredentialsRevoker implements CredentialsRevokerInterface
 
         $this->entityManager->createQueryBuilder()
             ->update(AuthorizationCode::class, 'ac')
-            ->set('ac.revoked', true)
+            ->set('ac.revoked', ':revoked')
+            ->setParameter('revoked', true)
             ->where('ac.userIdentifier = :userIdentifier')
             ->setParameter('userIdentifier', $userIdentifier)
             ->getQuery()
@@ -69,7 +72,8 @@ final class DoctrineCredentialsRevoker implements CredentialsRevokerInterface
 
         $this->entityManager->createQueryBuilder()
             ->update(AccessToken::class, 'at')
-            ->set('at.revoked', true)
+            ->set('at.revoked', ':revoked')
+            ->setParameter('revoked', true)
             ->where('at.client = :client')
             ->setParameter('client', $doctrineClient)
             ->getQuery()
@@ -77,7 +81,8 @@ final class DoctrineCredentialsRevoker implements CredentialsRevokerInterface
 
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->update(RefreshToken::class, 'rt')
-            ->set('rt.revoked', true)
+            ->set('rt.revoked', ':revoked')
+            ->setParameter('revoked', true)
             ->where($queryBuilder->expr()->in(
                 'rt.accessToken',
                 $this->entityManager->createQueryBuilder()
@@ -92,7 +97,8 @@ final class DoctrineCredentialsRevoker implements CredentialsRevokerInterface
 
         $this->entityManager->createQueryBuilder()
             ->update(AuthorizationCode::class, 'ac')
-            ->set('ac.revoked', true)
+            ->set('ac.revoked', ':revoked')
+            ->setParameter('revoked', true)
             ->where('ac.client = :client')
             ->setParameter('client', $doctrineClient)
             ->getQuery()

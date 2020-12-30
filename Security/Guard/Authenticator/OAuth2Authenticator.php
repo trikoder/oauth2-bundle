@@ -19,6 +19,7 @@ use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\InvalidAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
@@ -42,18 +43,13 @@ final class OAuth2Authenticator implements AuthenticatorInterface
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
-    /**
-     * @var ResponseFormatter
-     */
-    private $responseFormatter;
 
-    public function __construct(HttpMessageFactoryInterface $httpMessageFactory, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory, EventDispatcherInterface $eventDispatcher, ResponseFormatter $responseFormatter)
+    public function __construct(HttpMessageFactoryInterface $httpMessageFactory, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory, EventDispatcherInterface $eventDispatcher)
     {
         $this->httpMessageFactory = $httpMessageFactory;
         $this->resourceServer = $resourceServer;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
         $this->eventDispatcher = $eventDispatcher;
-        $this->responseFormatter = $responseFormatter;
     }
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
@@ -61,7 +57,7 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         $exception = new InvalidAuthorizationHeaderException();
         $exception->setPreviousException($authException);
 
-        $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+        $response = new ErrorJsonResponse($exception->getMessageKey());
         $response->headers->set('WWW-Authenticate', 'Bearer');
 
         $event = new InvalidAuthorizationHeaderEvent($exception, $response);
@@ -123,11 +119,11 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         $this->psr7Request = null;
 
         if ($exception instanceof InsufficientScopesException) {
-            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
+            $response = new ErrorJsonResponse($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
             $event = new AuthenticationScopeFailureEvent($exception, $response, $exception->getToken());
             $eventName = OAuth2Events::AUTHENTICATION_SCOPE_FAILURE;
         } else {
-            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+            $response = new ErrorJsonResponse($exception->getMessageKey());
 
             $event = new AuthenticationFailureEvent($exception, $response);
             $eventName = OAuth2Events::AUTHENTICATION_FAILURE;

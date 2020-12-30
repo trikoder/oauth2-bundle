@@ -16,6 +16,7 @@ use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\InvalidAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
@@ -76,7 +77,7 @@ final class OAuth2Listener
 
         if (!$request->hasHeader('Authorization')) {
             $exception = new InvalidAuthorizationHeaderException();
-            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+            $response = new ErrorJsonResponse($exception->getMessageKey());
             $response->headers->set('WWW-Authenticate', 'Bearer');
 
             $missingAuthHeaderEvent = new InvalidAuthorizationHeaderEvent($exception, $response);
@@ -93,7 +94,7 @@ final class OAuth2Listener
         } catch (AuthenticationException $e) {
             $exception = new OAuth2AuthenticationFailedException();
             $exception->setPreviousException($e);
-            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_UNAUTHORIZED);
+            $response = new ErrorJsonResponse($exception->getMessageKey());
 
             $authenticationFailureEvent = new AuthenticationFailureEvent($exception, $response);
             $this->eventDispatcher->dispatch($authenticationFailureEvent, OAuth2Events::AUTHENTICATION_FAILURE);
@@ -107,7 +108,7 @@ final class OAuth2Listener
             $exception = new InsufficientScopesException();
             $exception->setToken($authenticatedToken);
 
-            $response = $this->responseFormatter->format($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
+            $response = new ErrorJsonResponse($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
 
             $authenticationFailureScopeEvent = new AuthenticationScopeFailureEvent($exception, $response, $authenticatedToken);
             $this->eventDispatcher->dispatch($authenticationFailureScopeEvent, OAuth2Events::AUTHENTICATION_SCOPE_FAILURE);

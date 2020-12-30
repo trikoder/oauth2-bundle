@@ -16,7 +16,6 @@ use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\InvalidAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
-use Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
@@ -51,11 +50,6 @@ final class OAuth2Listener
     private $eventDispatcher;
 
     /**
-     * @var ResponseFormatter
-     */
-    private $responseFormatter;
-
-    /**
      * @var string
      */
     private $providerKey;
@@ -66,7 +60,6 @@ final class OAuth2Listener
         HttpMessageFactoryInterface $httpMessageFactory,
         EventDispatcherInterface $eventDispatcher,
         OAuth2TokenFactory $oauth2TokenFactory,
-        ResponseFormatter $responseFormatter,
         string $providerKey
     ) {
         $this->tokenStorage = $tokenStorage;
@@ -74,7 +67,6 @@ final class OAuth2Listener
         $this->httpMessageFactory = $httpMessageFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
-        $this->responseFormatter = $responseFormatter;
         $this->providerKey = $providerKey;
     }
 

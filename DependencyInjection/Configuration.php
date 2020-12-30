@@ -27,11 +27,6 @@ final class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('response_formatter')
-                    ->info('Define a custom format in which any response will be converted.')
-                    ->defaultValue('disabled')
-                    ->cannotBeEmpty()
-                ->end()
                 ->scalarNode('role_prefix')
                     ->info('Set a custom prefix that replaces the default "ROLE_OAUTH2_" role prefix.')
                     ->defaultValue('ROLE_OAUTH2_')

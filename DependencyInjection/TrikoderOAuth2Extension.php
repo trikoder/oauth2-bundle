@@ -39,7 +39,6 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
-use Trikoder\Bundle\OAuth2Bundle\Response\ResponseFormatter;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Service\CredentialsRevoker\DoctrineCredentialsRevoker;
 
@@ -64,9 +63,6 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         $container->getDefinition(OAuth2TokenFactory::class)
             ->setArgument(0, $config['role_prefix']);
-
-        $container->getDefinition(ResponseFormatter::class)
-            ->setArgument(0, $config['response_formatter']);
 
         $container->registerForAutoconfiguration(GrantTypeInterface::class)
             ->addTag('trikoder.oauth2.authorization_server.grant');

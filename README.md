@@ -162,9 +162,8 @@ This package is currently in the active development.
                 entity_manager:       default
             in_memory:            ~
 
-        # Define a custom format in which any response will be converted.
-        # Supported by default: disabled, json
-        response_formatter: disabled
+        # The priority of the event listener that converts an Exception to a Response.
+        exception_event_listener_priority: 10
 
         # Set a custom prefix that replaces the default "ROLE_OAUTH2_" role prefix.
         role_prefix:          ROLE_OAUTH2_
@@ -207,7 +206,6 @@ security:
 * [Controlling token scopes](docs/controlling-token-scopes.md)
 * [Password grant handling](docs/password-grant-handling.md)
 * [Implementing custom grant type](docs/implementing-custom-grant-type.md)
-* [Implementing a custom response formatter](docs/custom-response-formatter.md)
 * [Data customization](docs/data-customization.md)
 
 ## Contributing

@@ -16,6 +16,6 @@ class ErrorJsonResponse extends JsonResponse
     {
         // We force the error body to be always the same
         // In the future we could add a specific error code to help debugging
-        parent::__construct(["message" => $message], $status);
+        parent::__construct(['message' => $message], $status);
     }
 }

@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 /**
  * @author Benoit VIGNAL <github@benoit-vignal.fr>
  */
-class InvalidAuthorizationHeaderException extends AuthenticationException
+class MissingAuthorizationHeaderException extends AuthenticationException
 {
     private $previousException;
 
@@ -18,7 +18,7 @@ class InvalidAuthorizationHeaderException extends AuthenticationException
      */
     public function getMessageKey(): string
     {
-        return 'Invalid Authorization Bearer.';
+        return 'Missing Authorization Bearer.';
     }
 
     public function getPreviousException(): ?AuthenticationException

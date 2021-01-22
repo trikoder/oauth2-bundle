@@ -20,7 +20,7 @@ use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InvalidAuthorizationHeaderException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\MissingAuthorizationHeaderException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\OAuth2AuthenticationFailedException;
 
 final class OAuth2Listener
@@ -76,7 +76,7 @@ final class OAuth2Listener
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
 
         if (!$request->hasHeader('Authorization')) {
-            $exception = new InvalidAuthorizationHeaderException();
+            $exception = new MissingAuthorizationHeaderException();
             $response = new ErrorJsonResponse($exception->getMessageKey());
             $response->headers->set('WWW-Authenticate', 'Bearer');
 

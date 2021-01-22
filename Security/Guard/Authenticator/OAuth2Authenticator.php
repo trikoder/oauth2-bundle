@@ -23,7 +23,7 @@ use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InvalidAuthorizationHeaderException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\MissingAuthorizationHeaderException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\OAuth2AuthenticationFailedException;
 use Trikoder\Bundle\OAuth2Bundle\Security\User\NullUser;
 
@@ -53,7 +53,7 @@ final class OAuth2Authenticator implements AuthenticatorInterface
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
-        $exception = new InvalidAuthorizationHeaderException();
+        $exception = new MissingAuthorizationHeaderException();
         $exception->setPreviousException($authException);
 
         $response = new ErrorJsonResponse($exception->getMessageKey());

@@ -19,7 +19,7 @@ class OAuth2AuthenticationFailedException extends AuthenticationException
      */
     public function getMessageKey(): string
     {
-        return 'OAuth Token not found.';
+        return 'Invalid OAuth Token.';
     }
 
     public function getPreviousException(): ?\Exception

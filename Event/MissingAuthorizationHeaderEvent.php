@@ -7,6 +7,6 @@ namespace Trikoder\Bundle\OAuth2Bundle\Event;
 /**
  * @author Benoit VIGNAL <github@benoit-vignal.fr>
  */
-class InvalidAuthorizationHeaderEvent extends AuthenticationFailureEvent
+class MissingAuthorizationHeaderEvent extends AuthenticationFailureEvent
 {
 }

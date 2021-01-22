@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\Event\InvalidAuthorizationHeaderEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
@@ -80,8 +80,8 @@ final class OAuth2Listener
             $response = new ErrorJsonResponse($exception->getMessageKey());
             $response->headers->set('WWW-Authenticate', 'Bearer');
 
-            $missingAuthHeaderEvent = new InvalidAuthorizationHeaderEvent($exception, $response);
-            $this->eventDispatcher->dispatch($missingAuthHeaderEvent, OAuth2Events::INVALID_AUTHORIZATION_HEADER);
+            $missingAuthHeaderEvent = new MissingAuthorizationHeaderEvent($exception, $response);
+            $this->eventDispatcher->dispatch($missingAuthHeaderEvent, OAuth2Events::MISSING_AUTHORIZATION_HEADER);
 
             $event->setResponse($missingAuthHeaderEvent->getResponse());
 

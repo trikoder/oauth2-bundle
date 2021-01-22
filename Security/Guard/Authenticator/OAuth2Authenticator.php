@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AuthenticatorInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\Event\InvalidAuthorizationHeaderEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
@@ -59,8 +59,8 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         $response = new ErrorJsonResponse($exception->getMessageKey());
         $response->headers->set('WWW-Authenticate', 'Bearer');
 
-        $event = new InvalidAuthorizationHeaderEvent($exception, $response);
-        $this->eventDispatcher->dispatch($event, OAuth2Events::INVALID_AUTHORIZATION_HEADER);
+        $event = new MissingAuthorizationHeaderEvent($exception, $response);
+        $this->eventDispatcher->dispatch($event, OAuth2Events::MISSING_AUTHORIZATION_HEADER);
 
         return $event->getResponse();
     }

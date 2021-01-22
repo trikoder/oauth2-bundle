@@ -1,11 +1,11 @@
 # Event/Data customization
 
 ## Table of contents
-- [INVALID_AUTHORIZATION_HEADER - Customizing the response on invalid authorization header](#oauth2eventsinvalid_authorization_header---customizing-the-response-on-invalid-authorization-header)
+- [MISSING_AUTHORIZATION_HEADER - Customizing the response on invalid authorization header](#oauth2eventsmissing_authorization_header---customizing-the-response-on-invalid-authorization-header)
 - [AUTHENTICATION_SCOPE_FAILURE - Customizing the response on invalid scope](#oauth2eventsauthentication_scope_failure---customizing-the-response-on-invalid-scope)
 - [AUTHENTICATION_FAILURE - Customizing the response on authentication failure](#oauth2eventsauthentication_failure---customizing-the-response-on-authentication-failure)
 
-## OAuth2Events::INVALID_AUTHORIZATION_HEADER - Customizing the response on invalid authorization header
+## OAuth2Events::MISSING_AUTHORIZATION_HEADER - Customizing the response on invalid authorization header
 
 Called when the `Authorization Bearer` was not found or is malformed.
 
@@ -19,17 +19,17 @@ namespace App\EventListener\Kernel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Trikoder\Bundle\OAuth2Bundle\Event\InvalidAuthorizationHeaderEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
 class OAuthListener implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     return [
-      OAuth2Events::INVALID_AUTHORIZATION_HEADER => "onInvalidAuthorizationHeader",
+      OAuth2Events::MISSING_AUTHORIZATION_HEADER => "onMissingAuthorizationHeader",
     ];
   }
 
-  public function onInvalidAuthorizationHeader(InvalidAuthorizationHeaderEvent $event): void {
+  public function onMissingAuthorizationHeader(MissingAuthorizationHeaderEvent $event): void {
     $response = new JsonResponse("Invalid header.", Response::HTTP_UNAUTHORIZED);
     $event->setResponse($response);
   }

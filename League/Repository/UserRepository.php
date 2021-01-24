@@ -8,10 +8,14 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface;
+use Trikoder\Bundle\OAuth2Bundle\Event\InvalidCredentialsEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Grant as GrantModel;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InvalidCredentialsException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\OAuth2AuthenticationFailedException;
 
 final class UserRepository implements UserRepositoryInterface
 {
@@ -64,7 +68,7 @@ final class UserRepository implements UserRepositoryInterface
         $user = $event->getUser();
 
         if (null === $user) {
-            return null;
+            throw new InvalidCredentialsException();
         }
 
         return $this->userConverter->toLeague($user);

@@ -15,6 +15,11 @@ final class OAuth2Events
     public const USER_RESOLVE = 'trikoder.oauth2.user_resolve';
 
     /**
+     * The INVALID_CREDENTIALS event occurs when no user was found (invalid credentials)
+     */
+    public const INVALID_CREDENTIALS = 'trikoder.oauth2.invalid_credentials';
+
+    /**
      * The SCOPE_RESOLVE event occurs right before the user obtains their
      * valid access token.
      *

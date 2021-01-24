@@ -173,6 +173,7 @@
         <!-- Token controller -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <tag name="controller.service_arguments" />
         </service>
         <service id="trikoder.oauth2.controller.token_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">

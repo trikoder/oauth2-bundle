@@ -13,8 +13,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory;
+use Trikoder\Bundle\OAuth2Bundle\Event\InvalidCredentialsEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InvalidCredentialsException;
 
 final class AuthorizationController
 {
@@ -57,7 +60,7 @@ final class AuthorizationController
         $this->clientManager = $clientManager;
     }
 
-    public function indexAction(ServerRequestInterface $serverRequest, ResponseFactoryInterface $responseFactory): ResponseInterface
+    public function indexAction(ServerRequestInterface $serverRequest, ResponseFactoryInterface $responseFactory)
     {
         $serverResponse = $responseFactory->createResponse();
 
@@ -91,6 +94,13 @@ final class AuthorizationController
             return $this->server->completeAuthorizationRequest($authRequest, $serverResponse);
         } catch (OAuthServerException $e) {
             return $e->generateHttpResponse($serverResponse);
+        } catch (InvalidCredentialsException $e) {
+            $response = new ErrorJsonResponse($e->getMessageKey());
+
+            $event = new InvalidCredentialsEvent($e, $response);
+            $this->eventDispatcher->dispatch($event, OAuth2Events::INVALID_CREDENTIALS);
+
+            return $event->getResponse();
         }
     }
 }

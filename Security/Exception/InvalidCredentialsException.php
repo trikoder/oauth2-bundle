@@ -7,16 +7,15 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Exception;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
- * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  * @author Benoit VIGNAL <github@benoit-vignal.fr>
  */
-class InsufficientScopesException extends AuthenticationException
+class InvalidCredentialsException extends AuthenticationException
 {
     /**
      * {@inheritdoc}
      */
     public function getMessageKey(): string
     {
-        return 'Insufficient scopes.';
+        return 'Invalid user credentials.';
     }
 }

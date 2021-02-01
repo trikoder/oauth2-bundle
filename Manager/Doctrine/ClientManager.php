@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientFilter;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
+use Trikoder\Bundle\OAuth2Bundle\Model\ClientInterface;
 
 final class ClientManager implements ClientManagerInterface
 {
@@ -24,7 +25,7 @@ final class ClientManager implements ClientManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function find(string $identifier): ?Client
+    public function find(string $identifier): ?ClientInterface
     {
         return $this->entityManager->find(Client::class, $identifier);
     }
@@ -32,7 +33,7 @@ final class ClientManager implements ClientManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function save(Client $client): void
+    public function save(ClientInterface $client): void
     {
         $this->entityManager->persist($client);
         $this->entityManager->flush();
@@ -41,7 +42,7 @@ final class ClientManager implements ClientManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function remove(Client $client): void
+    public function remove(ClientInterface $client): void
     {
         $this->entityManager->remove($client);
         $this->entityManager->flush();

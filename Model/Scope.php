@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
-class Scope
+class Scope implements ScopeInterface
 {
     /**
      * @var string

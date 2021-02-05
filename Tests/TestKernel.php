@@ -191,12 +191,6 @@ final class TestKernel extends Kernel implements CompilerPassInterface
             ],
         ]);
 
-        $container->loadFromExtension('ajgarlag_psr_http_message', [
-            'alias_sensio_framework_extra_services' => [
-                'enabled' => true,
-            ],
-        ]);
-
         $container->loadFromExtension('trikoder_oauth2', [
             'authorization_server' => [
                 'private_key' => '%env(PRIVATE_KEY_PATH)%',

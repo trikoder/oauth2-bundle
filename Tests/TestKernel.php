@@ -192,6 +192,12 @@ final class TestKernel extends Kernel implements CompilerPassInterface
             ],
         ]);
 
+        $container->loadFromExtension('ajgarlag_psr_http_message', [
+            'alias_sensio_framework_extra_services' => [
+                'enabled' => true,
+            ],
+        ]);
+
         $container->loadFromExtension('sensio_framework_extra', [
             'router' => [
                 'annotations' => false,

@@ -27,6 +27,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
+use Trikoder\Bundle\OAuth2Bundle\Security\Guard\Authenticator\OAuth2Authenticator;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FakeGrant;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController;
@@ -62,7 +63,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         return [
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new \Ajgarlag\Bundle\PsrHttpMessageBundle\AjgarlagPsrHttpMessageBundle(),
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new \Trikoder\Bundle\OAuth2Bundle\TrikoderOAuth2Bundle(),
@@ -113,14 +114,25 @@ final class TestKernel extends Kernel implements CompilerPassInterface
         $routes
             ->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:helloAction')
         ;
+        $routes
+            ->add('/guard/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:helloAction')
+        ;
 
         $routes
             ->add('/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:scopeAction')
             ->setDefault('oauth2_scopes', ['fancy'])
         ;
+        $routes
+            ->add('/guard/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:scopeAction')
+            ->setDefault('oauth2_scopes', ['fancy'])
+        ;
 
         $routes
             ->add('/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:rolesAction')
+            ->setDefault('oauth2_scopes', ['fancy'])
+        ;
+        $routes
+            ->add('/guard/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:rolesAction')
             ->setDefault('oauth2_scopes', ['fancy'])
         ;
     }
@@ -156,6 +168,15 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                     'stateless' => true,
                     'oauth2' => true,
                 ],
+                'guard-test' => [
+                    'pattern' => '^/guard/security-test',
+                    'stateless' => true,
+                    'guard' => [
+                        'authenticators' => [
+                            OAuth2Authenticator::class,
+                        ],
+                    ],
+                ],
             ],
             'providers' => [
                 'in_memory' => [
@@ -167,12 +188,6 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                         ],
                     ],
                 ],
-            ],
-        ]);
-
-        $container->loadFromExtension('sensio_framework_extra', [
-            'router' => [
-                'annotations' => false,
             ],
         ]);
 

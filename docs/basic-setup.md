@@ -115,6 +115,25 @@ security:
 
 Basically, any firewall which sets the `oauth2` parameter to `true` will make any routes that match the selected pattern go through our OAuth 2.0 security layer.
 
+## Configuring the Security layer using Guard
+
+Alternatively, you can use a guard authenticator to protect your resources:
+
+```yaml
+security:
+    firewalls:
+        api_token:
+            pattern: ^/api/token$
+            security: false
+        api:
+            pattern: ^/api
+            security: true
+            stateless: true
+            guard:
+                authenticators:
+                    - Trikoder\Bundle\OAuth2Bundle\Security\Guard\Authenticator\OAuth2Authenticator
+```
+
 > **NOTE:** The order of firewalls is important because Symfony will evaluate them in the specified order.
 
 ## Restricting routes by scope

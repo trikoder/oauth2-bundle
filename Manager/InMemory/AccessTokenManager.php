@@ -6,19 +6,19 @@ namespace Trikoder\Bundle\OAuth2Bundle\Manager\InMemory;
 
 use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
-use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
+use Trikoder\Bundle\OAuth2Bundle\Model\AccessTokenInterface;
 
 final class AccessTokenManager implements AccessTokenManagerInterface
 {
     /**
-     * @var AccessToken[]
+     * @var AccessTokenInterface[]
      */
     private $accessTokens = [];
 
     /**
      * {@inheritdoc}
      */
-    public function find(string $identifier): ?AccessToken
+    public function find(string $identifier): ?AccessTokenInterface
     {
         return $this->accessTokens[$identifier] ?? null;
     }
@@ -26,7 +26,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function save(AccessToken $accessToken): void
+    public function save(AccessTokenInterface $accessToken): void
     {
         $this->accessTokens[$accessToken->getIdentifier()] = $accessToken;
     }
@@ -36,7 +36,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
         $count = \count($this->accessTokens);
 
         $now = new DateTimeImmutable();
-        $this->accessTokens = array_filter($this->accessTokens, static function (AccessToken $accessToken) use ($now): bool {
+        $this->accessTokens = array_filter($this->accessTokens, static function (AccessTokenInterface $accessToken) use ($now): bool {
             return $accessToken->getExpiry() >= $now;
         });
 
@@ -47,7 +47,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
     {
         $count = \count($this->accessTokens);
 
-        $this->accessTokens = array_filter($this->accessTokens, static function (AccessToken $accessToken): bool {
+        $this->accessTokens = array_filter($this->accessTokens, static function (AccessTokenInterface $accessToken): bool {
             return !$accessToken->isRevoked();
         });
 

@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
+use Trikoder\Bundle\OAuth2Bundle\Model\AccessTokenInterface;
 
 final class AccessTokenManager implements AccessTokenManagerInterface
 {
@@ -24,7 +25,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function find(string $identifier): ?AccessToken
+    public function find(string $identifier): ?AccessTokenInterface
     {
         return $this->entityManager->find(AccessToken::class, $identifier);
     }
@@ -32,7 +33,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function save(AccessToken $accessToken): void
+    public function save(AccessTokenInterface $accessToken): void
     {
         $this->entityManager->persist($accessToken);
         $this->entityManager->flush();

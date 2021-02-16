@@ -6,7 +6,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
 use DateTimeInterface;
 
-class RefreshToken
+class RefreshToken implements RefreshTokenInterface
 {
     /**
      * @var string
@@ -50,7 +50,7 @@ class RefreshToken
         return $this->expiry;
     }
 
-    public function getAccessToken(): ?AccessToken
+    public function getAccessToken(): ?AccessTokenInterface
     {
         return $this->accessToken;
     }
@@ -60,7 +60,7 @@ class RefreshToken
         return $this->revoked;
     }
 
-    public function revoke(): self
+    public function revoke(): RefreshTokenInterface
     {
         $this->revoked = true;
 

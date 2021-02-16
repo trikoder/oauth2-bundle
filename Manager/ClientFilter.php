@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager;
 
-use Trikoder\Bundle\OAuth2Bundle\Model\Grant;
-use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri;
-use Trikoder\Bundle\OAuth2Bundle\Model\Scope;
+use Trikoder\Bundle\OAuth2Bundle\Model\GrantInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUriInterface;
+use Trikoder\Bundle\OAuth2Bundle\Model\ScopeInterface;
 
 final class ClientFilter
 {
     /**
-     * @var Grant[]
+     * @var GrantInterface[]
      */
     private $grants = [];
 
     /**
-     * @var RedirectUri[]
+     * @var RedirectUriInterface[]
      */
     private $redirectUris = [];
 
     /**
-     * @var Scope[]
+     * @var ScopeInterface[]
      */
     private $scopes = [];
 
@@ -30,17 +30,17 @@ final class ClientFilter
         return new static();
     }
 
-    public function addGrantCriteria(Grant ...$grants): self
+    public function addGrantCriteria(GrantInterface ...$grants): self
     {
         return $this->addCriteria($this->grants, ...$grants);
     }
 
-    public function addRedirectUriCriteria(RedirectUri ...$redirectUris): self
+    public function addRedirectUriCriteria(RedirectUriInterface ...$redirectUris): self
     {
         return $this->addCriteria($this->redirectUris, ...$redirectUris);
     }
 
-    public function addScopeCriteria(Scope ...$scopes): self
+    public function addScopeCriteria(ScopeInterface ...$scopes): self
     {
         return $this->addCriteria($this->scopes, ...$scopes);
     }
@@ -57,7 +57,7 @@ final class ClientFilter
     }
 
     /**
-     * @return Grant[]
+     * @return GrantInterface[]
      */
     public function getGrants(): array
     {
@@ -65,7 +65,7 @@ final class ClientFilter
     }
 
     /**
-     * @return RedirectUri[]
+     * @return RedirectUriInterface[]
      */
     public function getRedirectUris(): array
     {
@@ -73,7 +73,7 @@ final class ClientFilter
     }
 
     /**
-     * @return Scope[]
+     * @return ScopeInterface[]
      */
     public function getScopes(): array
     {

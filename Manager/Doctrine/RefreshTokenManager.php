@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
+use Trikoder\Bundle\OAuth2Bundle\Model\RefreshTokenInterface;
 
 final class RefreshTokenManager implements RefreshTokenManagerInterface
 {
@@ -24,7 +25,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function find(string $identifier): ?RefreshToken
+    public function find(string $identifier): ?RefreshTokenInterface
     {
         return $this->entityManager->find(RefreshToken::class, $identifier);
     }
@@ -32,7 +33,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function save(RefreshToken $refreshToken): void
+    public function save(RefreshTokenInterface $refreshToken): void
     {
         $this->entityManager->persist($refreshToken);
         $this->entityManager->flush();

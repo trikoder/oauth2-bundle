@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
+use Ajgarlag\Bundle\PsrHttpMessageBundle\AjgarlagPsrHttpMessageBundle;
 use DateInterval;
 use Defuse\Crypto\Key;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
@@ -18,7 +19,6 @@ use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
 use LogicException;
 use RuntimeException;
-use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -115,7 +115,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $requiredBundles = [
             'doctrine' => DoctrineBundle::class,
             'security' => SecurityBundle::class,
-            'sensio_framework_extra' => SensioFrameworkExtraBundle::class,
+            'ajgarlag_psr_http_message' => AjgarlagPsrHttpMessageBundle::class,
         ];
 
         foreach ($requiredBundles as $bundleAlias => $requiredBundle) {

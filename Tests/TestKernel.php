@@ -63,7 +63,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     {
         return [
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new \Ajgarlag\Bundle\PsrHttpMessageBundle\AjgarlagPsrHttpMessageBundle(),
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new \Trikoder\Bundle\OAuth2Bundle\TrikoderOAuth2Bundle(),
@@ -188,12 +188,6 @@ final class TestKernel extends Kernel implements CompilerPassInterface
                         ],
                     ],
                 ],
-            ],
-        ]);
-
-        $container->loadFromExtension('sensio_framework_extra', [
-            'router' => [
-                'annotations' => false,
             ],
         ]);
 

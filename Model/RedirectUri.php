@@ -15,7 +15,7 @@ class RedirectUri
 
     public function __construct(string $redirectUri)
     {
-        if (!preg_match('/\b(?:(?:https?|ftp):\/\/|www\.)?[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/', $redirectUri)) {
+        if (!preg_match('/((https?):\/\/|www\.|[-\w\.]{1,}:\/)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/', $redirectUri)) {
             throw new RuntimeException(sprintf('The \'%s\' string is not a valid URI.', $redirectUri));
         }
 

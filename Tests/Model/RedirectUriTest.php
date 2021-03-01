@@ -10,7 +10,6 @@ use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri;
 
 class RedirectUriTest extends TestCase
 {
-
     public function testUris()
     {
         $passingUris = [

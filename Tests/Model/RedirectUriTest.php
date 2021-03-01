@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Model;
 
-use \RuntimeException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Trikoder\Bundle\OAuth2Bundle\Model\RedirectUri;
 
 class RedirectUriTest extends TestCase
 {
-
     public function testUris()
     {
         $passingUris = [

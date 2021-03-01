@@ -17,19 +17,19 @@ class RedirectUriTest extends TestCase
             'http://www.oauth2.com/redirect/to-uri',
             'https://oauth2.com/redirect-to-uri',
             'com.example.test123:/redirect/to-uri',
-            'com.example.test:/redirect-to-uri'
+            'com.example.test:/redirect-to-uri',
         ];
 
         $faillingUris = [
             'someRandomString',
         ];
 
-        foreach($passingUris as $uri) {
+        foreach ($passingUris as $uri) {
             $redirectUri = new RedirectUri($uri);
             $this->assertInstanceOf(RedirectUri::class, $redirectUri);
         }
 
-        foreach($faillingUris as $uri) {
+        foreach ($faillingUris as $uri) {
             $this->expectException(RuntimeException::class);
             $redirectUri = new RedirectUri($uri);
         }

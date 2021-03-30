@@ -7,7 +7,7 @@ Authorization code grant has two steps
 
 ## Requirements
 
-To use authorization code grant `enable_auth_code_grant` parameter inside `authorization_server` must be set to `true` (it is set to `true` by default).
+To use authorization code grant `trikoder_oauth2.authorization_server.grant_types.authorization_code.enable` must be set to `true` (it is set to `true` by default).
 
 ### Example: config
 
@@ -16,7 +16,9 @@ To use authorization code grant `enable_auth_code_grant` parameter inside `autho
 
 trikoder_oauth2:
     authorization_server:
-        enable_auth_code_grant: true
+        grant_types:
+            authorization_code:
+                enable: true
 ```
 
 After authorization code grant is enabled, token and authorization endpoints must be set.
@@ -81,25 +83,19 @@ final class AuthorizationCodeListener
         $this->requestStack = $requestStack;
     }
 
-    public function onAuthorizationRequestResolve(AuthorizationRequestResolveEvent $event)
+    public function onAuthorizationRequestResolve(AuthorizationRequestResolveEvent $event): void
     {
-        if (null !== $event->getUser()) {
-            $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
-        } else {
-            $event->setResponse(
-                new Response(
-                    302,
-                    [
-                        'Location' => $this->urlGenerator->generate(
-                            'login',
-                            [
-                                'returnUrl' => $this->requestStack->getMasterRequest()->getUri(),
-                            ]
-                        ),
-                    ]
-                )
-            );
+        if (null === $event->getUser()) {
+            $event->setResponse(new Response(302, [
+                'Location' => $this->urlGenerator->generate('login', [
+                    'returnUrl' => $this->requestStack->getMasterRequest()->getUri(),
+                ]),
+            ]));
+
+            return;
         }
+
+        $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
     }
 }
 ```

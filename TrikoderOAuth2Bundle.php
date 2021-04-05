@@ -44,12 +44,28 @@ final class TrikoderOAuth2Bundle extends Bundle
         $container->addCompilerPass(
             DoctrineOrmMappingsPass::createXmlMappingDriver(
                 [
-                    realpath(__DIR__ . '/Resources/config/doctrine/model') => 'Trikoder\Bundle\OAuth2Bundle\Model',
+                    realpath(__DIR__ . '/Resources/config/doctrine/common') => 'Trikoder\Bundle\OAuth2Bundle\Model',
+                    realpath(__DIR__ . '/Resources/config/doctrine/access_token') => 'Trikoder\Bundle\OAuth2Bundle\Model',
                 ],
                 [
                     'trikoder.oauth2.persistence.doctrine.manager',
                 ],
-                'trikoder.oauth2.persistence.doctrine.enabled',
+                'trikoder.oauth2.persistence.doctrine.access_token.enabled',
+                [
+                    'TrikoderOAuth2Bundle' => 'Trikoder\Bundle\OAuth2Bundle\Model',
+                ]
+            )
+        );
+        $container->addCompilerPass(
+            DoctrineOrmMappingsPass::createXmlMappingDriver(
+                [
+                    realpath(__DIR__ . '/Resources/config/doctrine/common') => 'Trikoder\Bundle\OAuth2Bundle\Model',
+                    realpath(__DIR__ . '/Resources/config/doctrine/null') => 'Trikoder\Bundle\OAuth2Bundle\Model',
+                ],
+                [
+                    'trikoder.oauth2.persistence.doctrine.manager',
+                ],
+                'trikoder.oauth2.persistence.doctrine.access_token.disabled',
                 [
                     'TrikoderOAuth2Bundle' => 'Trikoder\Bundle\OAuth2Bundle\Model',
                 ]

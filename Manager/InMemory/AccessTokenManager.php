@@ -15,11 +15,23 @@ final class AccessTokenManager implements AccessTokenManagerInterface
      */
     private $accessTokens = [];
 
+    /** @var bool */
+    private $disableAccessTokenSaving;
+
+    public function __construct(bool $disableAccessTokenSaving)
+    {
+        $this->disableAccessTokenSaving = $disableAccessTokenSaving;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function find(string $identifier): ?AccessToken
     {
+        if ($this->disableAccessTokenSaving) {
+            return null;
+        }
+
         return $this->accessTokens[$identifier] ?? null;
     }
 
@@ -28,11 +40,19 @@ final class AccessTokenManager implements AccessTokenManagerInterface
      */
     public function save(AccessToken $accessToken): void
     {
+        if ($this->disableAccessTokenSaving) {
+            return;
+        }
+
         $this->accessTokens[$accessToken->getIdentifier()] = $accessToken;
     }
 
     public function clearExpired(): int
     {
+        if ($this->disableAccessTokenSaving) {
+            return 0;
+        }
+
         $count = \count($this->accessTokens);
 
         $now = new DateTimeImmutable();

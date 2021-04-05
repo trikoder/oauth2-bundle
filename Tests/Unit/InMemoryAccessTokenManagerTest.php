@@ -15,7 +15,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
 {
     public function testClearExpired(): void
     {
-        $inMemoryAccessTokenManager = new InMemoryAccessTokenManager();
+        $inMemoryAccessTokenManager = new InMemoryAccessTokenManager(false);
 
         timecop_freeze(new DateTimeImmutable());
 
@@ -31,6 +31,30 @@ final class InMemoryAccessTokenManagerTest extends TestCase
         } finally {
             timecop_return();
         }
+    }
+
+    public function testClearExpiredWithoutSavingAccessToken(): void
+    {
+        $inMemoryAccessTokenManager = new InMemoryAccessTokenManager(true);
+
+        timecop_freeze(new DateTimeImmutable());
+
+        try {
+            $testData = $this->buildClearExpiredTestData();
+
+            foreach ($testData['input'] as $token) {
+                $inMemoryAccessTokenManager->save($token);
+            }
+
+            $this->assertSame(0, $inMemoryAccessTokenManager->clearExpired());
+        } finally {
+            timecop_return();
+        }
+
+        $reflectionProperty = new ReflectionProperty(InMemoryAccessTokenManager::class, 'accessTokens');
+        $reflectionProperty->setAccessible(true);
+
+        $this->assertSame([], $reflectionProperty->getValue($inMemoryAccessTokenManager));
     }
 
     private function buildClearExpiredTestData(): array
@@ -56,7 +80,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
 
     public function testClearRevoked(): void
     {
-        $inMemoryAccessTokenManager = new InMemoryAccessTokenManager();
+        $inMemoryAccessTokenManager = new InMemoryAccessTokenManager(false);
 
         $testData = $this->buildClearRevokedTestData();
 

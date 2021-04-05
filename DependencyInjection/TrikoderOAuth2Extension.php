@@ -39,6 +39,7 @@ use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager;
+use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager as InMemoryAccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\Scope as ScopeModel;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
@@ -58,23 +59,24 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $this->configurePersistence($loader, $container, $config['persistence']);
+        $this->configureAccessTokenSaving($loader, $container, $config['authorization_server']);
+        $this->configurePersistence($loader, $container, $config);
         $this->configureAuthorizationServer($container, $config['authorization_server']);
         $this->configureResourceServer($container, $config['resource_server']);
         $this->configureScopes($container, $config['scopes']);
 
         $container->getDefinition(OAuth2TokenFactory::class)
-            ->setArgument(0, $config['role_prefix']);
+                  ->setArgument(0, $config['role_prefix']);
 
         $container->getDefinition(ConvertExceptionToResponseListener::class)
-            ->addTag('kernel.event_listener', [
-                'event' => KernelEvents::EXCEPTION,
-                'method' => 'onKernelException',
-                'priority' => $config['exception_event_listener_priority'],
-            ]);
+                  ->addTag('kernel.event_listener', [
+                      'event' => KernelEvents::EXCEPTION,
+                      'method' => 'onKernelException',
+                      'priority' => $config['exception_event_listener_priority'],
+                  ]);
 
         $container->registerForAutoconfiguration(GrantTypeInterface::class)
-            ->addTag('trikoder.oauth2.authorization_server.grant');
+                  ->addTag('trikoder.oauth2.authorization_server.grant');
     }
 
     /**
@@ -226,31 +228,44 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         ;
     }
 
+    private function configureAccessTokenSaving(LoaderInterface $loader, ContainerBuilder $container, array $config): void
+    {
+        if ($config['disable_access_token_saving']) {
+            $loader->load('access_token/null.xml');
+        } else {
+            $loader->load('access_token/default.xml');
+        }
+
+        $container->setParameter('trikoder.oauth2.authorization_server.disable_access_token_saving', $config['disable_access_token_saving']);
+    }
+
     /**
      * @throws Exception
      */
     private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config): void
     {
-        if (\count($config) > 1) {
+        $persistenceConfig = $config['persistence'];
+        if (\count($persistenceConfig) > 1) {
             throw new LogicException('Only one persistence method can be configured at a time.');
         }
 
-        $persistenceConfiguration = current($config);
-        $persistenceMethod = key($config);
+        $persistenceConfiguration = current($persistenceConfig);
+        $persistenceMethod = key($persistenceConfig);
 
+        $disableAccessTokenSaving = $config['authorization_server']['disable_access_token_saving'];
         switch ($persistenceMethod) {
             case 'in_memory':
                 $loader->load('storage/in_memory.xml');
-                $this->configureInMemoryPersistence($container);
+                $this->configureInMemoryPersistence($container, $disableAccessTokenSaving);
                 break;
             case 'doctrine':
                 $loader->load('storage/doctrine.xml');
-                $this->configureDoctrinePersistence($container, $persistenceConfiguration);
+                $this->configureDoctrinePersistence($container, $persistenceConfiguration, $disableAccessTokenSaving);
                 break;
         }
     }
 
-    private function configureDoctrinePersistence(ContainerBuilder $container, array $config): void
+    private function configureDoctrinePersistence(ContainerBuilder $container, array $config, bool $disableAccessTokenSaving): void
     {
         $entityManagerName = $config['entity_manager'];
 
@@ -261,6 +276,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $container
             ->getDefinition(AccessTokenManager::class)
             ->replaceArgument('$entityManager', $entityManager)
+            ->replaceArgument('$disableAccessTokenSaving', $disableAccessTokenSaving)
         ;
 
         $container
@@ -285,10 +301,20 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         $container->setParameter('trikoder.oauth2.persistence.doctrine.enabled', true);
         $container->setParameter('trikoder.oauth2.persistence.doctrine.manager', $entityManagerName);
+
+        if ($disableAccessTokenSaving) {
+            $container->setParameter('trikoder.oauth2.persistence.doctrine.access_token.disabled', true);
+        } else {
+            $container->setParameter('trikoder.oauth2.persistence.doctrine.access_token.enabled', true);
+        }
     }
 
-    private function configureInMemoryPersistence(ContainerBuilder $container): void
+    private function configureInMemoryPersistence(ContainerBuilder $container, bool $disableAccessTokenSaving): void
     {
+        $container
+            ->getDefinition(InMemoryAccessTokenManager::class)
+            ->replaceArgument('$disableAccessTokenSaving', $disableAccessTokenSaving)
+        ;
         $container->setParameter('trikoder.oauth2.persistence.in_memory.enabled', true);
     }
 

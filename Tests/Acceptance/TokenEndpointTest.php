@@ -20,6 +20,8 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
+        Chronos::setTestNow(Chronos::now());
+
         FixtureFactory::initializeFixtures(
             $this->client->getContainer()->get(ScopeManagerInterface::class),
             $this->client->getContainer()->get(ClientManagerInterface::class),
@@ -29,19 +31,20 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         );
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        Chronos::setTestNow(null);
+    }
+
     public function testSuccessfulClientCredentialsRequest(): void
     {
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => 'foo',
-                'client_secret' => 'secret',
-                'grant_type' => 'client_credentials',
-            ]);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'client_credentials',
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -64,19 +67,13 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 $event->setUser(FixtureFactory::createUser());
             });
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => 'foo',
-                'client_secret' => 'secret',
-                'grant_type' => 'password',
-                'username' => 'user',
-                'password' => 'pass',
-            ]);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'password',
+            'username' => 'user',
+            'password' => 'pass',
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -98,18 +95,12 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(RefreshTokenManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_REFRESH_TOKEN);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => 'foo',
-                'client_secret' => 'secret',
-                'grant_type' => 'refresh_token',
-                'refresh_token' => TestHelper::generateEncryptedPayload($refreshToken),
-            ]);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'refresh_token',
+            'refresh_token' => TestHelper::generateEncryptedPayload($refreshToken),
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -131,19 +122,13 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(AuthorizationCodeManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_AUTH_CODE);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => 'foo',
-                'client_secret' => 'secret',
-                'grant_type' => 'authorization_code',
-                'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
-                'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
-            ]);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
+            'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -164,18 +149,12 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(AuthorizationCodeManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_AUTH_CODE_PUBLIC_CLIENT);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
-                'grant_type' => 'authorization_code',
-                'redirect_uri' => FixtureFactory::FIXTURE_PUBLIC_CLIENT_REDIRECT_URI,
-                'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
-            ]);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => FixtureFactory::FIXTURE_PUBLIC_CLIENT_REDIRECT_URI,
+            'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
+        ]);
 
         $response = $this->client->getResponse();
 

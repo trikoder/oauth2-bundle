@@ -28,6 +28,8 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
+        Chronos::setTestNow(Chronos::now());
+
         FixtureFactory::initializeFixtures(
             $this->client->getContainer()->get(ScopeManagerInterface::class),
             $this->client->getContainer()->get(ClientManagerInterface::class),
@@ -55,21 +57,15 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                    'response_type' => 'code',
-                    'state' => 'foobar',
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+            ]
+        );
 
         $response = $this->client->getResponse();
 
@@ -107,24 +103,18 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
-                    'response_type' => 'code',
-                    'scope' => '',
-                    'state' => $state,
-                    'code_challenge' => $codeChallenge,
-                    'code_challenge_method' => $codeChallengeMethod,
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
+                'response_type' => 'code',
+                'scope' => '',
+                'state' => $state,
+                'code_challenge' => $codeChallenge,
+                'code_challenge_method' => $codeChallengeMethod,
+            ]
+        );
 
         $response = $this->client->getResponse();
 
@@ -165,22 +155,16 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $this->fail('This event should not have been dispatched.');
             });
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
-                    'response_type' => 'code',
-                    'scope' => '',
-                    'state' => bin2hex(random_bytes(20)),
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
+                'response_type' => 'code',
+                'scope' => '',
+                'state' => bin2hex(random_bytes(20)),
+            ]
+        );
 
         $response = $this->client->getResponse();
 
@@ -209,24 +193,18 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $this->fail('This event should not have been dispatched.');
             });
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
-                    'response_type' => 'code',
-                    'scope' => '',
-                    'state' => $state,
-                    'code_challenge' => $codeChallenge,
-                    'code_challenge_method' => $codeChallengeMethod,
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
+                'response_type' => 'code',
+                'scope' => '',
+                'state' => $state,
+                'code_challenge' => $codeChallenge,
+                'code_challenge_method' => $codeChallengeMethod,
+            ]
+        );
 
         $response = $this->client->getResponse();
 
@@ -259,24 +237,18 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD,
-                    'response_type' => 'code',
-                    'scope' => '',
-                    'state' => $state,
-                    'code_challenge' => $codeChallenge,
-                    'code_challenge_method' => $codeChallengeMethod,
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD,
+                'response_type' => 'code',
+                'scope' => '',
+                'state' => $state,
+                'code_challenge' => $codeChallenge,
+                'code_challenge_method' => $codeChallengeMethod,
+            ]
+        );
 
         $response = $this->client->getResponse();
 
@@ -317,21 +289,15 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                    'response_type' => 'token',
-                    'state' => 'foobar',
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'token',
+                'state' => 'foobar',
+            ]
+        );
 
         $response = $this->client->getResponse();
 
@@ -358,23 +324,17 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->setResponse($response);
             });
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                    'response_type' => 'code',
-                    'state' => 'foobar',
-                    'redirect_uri' => FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI,
-                    'scope' => FixtureFactory::FIXTURE_SCOPE_FIRST . ' ' . FixtureFactory::FIXTURE_SCOPE_SECOND,
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+                'redirect_uri' => FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI,
+                'scope' => FixtureFactory::FIXTURE_SCOPE_FIRST . ' ' . FixtureFactory::FIXTURE_SCOPE_SECOND,
+            ]
+        );
 
         $response = $this->client->getResponse();
 
@@ -396,21 +356,15 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
             $event->setResponse($response);
         }, 200);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                    'response_type' => 'code',
-                    'state' => 'foobar',
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+            ]
+        );
 
         $response = $this->client->getResponse();
 
@@ -432,21 +386,15 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
             $event->setResponse($response);
         }, 100);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                    'response_type' => 'code',
-                    'state' => 'foobar',
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+            ]
+        );
 
         $response = $this->client->getResponse();
 
@@ -470,22 +418,16 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $this->client->request(
-                'GET',
-                '/authorize',
-                [
-                    'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
-                    'response_type' => 'code',
-                    'state' => 'foobar',
-                    'redirect_uri' => 'https://example.org/oauth2/malicious-uri',
-                ]
-            );
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $this->client->request(
+            'GET',
+            '/authorize',
+            [
+                'client_id' => FixtureFactory::FIXTURE_CLIENT_FIRST,
+                'response_type' => 'code',
+                'state' => 'foobar',
+                'redirect_uri' => 'https://example.org/oauth2/malicious-uri',
+            ]
+        );
 
         $response = $this->client->getResponse();
 

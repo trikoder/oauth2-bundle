@@ -17,6 +17,8 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     {
         parent::setUp();
 
+        Chronos::setTestNow(Chronos::now());
+
         FixtureFactory::initializeFixtures(
             $this->scopeManager,
             $this->clientManager,
@@ -24,6 +26,13 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             $this->refreshTokenManager,
             $this->authCodeManager
         );
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        Chronos::setTestNow(null);
     }
 
     public function testSuccessfulAuthorizationThroughHeaders(): void
@@ -168,13 +177,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -194,13 +197,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'fancy',
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -227,13 +224,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -261,13 +252,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'rock',
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -300,13 +285,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'password' => 'pass',
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);
@@ -383,13 +362,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'refresh_token' => TestHelper::generateEncryptedPayload($existingRefreshToken),
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);
@@ -675,13 +648,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
@@ -751,13 +718,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'foo',
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleAuthorizationRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleAuthorizationRequest($request);
 
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
@@ -779,13 +740,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'state' => 'quzbaz',
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleAuthorizationRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleAuthorizationRequest($request);
 
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
@@ -808,13 +763,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        Chronos::setTestNow(Chronos::now());
-
-        try {
-            $response = $this->handleAuthorizationRequest($request);
-        } finally {
-            Chronos::setTestNow(null);
-        }
+        $response = $this->handleAuthorizationRequest($request);
 
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];

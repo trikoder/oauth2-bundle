@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager as DoctrineRefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
@@ -28,7 +28,7 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $testData = $this->buildClearExpiredTestData($client);
@@ -43,7 +43,7 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
 
             $this->assertSame(3, $doctrineRefreshTokenManager->clearExpired());
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $this->assertSame(
@@ -125,10 +125,10 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
     {
         $refreshToken = new RefreshToken(
             $identifier,
-            new DateTimeImmutable($modify),
+            new Chronos($modify),
             new AccessToken(
                 $identifier,
-                new DateTimeImmutable('+1 day'),
+                new Chronos('+1 day'),
                 $client,
                 null,
                 []

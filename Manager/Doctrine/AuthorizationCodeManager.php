@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
@@ -43,7 +43,7 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
         return $this->entityManager->createQueryBuilder()
             ->delete(AuthorizationCode::class, 'ac')
             ->where('ac.expiry < :expiry')
-            ->setParameter('expiry', new DateTimeImmutable())
+            ->setParameter('expiry', Chronos::now())
             ->getQuery()
             ->execute();
     }

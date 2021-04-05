@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
 use Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
@@ -18,7 +18,7 @@ final class AuthCodeRepositoryTest extends AbstractIntegrationTest
 
         $authCode = new AuthorizationCode(
             $identifier,
-            new DateTimeImmutable(),
+            Chronos::now(),
             new Client('bar', 'baz'),
             null,
             []

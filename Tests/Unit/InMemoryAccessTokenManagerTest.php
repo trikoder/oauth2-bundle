@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager as InMemoryAccessTokenManager;
@@ -17,7 +17,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
     {
         $inMemoryAccessTokenManager = new InMemoryAccessTokenManager();
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $testData = $this->buildClearExpiredTestData();
@@ -29,7 +29,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
             $this->assertSame(3, $inMemoryAccessTokenManager->clearExpired());
             $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAccessTokenManager);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
     }
 
@@ -91,7 +91,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
     {
         $accessToken = new AccessToken(
             $identifier,
-            new DateTimeImmutable($modify),
+            new Chronos($modify),
             new Client('client', 'secret'),
             null,
             []

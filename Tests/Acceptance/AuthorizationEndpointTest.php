@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
@@ -55,7 +55,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -68,7 +68,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -107,7 +107,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -123,7 +123,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -165,7 +165,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $this->fail('This event should not have been dispatched.');
             });
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -179,7 +179,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -209,7 +209,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $this->fail('This event should not have been dispatched.');
             });
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -225,7 +225,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -259,7 +259,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -275,7 +275,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -317,7 +317,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -330,7 +330,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -358,7 +358,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->setResponse($response);
             });
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -373,7 +373,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -396,7 +396,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
             $event->setResponse($response);
         }, 200);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -409,7 +409,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -432,7 +432,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
             $event->setResponse($response);
         }, 100);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -445,7 +445,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -470,7 +470,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
             });
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request(
@@ -484,7 +484,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
                 ]
             );
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager as InMemoryAuthCodeManager;
@@ -17,7 +17,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
     {
         $inMemoryAuthCodeManager = new InMemoryAuthCodeManager();
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $testData = $this->buildClearExpiredTestData();
@@ -29,7 +29,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
             $this->assertSame(3, $inMemoryAuthCodeManager->clearExpired());
             $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAuthCodeManager);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
     }
 
@@ -91,7 +91,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
     {
         $authorizationCode = new AuthorizationCode(
             $identifier,
-            new DateTimeImmutable($modify),
+            new Chronos($modify),
             new Client('client', 'secret'),
             null,
             []

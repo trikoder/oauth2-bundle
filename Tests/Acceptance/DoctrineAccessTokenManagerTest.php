@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager as DoctrineAccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
@@ -28,7 +28,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $testData = $this->buildClearExpiredTestData($client);
@@ -40,7 +40,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
 
             $this->assertSame(3, $doctrineAccessTokenManager->clearExpired());
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $this->assertSame(
@@ -119,7 +119,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     {
         $accessToken = new AccessToken(
             $identifier,
-            new DateTimeImmutable($modify),
+            new Chronos($modify),
             $client,
             null,
             []
@@ -142,7 +142,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $testData = $this->buildClearExpiredTestDataWithRefreshToken($client);
@@ -157,7 +157,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
 
             $this->assertSame(3, $doctrineAccessTokenManager->clearExpired());
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $this->assertSame(
@@ -240,14 +240,14 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     {
         $accessToken = new AccessToken(
             $identifier,
-            new DateTimeImmutable($modify),
+            new Chronos($modify),
             $client,
             null,
             []
         );
         $refreshToken = new RefreshToken(
             $identifier,
-            new DateTimeImmutable('+1 day'),
+            new Chronos('+1 day'),
             $accessToken
         );
 

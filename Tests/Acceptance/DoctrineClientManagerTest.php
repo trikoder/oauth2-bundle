@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager as DoctrineClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
@@ -46,7 +46,7 @@ final class DoctrineClientManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        $accessToken = new AccessToken('access token', new DateTimeImmutable('+1 day'), $client, $client->getIdentifier(), []);
+        $accessToken = new AccessToken('access token', new Chronos('+1 day'), $client, $client->getIdentifier(), []);
         $em->persist($accessToken);
         $em->flush();
 
@@ -79,11 +79,11 @@ final class DoctrineClientManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        $accessToken = new AccessToken('access token', new DateTimeImmutable('+1 day'), $client, $client->getIdentifier(), []);
+        $accessToken = new AccessToken('access token', new Chronos('+1 day'), $client, $client->getIdentifier(), []);
         $em->persist($accessToken);
         $em->flush();
 
-        $refreshToken = new RefreshToken('refresh token', new DateTimeImmutable('+1 day'), $accessToken);
+        $refreshToken = new RefreshToken('refresh token', new Chronos('+1 day'), $accessToken);
         $em->persist($refreshToken);
         $em->flush();
 

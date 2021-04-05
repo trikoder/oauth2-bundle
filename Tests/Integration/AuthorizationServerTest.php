@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
@@ -168,12 +168,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleTokenRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $accessToken = $this->getAccessToken($response['access_token']);
@@ -194,12 +194,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'fancy',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleTokenRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $accessToken = $this->getAccessToken($response['access_token']);
@@ -227,12 +227,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleTokenRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $accessToken = $this->getAccessToken($response['access_token']);
@@ -261,12 +261,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'rock',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleTokenRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $accessToken = $this->getAccessToken($response['access_token']);
@@ -300,12 +300,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'password' => 'pass',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleTokenRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $accessToken = $this->getAccessToken($response['access_token']);
@@ -383,12 +383,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'refresh_token' => TestHelper::generateEncryptedPayload($existingRefreshToken),
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleTokenRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $accessToken = $this->getAccessToken($response['access_token']);
@@ -675,12 +675,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleTokenRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $accessToken = $this->getAccessToken($response['access_token']);
@@ -751,12 +751,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'foo',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleAuthorizationRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $this->assertSame(302, $response->getStatusCode());
@@ -779,12 +779,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'state' => 'quzbaz',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleAuthorizationRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $this->assertSame(302, $response->getStatusCode());
@@ -808,12 +808,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $response = $this->handleAuthorizationRequest($request);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $this->assertSame(302, $response->getStatusCode());

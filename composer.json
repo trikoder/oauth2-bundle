@@ -31,8 +31,8 @@
         "symfony/security-bundle": "^4.4|^5.0"
     },
     "require-dev": {
-        "ext-timecop": "*",
         "ext-xdebug": "*",
+        "cakephp/chronos": "^2.1",
         "laminas/laminas-diactoros": "^2.2",
         "nyholm/psr7": "^1.2",
         "phpunit/phpunit": "^8.5|^9.4",

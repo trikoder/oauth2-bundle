@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager as DoctrineAuthCodeManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
@@ -26,7 +26,7 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         $client = new Client('client', 'secret');
         $em->persist($client);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $testData = $this->buildClearExpiredTestData($client);
@@ -40,7 +40,7 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
 
             $this->assertSame(3, $doctrineAuthCodeManager->clearExpired());
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $this->assertSame(
@@ -120,7 +120,7 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
     {
         $authorizationCode = new AuthorizationCode(
             $identifier,
-            new DateTimeImmutable($modify),
+            new Chronos($modify),
             $client,
             null,
             []

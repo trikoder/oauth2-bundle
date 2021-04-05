@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
+use Cake\Chronos\Chronos;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
@@ -31,7 +31,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
 
     public function testSuccessfulClientCredentialsRequest(): void
     {
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request('POST', '/token', [
@@ -40,7 +40,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 'grant_type' => 'client_credentials',
             ]);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -64,7 +64,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 $event->setUser(FixtureFactory::createUser());
             });
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request('POST', '/token', [
@@ -75,7 +75,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 'password' => 'pass',
             ]);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -98,7 +98,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(RefreshTokenManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_REFRESH_TOKEN);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request('POST', '/token', [
@@ -108,7 +108,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 'refresh_token' => TestHelper::generateEncryptedPayload($refreshToken),
             ]);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -131,7 +131,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(AuthorizationCodeManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_AUTH_CODE);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request('POST', '/token', [
@@ -142,7 +142,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
             ]);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();
@@ -164,7 +164,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(AuthorizationCodeManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_AUTH_CODE_PUBLIC_CLIENT);
 
-        timecop_freeze(new DateTimeImmutable());
+        Chronos::setTestNow(Chronos::now());
 
         try {
             $this->client->request('POST', '/token', [
@@ -174,7 +174,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
             ]);
         } finally {
-            timecop_return();
+            Chronos::setTestNow(null);
         }
 
         $response = $this->client->getResponse();

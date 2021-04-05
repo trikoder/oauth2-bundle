@@ -80,7 +80,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
 
     public function testClearRevoked(): void
     {
-        $inMemoryAccessTokenManager = new InMemoryAccessTokenManager();
+        $inMemoryAccessTokenManager = new InMemoryAccessTokenManager(false);
 
         $testData = $this->buildClearRevokedTestData();
 

@@ -12,7 +12,8 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
 /**
- * @TODO   This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ * @TODO   This should be in the Integration tests folder but the current tests infrastructure would need improvements
+ *         first.
  * @covers \Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager
  */
 final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
@@ -107,7 +108,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         /** @var EntityManagerInterface $em */
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
 
-        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em);
+        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em, false);
 
         $client = new Client('client', 'secret');
         $em->persist($client);
@@ -147,8 +148,12 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         ];
     }
 
-    private function buildAccessToken(string $identifier, string $modify, Client $client, bool $revoked = false): AccessToken
-    {
+    private function buildAccessToken(
+        string $identifier,
+        string $modify,
+        Client $client,
+        bool $revoked = false
+    ): AccessToken {
         $accessToken = new AccessToken(
             $identifier,
             new DateTimeImmutable($modify),
@@ -234,16 +239,16 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     private function buildClearExpiredTestDataWithRefreshToken(Client $client, bool $withAccessToken = true): array
     {
         $validRefreshTokens = [
-            $this->buildRefreshToken('1111', '+1 day', $client, $withAccessToken),
-            $this->buildRefreshToken('2222', '+1 hour', $client, $withAccessToken),
-            $this->buildRefreshToken('3333', '+1 second', $client, $withAccessToken),
-            $this->buildRefreshToken('4444', 'now', $client, $withAccessToken),
+            $this->buildRefreshToken('1111', '+1 day', $client, false, $withAccessToken),
+            $this->buildRefreshToken('2222', '+1 hour', $client, false, $withAccessToken),
+            $this->buildRefreshToken('3333', '+1 second', $client, false, $withAccessToken),
+            $this->buildRefreshToken('4444', 'now', $client, false, $withAccessToken),
         ];
 
         $expiredRefreshTokens = [
-            $this->buildRefreshToken('5555', '-1 day', $client, $withAccessToken),
-            $this->buildRefreshToken('6666', '-1 hour', $client, $withAccessToken),
-            $this->buildRefreshToken('7777', '-1 second', $client, $withAccessToken),
+            $this->buildRefreshToken('5555', '-1 day', $client, false, $withAccessToken),
+            $this->buildRefreshToken('6666', '-1 hour', $client, false, $withAccessToken),
+            $this->buildRefreshToken('7777', '-1 second', $client, false, $withAccessToken),
         ];
 
         return [
@@ -256,7 +261,7 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
     {
         /** @var EntityManagerInterface $em */
         $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em);
+        $doctrineAccessTokenManager = new DoctrineAccessTokenManager($em, false);
 
         $client = new Client('client', 'secret');
         $em->persist($client);
@@ -301,15 +306,23 @@ final class DoctrineAccessTokenManagerTest extends AbstractAcceptanceTest
         ];
     }
 
-    private function buildRefreshToken(string $identifier, string $modify, Client $client, bool $revoked = false): RefreshToken
-    {
-        $accessToken = new AccessToken(
-            $identifier,
-            new DateTimeImmutable($modify),
-            $client,
-            null,
-            []
-        );
+    private function buildRefreshToken(
+        string $identifier,
+        string $modify,
+        Client $client,
+        bool $revoked = false,
+        bool $withAccessToken = true
+    ): RefreshToken {
+        $accessToken = null;
+        if ($withAccessToken) {
+            $accessToken = new AccessToken(
+                $identifier,
+                new DateTimeImmutable($modify),
+                $client,
+                null,
+                []
+            );
+        }
         $refreshToken = new RefreshToken(
             $identifier,
             new DateTimeImmutable('+1 day'),

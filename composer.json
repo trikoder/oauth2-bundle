@@ -22,7 +22,7 @@
     "require": {
         "php": ">=7.3",
         "ajgarlag/psr-http-message-bundle": "^1.1",
-        "doctrine/doctrine-bundle": "^1.8|^2.0",
+        "doctrine/doctrine-bundle": "^1.8|^2.1",
         "doctrine/orm": "^2.7",
         "league/oauth2-server": "^8.0",
         "nesbot/carbon": "^2.46",

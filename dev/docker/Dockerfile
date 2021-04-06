@@ -5,7 +5,7 @@ LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"
 
 ARG COMPOSER_VERSION=2.0.2
 ARG FLEX_VERSION=1.12.2
-ARG PHP_CS_FIXER_VERSION=2.16.2
+ARG PHP_CS_FIXER_VERSION=2.18.4
 ARG XDEBUG_VERSION=3.0.3
 
 ENV XDEBUG_START_WITH_REQUEST 0
@@ -35,7 +35,7 @@ RUN echo '[xdebug]' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
     && echo 'xdebug.mode = debug' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
     && echo 'xdebug.start_with_request = ${XDEBUG_START_WITH_REQUEST}' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
     && echo 'xdebug.discover_client_host = 0' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
-    && echo 'xdebug.client_host = %XDEBUG_REMOTE_HOST%' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini
+    && echo 'xdebug.client_host = %XDEBUG_CLIENT_HOST%' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini
 
 # Utilities needed to run this image
 RUN apk add --update --no-cache \

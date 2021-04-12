@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
+use Carbon\CarbonImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
@@ -20,6 +20,8 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
+
         FixtureFactory::initializeFixtures(
             $this->client->getContainer()->get(ScopeManagerInterface::class),
             $this->client->getContainer()->get(ClientManagerInterface::class),
@@ -29,19 +31,20 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         );
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        CarbonImmutable::setTestNow(null);
+    }
+
     public function testSuccessfulClientCredentialsRequest(): void
     {
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => 'foo',
-                'client_secret' => 'secret',
-                'grant_type' => 'client_credentials',
-            ]);
-        } finally {
-            timecop_return();
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'client_credentials',
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -51,7 +54,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertEqualsWithDelta(3600, $jsonResponse['expires_in'], 2);
         $this->assertNotEmpty($jsonResponse['access_token']);
     }
 
@@ -64,19 +67,13 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
                 $event->setUser(FixtureFactory::createUser());
             });
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => 'foo',
-                'client_secret' => 'secret',
-                'grant_type' => 'password',
-                'username' => 'user',
-                'password' => 'pass',
-            ]);
-        } finally {
-            timecop_return();
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'password',
+            'username' => 'user',
+            'password' => 'pass',
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -86,7 +83,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertEqualsWithDelta(3600, $jsonResponse['expires_in'], 2);
         $this->assertNotEmpty($jsonResponse['access_token']);
         $this->assertNotEmpty($jsonResponse['refresh_token']);
     }
@@ -98,18 +95,12 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(RefreshTokenManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_REFRESH_TOKEN);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => 'foo',
-                'client_secret' => 'secret',
-                'grant_type' => 'refresh_token',
-                'refresh_token' => TestHelper::generateEncryptedPayload($refreshToken),
-            ]);
-        } finally {
-            timecop_return();
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'refresh_token',
+            'refresh_token' => TestHelper::generateEncryptedPayload($refreshToken),
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -119,7 +110,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertEqualsWithDelta(3600, $jsonResponse['expires_in'], 2);
         $this->assertNotEmpty($jsonResponse['access_token']);
         $this->assertNotEmpty($jsonResponse['refresh_token']);
     }
@@ -131,19 +122,13 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(AuthorizationCodeManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_AUTH_CODE);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => 'foo',
-                'client_secret' => 'secret',
-                'grant_type' => 'authorization_code',
-                'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
-                'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
-            ]);
-        } finally {
-            timecop_return();
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => 'foo',
+            'client_secret' => 'secret',
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
+            'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -153,7 +138,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertEqualsWithDelta(3600, $jsonResponse['expires_in'], 2);
         $this->assertNotEmpty($jsonResponse['access_token']);
     }
 
@@ -164,18 +149,12 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
             ->get(AuthorizationCodeManagerInterface::class)
             ->find(FixtureFactory::FIXTURE_AUTH_CODE_PUBLIC_CLIENT);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $this->client->request('POST', '/token', [
-                'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
-                'grant_type' => 'authorization_code',
-                'redirect_uri' => FixtureFactory::FIXTURE_PUBLIC_CLIENT_REDIRECT_URI,
-                'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
-            ]);
-        } finally {
-            timecop_return();
-        }
+        $this->client->request('POST', '/token', [
+            'client_id' => FixtureFactory::FIXTURE_PUBLIC_CLIENT,
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => FixtureFactory::FIXTURE_PUBLIC_CLIENT_REDIRECT_URI,
+            'code' => TestHelper::generateEncryptedAuthCodePayload($authCode),
+        ]);
 
         $response = $this->client->getResponse();
 
@@ -185,7 +164,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertEqualsWithDelta(3600, $jsonResponse['expires_in'], 2);
         $this->assertNotEmpty($jsonResponse['access_token']);
     }
 

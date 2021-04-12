@@ -25,6 +25,7 @@ return PhpCsFixer\Config::create()
         'list_syntax' => ['syntax' => 'short'],
         'no_null_property_initialization' => true,
         'no_superfluous_phpdoc_tags' => true,
+        'no_trailing_whitespace_in_string' => false,
         'nullable_type_declaration_for_default_null_value' => true,
         'ordered_imports' => [
             'imports_order' => [

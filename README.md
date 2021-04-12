@@ -25,7 +25,7 @@ This package is currently in the active development.
 
 ## Requirements
 
-* [PHP 7.2](http://php.net/releases/7_2_0.php) or greater
+* [PHP 7.3](http://php.net/releases/7_2_0.php) or greater
 * [Symfony 4.4](https://symfony.com/roadmap/4.4) or [Symfony 5.x](https://symfony.com/roadmap/5.0)
 
 ## Installation

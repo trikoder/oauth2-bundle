@@ -5,5 +5,4 @@ set -e
 readonly BASE_DIR=$(cd "$(dirname "$0")"; pwd)
 
 "${BASE_DIR}"/docker-compose run --rm --no-deps \
-    -e TIMECOP_FUNC_OVERRIDE=1 \
     php "$@"

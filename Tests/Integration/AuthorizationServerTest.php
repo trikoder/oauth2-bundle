@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 
-use DateTimeImmutable;
+use Carbon\CarbonImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
@@ -17,6 +17,8 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     {
         parent::setUp();
 
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
+
         FixtureFactory::initializeFixtures(
             $this->scopeManager,
             $this->clientManager,
@@ -24,6 +26,13 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             $this->refreshTokenManager,
             $this->authCodeManager
         );
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        CarbonImmutable::setTestNow(null);
     }
 
     public function testSuccessfulAuthorizationThroughHeaders(): void
@@ -168,19 +177,13 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
         // Response assertions.
         $this->assertSame('Bearer', $response['token_type']);
-        $this->assertSame(3600, $response['expires_in']);
+        $this->assertEqualsWithDelta(3600, $response['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
 
         // Make sure the access token is issued for the given client ID.
@@ -194,19 +197,13 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'fancy',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
         // Response assertions.
         $this->assertSame('Bearer', $response['token_type']);
-        $this->assertSame(3600, $response['expires_in']);
+        $this->assertEqualsWithDelta(3600, $response['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
 
         // Make sure the access token is issued for the given client ID.
@@ -227,19 +224,13 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'grant_type' => 'client_credentials',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
         // Response assertions.
         $this->assertSame('Bearer', $response['token_type']);
-        $this->assertSame(3600, $response['expires_in']);
+        $this->assertEqualsWithDelta(3600, $response['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
 
         // Make sure the access token is issued for the given client ID.
@@ -261,19 +252,13 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'scope' => 'rock',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
         // Response assertions.
         $this->assertSame('Bearer', $response['token_type']);
-        $this->assertSame(3600, $response['expires_in']);
+        $this->assertEqualsWithDelta(3600, $response['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
 
         // Make sure the access token is issued for the given client ID.
@@ -300,20 +285,14 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'password' => 'pass',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);
 
         // Response assertions.
         $this->assertSame('Bearer', $response['token_type']);
-        $this->assertSame(3600, $response['expires_in']);
+        $this->assertEqualsWithDelta(3600, $response['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
         $this->assertInstanceOf(RefreshToken::class, $refreshToken);
 
@@ -383,20 +362,14 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'refresh_token' => TestHelper::generateEncryptedPayload($existingRefreshToken),
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
         $refreshToken = $this->getRefreshToken($response['refresh_token']);
 
         // Response assertions.
         $this->assertSame('Bearer', $response['token_type']);
-        $this->assertSame(3600, $response['expires_in']);
+        $this->assertEqualsWithDelta(3600, $response['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
         $this->assertInstanceOf(RefreshToken::class, $refreshToken);
 
@@ -675,18 +648,12 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleTokenRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleTokenRequest($request);
 
         $accessToken = $this->getAccessToken($response['access_token']);
 
         $this->assertSame('Bearer', $response['token_type']);
-        $this->assertSame(3600, $response['expires_in']);
+        $this->assertEqualsWithDelta(3600, $response['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
         $this->assertSame('foo', $accessToken->getClient()->getIdentifier());
     }
@@ -751,22 +718,16 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'client_id' => 'foo',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleAuthorizationRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleAuthorizationRequest($request);
 
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_FRAGMENT), $responseData);
         $accessToken = $this->getAccessToken($responseData['access_token']);
 
         // Response assertions.
         $this->assertSame('Bearer', $responseData['token_type']);
-        $this->assertEquals(600, $responseData['expires_in']);
+        $this->assertEqualsWithDelta(600, $responseData['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
         $this->assertSame('foo', $accessToken->getClient()->getIdentifier());
     }
@@ -779,22 +740,16 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'state' => 'quzbaz',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleAuthorizationRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleAuthorizationRequest($request);
 
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_FRAGMENT), $responseData);
         $accessToken = $this->getAccessToken($responseData['access_token']);
 
         // Response assertions.
         $this->assertSame('Bearer', $responseData['token_type']);
-        $this->assertEquals(600, $responseData['expires_in']);
+        $this->assertEqualsWithDelta(600, $responseData['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
         $this->assertSame('foo', $accessToken->getClient()->getIdentifier());
         $this->assertSame('quzbaz', $responseData['state']);
@@ -808,22 +763,16 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
             'redirect_uri' => 'https://example.org/oauth2/redirect-uri',
         ]);
 
-        timecop_freeze(new DateTimeImmutable());
-
-        try {
-            $response = $this->handleAuthorizationRequest($request);
-        } finally {
-            timecop_return();
-        }
+        $response = $this->handleAuthorizationRequest($request);
 
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_FRAGMENT), $responseData);
         $accessToken = $this->getAccessToken($responseData['access_token']);
 
         // Response assertions.
         $this->assertSame('Bearer', $responseData['token_type']);
-        $this->assertEquals(600, $responseData['expires_in']);
+        $this->assertEqualsWithDelta(600, $responseData['expires_in'], 2);
         $this->assertInstanceOf(AccessToken::class, $accessToken);
         $this->assertSame('foo', $accessToken->getClient()->getIdentifier());
     }
@@ -839,7 +788,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizationRequest($request);
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_QUERY), $responseData);
 
         // Response assertions.
         $this->assertSame('invalid_scope', $responseData['error']);
@@ -874,7 +823,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizationRequest($request, false);
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_QUERY), $responseData);
 
         // Response assertions.
         $this->assertSame('access_denied', $responseData['error']);

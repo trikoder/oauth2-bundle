@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
-use DateTimeImmutable;
+use Carbon\CarbonImmutable;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager as InMemoryAuthCodeManager;
@@ -17,7 +17,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
     {
         $inMemoryAuthCodeManager = new InMemoryAuthCodeManager();
 
-        timecop_freeze(new DateTimeImmutable());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         try {
             $testData = $this->buildClearExpiredTestData();
@@ -29,7 +29,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
             $this->assertSame(3, $inMemoryAuthCodeManager->clearExpired());
             $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAuthCodeManager);
         } finally {
-            timecop_return();
+            CarbonImmutable::setTestNow(null);
         }
     }
 
@@ -91,7 +91,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
     {
         $authorizationCode = new AuthorizationCode(
             $identifier,
-            new DateTimeImmutable($modify),
+            new CarbonImmutable($modify),
             new Client('client', 'secret'),
             null,
             []

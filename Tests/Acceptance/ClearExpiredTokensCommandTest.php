@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
+use Carbon\CarbonImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -24,7 +24,7 @@ final class ClearExpiredTokensCommandTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
-        timecop_freeze(new DateTimeImmutable());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         FixtureFactory::initializeFixtures(
             $this->client->getContainer()->get(ScopeManagerInterface::class),
@@ -37,7 +37,7 @@ final class ClearExpiredTokensCommandTest extends AbstractAcceptanceTest
 
     protected function tearDown(): void
     {
-        timecop_return();
+        CarbonImmutable::setTestNow(null);
 
         parent::tearDown();
     }

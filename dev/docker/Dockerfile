@@ -1,4 +1,4 @@
-ARG PHP_VERSION=7.3
+ARG PHP_VERSION=7.2
 
 FROM php:${PHP_VERSION}-cli-alpine3.12
 LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"

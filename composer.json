@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": ">=7.3",
+        "php": ">=7.2",
         "ajgarlag/psr-http-message-bundle": "^1.1",
         "doctrine/doctrine-bundle": "^2.1",
         "doctrine/orm": "^2.8.1",

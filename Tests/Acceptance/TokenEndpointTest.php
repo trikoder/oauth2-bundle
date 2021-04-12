@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
@@ -20,7 +20,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
-        Chronos::setTestNow(Chronos::now());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         FixtureFactory::initializeFixtures(
             $this->client->getContainer()->get(ScopeManagerInterface::class),
@@ -35,7 +35,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
     {
         parent::tearDown();
 
-        Chronos::setTestNow(null);
+        CarbonImmutable::setTestNow(null);
     }
 
     public function testSuccessfulClientCredentialsRequest(): void

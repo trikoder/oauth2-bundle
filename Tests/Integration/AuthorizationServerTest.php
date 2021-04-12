@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Event\UserResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
@@ -17,7 +17,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     {
         parent::setUp();
 
-        Chronos::setTestNow(Chronos::now());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         FixtureFactory::initializeFixtures(
             $this->scopeManager,
@@ -32,7 +32,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
     {
         parent::tearDown();
 
-        Chronos::setTestNow(null);
+        CarbonImmutable::setTestNow(null);
     }
 
     public function testSuccessfulAuthorizationThroughHeaders(): void
@@ -722,7 +722,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_FRAGMENT), $responseData);
         $accessToken = $this->getAccessToken($responseData['access_token']);
 
         // Response assertions.
@@ -744,7 +744,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_FRAGMENT), $responseData);
         $accessToken = $this->getAccessToken($responseData['access_token']);
 
         // Response assertions.
@@ -767,7 +767,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
 
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_FRAGMENT), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_FRAGMENT), $responseData);
         $accessToken = $this->getAccessToken($responseData['access_token']);
 
         // Response assertions.
@@ -788,7 +788,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizationRequest($request);
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_QUERY), $responseData);
 
         // Response assertions.
         $this->assertSame('invalid_scope', $responseData['error']);
@@ -823,7 +823,7 @@ final class AuthorizationServerTest extends AbstractIntegrationTest
         $response = $this->handleAuthorizationRequest($request, false);
         $this->assertSame(302, $response->getStatusCode());
         $responseData = [];
-        parse_str(parse_url($response->getHeaderLine('Location'), PHP_URL_QUERY), $responseData);
+        parse_str(parse_url($response->getHeaderLine('Location'), \PHP_URL_QUERY), $responseData);
 
         // Response assertions.
         $this->assertSame('access_denied', $responseData['error']);

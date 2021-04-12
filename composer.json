@@ -22,10 +22,10 @@
     "require": {
         "php": ">=7.2",
         "ajgarlag/psr-http-message-bundle": "^1.1",
-        "cakephp/chronos": "^2.1",
         "doctrine/doctrine-bundle": "^1.8|^2.0",
         "doctrine/orm": "^2.7",
         "league/oauth2-server": "^8.0",
+        "nesbot/carbon": "^2.46",
         "psr/http-factory": "^1.0",
         "symfony/framework-bundle": "^4.4|^5.0",
         "symfony/psr-http-message-bridge": "^2.0",

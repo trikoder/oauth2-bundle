@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\InMemory;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
 
@@ -29,7 +29,7 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
     {
         $count = \count($this->authorizationCodes);
 
-        $now = Chronos::now();
+        $now = CarbonImmutable::now();
         $this->authorizationCodes = array_filter($this->authorizationCodes, static function (AuthorizationCode $authorizationCode) use ($now): bool {
             return $authorizationCode->getExpiryDateTime() >= $now;
         });

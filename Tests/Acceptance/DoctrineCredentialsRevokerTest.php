@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
@@ -83,7 +83,7 @@ final class DoctrineCredentialsRevokerTest extends AbstractAcceptanceTest
     {
         return new RefreshToken(
             $identifier,
-            new Chronos($modify),
+            new CarbonImmutable($modify),
             $accessToken
         );
     }
@@ -92,7 +92,7 @@ final class DoctrineCredentialsRevokerTest extends AbstractAcceptanceTest
     {
         return new AccessToken(
             $identifier,
-            new Chronos($modify),
+            new CarbonImmutable($modify),
             $client,
             $userIdentifier,
             []
@@ -103,7 +103,7 @@ final class DoctrineCredentialsRevokerTest extends AbstractAcceptanceTest
     {
         return new AuthorizationCode(
             $identifier,
-            new Chronos($modify),
+            new CarbonImmutable($modify),
             $client,
             $userIdentifier,
             []

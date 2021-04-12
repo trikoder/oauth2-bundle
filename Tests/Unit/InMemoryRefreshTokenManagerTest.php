@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager as InMemoryRefreshTokenManager;
@@ -18,7 +18,7 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
     {
         $inMemoryRefreshTokenManager = new InMemoryRefreshTokenManager();
 
-        Chronos::setTestNow(Chronos::now());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         try {
             $testData = $this->buildClearExpiredTestData();
@@ -30,7 +30,7 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
             $this->assertSame(3, $inMemoryRefreshTokenManager->clearExpired());
             $this->assertManagerContainsExpectedData($testData['output'], $inMemoryRefreshTokenManager);
         } finally {
-            Chronos::setTestNow(null);
+            CarbonImmutable::setTestNow(null);
         }
     }
 
@@ -92,10 +92,10 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
     {
         $refreshToken = new RefreshToken(
             $identifier,
-            new Chronos($modify),
+            new CarbonImmutable($modify),
             new AccessToken(
                 $identifier,
-                new Chronos('+1 day'),
+                new CarbonImmutable('+1 day'),
                 new Client('client', 'secret'),
                 null,
                 []

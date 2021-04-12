@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
@@ -28,7 +28,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
     {
         parent::setUp();
 
-        Chronos::setTestNow(Chronos::now());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         FixtureFactory::initializeFixtures(
             $this->client->getContainer()->get(ScopeManagerInterface::class),
@@ -74,7 +74,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $redirectUri);
         $query = [];
-        parse_str(parse_url($redirectUri, PHP_URL_QUERY), $query);
+        parse_str(parse_url($redirectUri, \PHP_URL_QUERY), $query);
         $this->assertArrayHasKey('code', $query);
         $this->assertArrayHasKey('state', $query);
         $this->assertEquals('foobar', $query['state']);
@@ -123,7 +123,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $redirectUri);
         $query = [];
-        parse_str(parse_url($redirectUri, PHP_URL_QUERY), $query);
+        parse_str(parse_url($redirectUri, \PHP_URL_QUERY), $query);
         $this->assertArrayHasKey('state', $query);
         $this->assertSame($state, $query['state']);
 
@@ -257,7 +257,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         $this->assertStringStartsWith(FixtureFactory::FIXTURE_PUBLIC_CLIENT_ALLOWED_TO_USE_PLAIN_CHALLENGE_METHOD_REDIRECT_URI, $redirectUri);
         $query = [];
-        parse_str(parse_url($redirectUri, PHP_URL_QUERY), $query);
+        parse_str(parse_url($redirectUri, \PHP_URL_QUERY), $query);
         $this->assertArrayHasKey('state', $query);
         $this->assertSame($state, $query['state']);
 
@@ -306,7 +306,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $redirectUri);
         $fragment = [];
-        parse_str(parse_url($redirectUri, PHP_URL_FRAGMENT), $fragment);
+        parse_str(parse_url($redirectUri, \PHP_URL_FRAGMENT), $fragment);
         $this->assertArrayHasKey('access_token', $fragment);
         $this->assertArrayHasKey('token_type', $fragment);
         $this->assertArrayHasKey('expires_in', $fragment);
@@ -403,7 +403,7 @@ final class AuthorizationEndpointTest extends AbstractAcceptanceTest
 
         $this->assertStringStartsWith(FixtureFactory::FIXTURE_CLIENT_FIRST_REDIRECT_URI, $redirectUri);
         $query = [];
-        parse_str(parse_url($redirectUri, PHP_URL_QUERY), $query);
+        parse_str(parse_url($redirectUri, \PHP_URL_QUERY), $query);
         $this->assertArrayHasKey('code', $query);
         $this->assertArrayHasKey('state', $query);
         $this->assertEquals('foobar', $query['state']);

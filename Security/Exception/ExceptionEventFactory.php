@@ -6,9 +6,9 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Exception;
 
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\EventDispatcher\Event;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
@@ -32,12 +32,27 @@ class ExceptionEventFactory
         $this->responseFactory = $responseFactory;
     }
 
+    private function generateResponse(OAuthServerException $exception): ResponseInterface
+    {
+        return $exception->generateHttpResponse($this->responseFactory->createResponse());
+    }
+
     public function invalidClient(ServerRequestInterface $serverRequest): MissingAuthorizationHeaderEvent
     {
         $exception = OAuthServerException::invalidClient($serverRequest);
 
-        $event = new MissingAuthorizationHeaderEvent($exception, $exception->generateHttpResponse($this->responseFactory->createResponse()));
+        $event = new MissingAuthorizationHeaderEvent($exception, $this->generateResponse($exception));
         $this->eventDispatcher->dispatch($event, OAuth2Events::MISSING_AUTHORIZATION_HEADER);
+
+        return $event;
+    }
+
+    public function invalidCredentials(): InvalidCredentialsEvent
+    {
+        $exception = OAuthServerException::invalidCredentials();
+
+        $event = new InvalidCredentialsEvent($exception, $this->generateResponse($exception));
+        $this->eventDispatcher->dispatch($event, OAuth2Events::INVALID_CREDENTIALS);
 
         return $event;
     }
@@ -46,7 +61,7 @@ class ExceptionEventFactory
     {
         $exception = OAuthServerException::accessDenied(null, null, $previous);
 
-        $event = new AuthenticationFailureEvent($exception, $exception->generateHttpResponse($this->responseFactory->createResponse()));
+        $event = new AuthenticationFailureEvent($exception, $this->generateResponse($exception));
         $this->eventDispatcher->dispatch($event, OAuth2Events::AUTHENTICATION_FAILURE);
 
         return $event;
@@ -56,7 +71,7 @@ class ExceptionEventFactory
     {
         $exception = OAuthServerException::invalidScope("");
 
-        $event = new AuthenticationScopeFailureEvent($exception, $exception->generateHttpResponse($this->responseFactory->createResponse()), $authenticatedToken);
+        $event = new AuthenticationScopeFailureEvent($exception, $this->generateResponse($exception), $authenticatedToken);
         $this->eventDispatcher->dispatch($event, OAuth2Events::AUTHENTICATION_SCOPE_FAILURE);
 
         return $event;

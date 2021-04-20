@@ -84,7 +84,7 @@
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface" />
-            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory" />
             <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
         <service id="trikoder.oauth2.security.firewall.oauth2_listener" alias="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener">
@@ -243,6 +243,10 @@
         </service>
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface" alias="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
 
+        <service id="Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory">
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Psr\Http\Message\ResponseFactoryInterface" />
+        </service>
         <service id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />

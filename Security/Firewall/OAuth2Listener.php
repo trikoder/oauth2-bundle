@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory;
 use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
@@ -21,7 +22,6 @@ use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\MissingAuthorizationHeaderException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\OAuth2AuthenticationFailedException;
 
 final class OAuth2Listener
 {
@@ -46,9 +46,9 @@ final class OAuth2Listener
     private $oauth2TokenFactory;
 
     /**
-     * @var EventDispatcherInterface
+     * @var ExceptionEventFactory
      */
-    private $eventDispatcher;
+    private $exceptionEventFactory;
 
     /**
      * @var string
@@ -59,14 +59,14 @@ final class OAuth2Listener
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
         HttpMessageFactoryInterface $httpMessageFactory,
-        EventDispatcherInterface $eventDispatcher,
+        ExceptionEventFactory $exceptionEventFactory,
         OAuth2TokenFactory $oauth2TokenFactory,
         string $providerKey
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->httpMessageFactory = $httpMessageFactory;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->exceptionEventFactory = $exceptionEventFactory;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
         $this->providerKey = $providerKey;
     }
@@ -76,15 +76,8 @@ final class OAuth2Listener
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
 
         if (!$request->hasHeader('Authorization')) {
-            $exception = new MissingAuthorizationHeaderException();
-            $response = new ErrorJsonResponse($exception->getMessageKey());
-            $response->headers->set('WWW-Authenticate', 'Bearer');
-
-            $missingAuthHeaderEvent = new MissingAuthorizationHeaderEvent($exception, $response);
-            $this->eventDispatcher->dispatch($missingAuthHeaderEvent, OAuth2Events::MISSING_AUTHORIZATION_HEADER);
-
+            $missingAuthHeaderEvent = $this->exceptionEventFactory->invalidClient($request);
             $event->setResponse($missingAuthHeaderEvent->getResponse());
-
             return;
         }
 
@@ -92,29 +85,14 @@ final class OAuth2Listener
             /** @var OAuth2Token $authenticatedToken */
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
-            $exception = new OAuth2AuthenticationFailedException();
-            $exception->setPreviousException($e);
-            $response = new ErrorJsonResponse($exception->getMessageKey());
-
-            $authenticationFailureEvent = new AuthenticationFailureEvent($exception, $response);
-            $this->eventDispatcher->dispatch($authenticationFailureEvent, OAuth2Events::AUTHENTICATION_FAILURE);
-
+            $authenticationFailureEvent = $this->exceptionEventFactory->accessDenied($e);
             $event->setResponse($authenticationFailureEvent->getResponse());
-
             return;
         }
 
         if (!$this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {
-            $exception = new InsufficientScopesException();
-            $exception->setToken($authenticatedToken);
-
-            $response = new ErrorJsonResponse($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
-
-            $authenticationFailureScopeEvent = new AuthenticationScopeFailureEvent($exception, $response, $authenticatedToken);
-            $this->eventDispatcher->dispatch($authenticationFailureScopeEvent, OAuth2Events::AUTHENTICATION_SCOPE_FAILURE);
-
+            $authenticationFailureScopeEvent = $this->exceptionEventFactory->invalidScope($authenticatedToken);
             $event->setResponse($authenticationFailureScopeEvent->getResponse());
-
             return;
         }
 

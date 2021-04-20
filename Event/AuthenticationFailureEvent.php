@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
-use Symfony\Component\HttpFoundation\Response;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Contracts\EventDispatcher\Event;
 
@@ -19,11 +19,11 @@ class AuthenticationFailureEvent extends Event
     protected $exception;
 
     /**
-     * @var Response
+     * @var ResponseInterface
      */
     protected $response;
 
-    public function __construct(AuthenticationException $exception, Response $response)
+    public function __construct(AuthenticationException $exception, ResponseInterface $response)
     {
         $this->exception = $exception;
         $this->response = $response;
@@ -34,12 +34,12 @@ class AuthenticationFailureEvent extends Event
         return $this->exception;
     }
 
-    public function getResponse(): Response
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }
 
-    public function setResponse(Response $response): void
+    public function setResponse(ResponseInterface $response): void
     {
         $this->response = $response;
     }

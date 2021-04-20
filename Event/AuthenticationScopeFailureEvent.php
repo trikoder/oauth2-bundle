@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
-use Symfony\Component\HttpFoundation\Response;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
@@ -18,7 +18,7 @@ class AuthenticationScopeFailureEvent extends AuthenticationFailureEvent
      */
     private $token;
 
-    public function __construct(AuthenticationException $exception, Response $response, TokenInterface $token)
+    public function __construct(AuthenticationException $exception, ResponseInterface $response, TokenInterface $token)
     {
         parent::__construct($exception, $response);
         $this->token = $token;

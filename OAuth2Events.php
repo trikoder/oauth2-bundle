@@ -37,12 +37,12 @@ final class OAuth2Events
     public const AUTHORIZATION_REQUEST_RESOLVE = 'trikoder.oauth2.authorization_request_resolve';
 
     /**
-     * The MISSING_AUTHORIZATION_HEADER event occurs when the
+     * The AUTHORIZATION_HEADER_FAILURE event occurs when the
      * Authorization Bearer header was not found, or is wrong/malformed
      *
      * You can set a custom error message in the response body
      */
-    public const MISSING_AUTHORIZATION_HEADER = 'trikoder.oauth2.missing_authorization_header';
+    public const AUTHORIZATION_HEADER_FAILURE = 'trikoder.oauth2.authorization_header_failure';
 
     /**
      * The AUTHENTICATION_FAILURE event occurs when the oauth token verification failed
@@ -57,4 +57,11 @@ final class OAuth2Events
      * You can set a custom error message in the response body
      */
     public const AUTHENTICATION_SCOPE_FAILURE = 'trikoder.oauth2.authentication_scope_failure';
+
+    /**
+     * The AUTHORIZATION_SERVER_ERROR event occurs when the scope validation for the token failed
+     *
+     * You can set a custom error message in the response body
+     */
+    public const AUTHORIZATION_SERVER_ERROR = 'trikoder.oauth2.authorization_server_error';
 }

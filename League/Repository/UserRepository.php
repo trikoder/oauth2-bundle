@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\League\Repository;
 
 use League\OAuth2\Server\Entities\ClientEntityInterface;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface;
@@ -64,7 +65,7 @@ final class UserRepository implements UserRepositoryInterface
         $user = $event->getUser();
 
         if (null === $user) {
-            return null;
+            throw OAuthServerException::invalidCredentials();
         }
 
         return $this->userConverter->toLeague($user);

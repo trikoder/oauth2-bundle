@@ -1,12 +1,12 @@
 # Event/Data customization
 
 ## Table of contents
-- [MISSING_AUTHORIZATION_HEADER - Customizing the response on invalid authorization header](#oauth2eventsmissing_authorization_header---customizing-the-response-on-invalid-authorization-header)
+- [AUTHORIZATION_HEADER_FAILURE - Customizing the response on invalid authorization header](#oauth2eventsmissing_authorization_header---customizing-the-response-on-invalid-authorization-header)
 - [AUTHENTICATION_SCOPE_FAILURE - Customizing the response on invalid scope](#oauth2eventsauthentication_scope_failure---customizing-the-response-on-invalid-scope)
 - [INVALID_CREDENTIALS - Customizing the response on credentials failure](#oauth2eventsinvalid_credentials---customizing-the-response-on-credentials-failure)
 - [AUTHENTICATION_FAILURE - Customizing the response on authentication failure](#oauth2eventsauthentication_failure---customizing-the-response-on-authentication-failure)
 
-## OAuth2Events::MISSING_AUTHORIZATION_HEADER - Customizing the response on invalid authorization header
+## OAuth2Events::AUTHORIZATION_HEADER_FAILURE - Customizing the response on invalid authorization header
 
 Called when the `Authorization Bearer` was not found or is malformed.
 
@@ -17,16 +17,12 @@ Example:
 
 namespace App\EventListener\Kernel;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
-use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;use Symfony\Component\HttpFoundation\JsonResponse;use Symfony\Component\HttpFoundation\Response;use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\MissingAuthorizationHeaderEvent;use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
 class OAuthListener implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     return [
-      OAuth2Events::MISSING_AUTHORIZATION_HEADER => "onMissingAuthorizationHeader",
+      OAuth2Events::AUTHORIZATION_HEADER_FAILURE => "onMissingAuthorizationHeader",
     ];
   }
 
@@ -48,11 +44,7 @@ Example:
 
 namespace App\EventListener\Kernel;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;use Symfony\Component\HttpFoundation\JsonResponse;use Symfony\Component\HttpFoundation\Response;use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\AuthenticationScopeFailureEvent;use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
 class OAuthListener implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
@@ -81,11 +73,7 @@ Example:
 
 namespace App\EventListener\Kernel;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Trikoder\Bundle\OAuth2Bundle\Event\InvalidCredentialsEvent;
-use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;use Symfony\Component\HttpFoundation\JsonResponse;use Symfony\Component\HttpFoundation\Response;use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\InvalidCredentialsEvent;use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
 class OAuthListener implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
@@ -112,11 +100,7 @@ Example:
 
 namespace App\EventListener\Kernel;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;use Symfony\Component\HttpFoundation\JsonResponse;use Symfony\Component\HttpFoundation\Response;use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\AuthenticationFailureEvent;use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 
 class OAuthListener implements EventSubscriberInterface {
   public static function getSubscribedEvents() {

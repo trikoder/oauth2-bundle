@@ -15,9 +15,9 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AuthenticatorInterface;
-use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\AuthenticationFailureEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\AuthenticationScopeFailureEvent;
+use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\MissingAuthorizationHeaderEvent;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
@@ -60,7 +60,7 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         $response->headers->set('WWW-Authenticate', 'Bearer');
 
         $event = new MissingAuthorizationHeaderEvent($exception, $response);
-        $this->eventDispatcher->dispatch($event, OAuth2Events::MISSING_AUTHORIZATION_HEADER);
+        $this->eventDispatcher->dispatch($event, OAuth2Events::AUTHORIZATION_HEADER_FAILURE);
 
         return $event->getResponse();
     }
@@ -115,6 +115,7 @@ final class OAuth2Authenticator implements AuthenticatorInterface
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
+        dump($exception);
         $this->psr7Request = null;
 
         if ($exception instanceof InsufficientScopesException) {

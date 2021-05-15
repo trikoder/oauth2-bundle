@@ -4,24 +4,15 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
-use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\Event\AuthenticationScopeFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory;
-use Trikoder\Bundle\OAuth2Bundle\Event\MissingAuthorizationHeaderEvent;
-use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
-use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\MissingAuthorizationHeaderException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory;
 
 final class OAuth2Listener
 {

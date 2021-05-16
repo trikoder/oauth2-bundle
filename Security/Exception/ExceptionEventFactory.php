@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\AbstractOauthEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\AuthenticationFailureEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\AuthenticationScopeFailureEvent;

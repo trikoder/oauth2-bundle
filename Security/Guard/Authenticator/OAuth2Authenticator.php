@@ -6,6 +6,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Guard\Authenticator;
 
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,6 +39,7 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     private $httpMessageFactory;
     private $resourceServer;
     private $oauth2TokenFactory;
+    /** @var HttpMessageFactoryInterface */
     private $psr7Request;
 
     /**
@@ -69,21 +71,14 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     {
         $psr7Request = $this->httpMessageFactory->createRequest($request);
 
-        try {
-            $this->psr7Request = $this->resourceServer->validateAuthenticatedRequest($psr7Request);
-        } catch (OAuthServerException $e) {
-            dump($e);
-            dump("Failed validating request"); //FIXME: Make a $event = $this->exceptionEventFactory->handleLeagueException($e); or Maybe let the error propagate and will be catch higher
-            // return "";
-            throw $e;
-        }
+        // Error will be automatically catch and converted in ExceptionToOauthResponseListener
+        $this->psr7Request = $this->resourceServer->validateAuthenticatedRequest($psr7Request);
 
         return $this->psr7Request->getAttribute('oauth_user_id');
     }
 
     public function getUser($userIdentifier, UserProviderInterface $userProvider): UserInterface
     {
-        dump("az"); // https://github.com/lexik/LexikJWTAuthenticationBundle/blob/master/Security/Guard/JWTTokenAuthenticator.php#L135
         return '' === $userIdentifier ? new NullUser() : $userProvider->loadUserByUsername($userIdentifier);
     }
 
@@ -99,10 +94,8 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         $oauth2Token = $this->oauth2TokenFactory->createOAuth2Token($this->psr7Request, $tokenUser, $providerKey);
 
         if (!$this->isAccessToRouteGranted($oauth2Token)) {
-            $exception = new InsufficientScopesException();
-            $exception->setToken($oauth2Token);
-
-            throw $exception;
+            // In the hint the route scope will be showed
+            throw OAuthServerException::invalidScope($this->getRouteScopes());
         }
 
         $oauth2Token->setAuthenticated(true);
@@ -112,25 +105,17 @@ final class OAuth2Authenticator implements AuthenticatorInterface
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        dump($exception);
         $this->psr7Request = null;
 
-        if ($exception instanceof InsufficientScopesException) {
-            $response = new ErrorJsonResponse($exception->getMessageKey(), Response::HTTP_FORBIDDEN);
-            $event = new AuthenticationScopeFailureEvent($exception, $response, $exception->getToken());
-            $eventName = OAuth2Events::AUTHENTICATION_SCOPE_FAILURE;
-            $this->eventDispatcher->dispatch($event, $eventName);
-        } else if ($exception instanceof OAuthServerException) {
+        dump($exception);
+        if ($exception instanceof OAuthServerException) {
             $event = $this->exceptionEventFactory->handleLeagueException($exception);
         } else {
-            $response = new ErrorJsonResponse($exception->getMessageKey());
-
-            $event = new AuthenticationFailureEvent($exception, $response);
-            $eventName = OAuth2Events::AUTHENTICATION_FAILURE;
-            $this->eventDispatcher->dispatch($event, $eventName);
+            $event = $this->exceptionEventFactory->accessDenied($exception);
         }
 
-        return $event->getResponse();
+        $httpFoundationFactory = new HttpFoundationFactory();
+        return $httpFoundationFactory->createResponse($event->getResponse());
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
@@ -143,10 +128,15 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         return false;
     }
 
+    private function getRouteScopes(): array
+    {
+        return $this->psr7Request->getAttribute('oauth2_scopes', []);
+    }
+
     private function isAccessToRouteGranted(OAuth2Token $token): bool
     {
-        $routeScopes = $this->psr7Request->getAttribute('oauth2_scopes', []);
-dump($routeScopes);
+        $routeScopes = $this->getRouteScopes();
+
         if ([] === $routeScopes) {
             return true;
         }

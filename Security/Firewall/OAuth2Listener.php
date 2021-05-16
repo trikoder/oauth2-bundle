@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -65,10 +66,11 @@ final class OAuth2Listener
     public function __invoke(RequestEvent $event)
     {
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
+        $responseFactory = new HttpFoundationFactory();
 
         if (!$request->hasHeader('Authorization')) {
             $missingAuthHeaderEvent = $this->exceptionEventFactory->invalidClient($request);
-            $event->setResponse($missingAuthHeaderEvent->getResponse());
+            $event->setResponse($responseFactory->createResponse($missingAuthHeaderEvent->getResponse()));
             return;
         }
 
@@ -77,13 +79,13 @@ final class OAuth2Listener
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
             $authenticationFailureEvent = $this->exceptionEventFactory->accessDenied($e);
-            $event->setResponse($authenticationFailureEvent->getResponse());
+            $event->setResponse($responseFactory->createResponse($authenticationFailureEvent->getResponse()));
             return;
         }
 
         if (!$this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {
             $authenticationFailureScopeEvent = $this->exceptionEventFactory->invalidScope($authenticatedToken);
-            $event->setResponse($authenticationFailureScopeEvent->getResponse());
+            $event->setResponse($responseFactory->createResponse($authenticationFailureScopeEvent->getResponse()));
             return;
         }
 

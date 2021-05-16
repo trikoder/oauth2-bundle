@@ -7,7 +7,6 @@ namespace Trikoder\Bundle\OAuth2Bundle\Controller;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface;
@@ -15,6 +14,7 @@ use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEvent;
 use Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory;
 
 final class AuthorizationController
 {
@@ -43,21 +43,28 @@ final class AuthorizationController
      */
     private $clientManager;
 
+    /**
+     * @var ExceptionEventFactory
+     */
+    private $exceptionEventFactory;
+
     public function __construct(
         AuthorizationServer $server,
         EventDispatcherInterface $eventDispatcher,
         AuthorizationRequestResolveEventFactory $eventFactory,
         UserConverterInterface $userConverter,
-        ClientManagerInterface $clientManager
+        ClientManagerInterface $clientManager,
+        ExceptionEventFactory $exceptionEventFactory
     ) {
         $this->server = $server;
         $this->eventDispatcher = $eventDispatcher;
         $this->eventFactory = $eventFactory;
         $this->userConverter = $userConverter;
         $this->clientManager = $clientManager;
+        $this->exceptionEventFactory = $exceptionEventFactory;
     }
 
-    public function indexAction(ServerRequestInterface $serverRequest, ResponseFactoryInterface $responseFactory): ResponseInterface
+    public function indexAction(ServerRequestInterface $serverRequest, ResponseFactoryInterface $responseFactory)
     {
         $serverResponse = $responseFactory->createResponse();
 
@@ -90,7 +97,8 @@ final class AuthorizationController
 
             return $this->server->completeAuthorizationRequest($authRequest, $serverResponse);
         } catch (OAuthServerException $e) {
-            return $e->generateHttpResponse($serverResponse);
+            $event = $this->exceptionEventFactory->handleLeagueException($e);
+            return $event->getResponse();
         }
     }
 }

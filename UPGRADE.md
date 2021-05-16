@@ -1,6 +1,24 @@
 # Upgrade
 Here you will find upgrade steps between releases.
 
+## From 3.2.0 to 4.0.0
+
+### Remove `exception_event_listener_priority`
+The bundle configuration `exception_event_listener_priority` has been removed in favor of [Event](docs/event-data-customization.md).
+
+### Error response are now formatted in json by default
+All the error response are now formatted as json (no formatting before).
+
+They can be modified using the new event system.
+
+All the errors follow the same structure :
+```json
+{
+    "message": "<error message>"
+}
+```
+
+
 ## From 3.1.1 to 3.2.0
 
 The bundle makes modifications to the existing schema. You will need to run the Doctrine schema update process to sync the changes:

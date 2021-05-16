@@ -2,6 +2,9 @@
 
 The `password` grant issues access and refresh tokens that are bound to both a client and a user within your application. As user system implementations can differ greatly on an application basis, the `trikoder.oauth2.user_resolve` was created which allows you to decide which user you want to bind to issuing tokens.
 
+After triggering this event, if no user was returned an [`OAuth2Events::INVALID_CREDENTIALS`](event-data-customization.md#oauth2eventsinvalid_credentials---customizing-the-response-on-credentials-failure) will be triggered.
+Within this new event you'll be able to define a custom error response for example.
+
 ## Requirements
 
 The user model should implement the `Symfony\Component\Security\Core\User\UserInterface` interface.

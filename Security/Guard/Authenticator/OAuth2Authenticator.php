@@ -6,43 +6,53 @@ namespace Trikoder\Bundle\OAuth2Bundle\Security\Guard\Authenticator;
 
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AuthenticatorInterface;
+use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\User\NullUser;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  * @author Antonio J. García Lagar <aj@garcialagar.es>
+ * @author Benoit VIGNAL <github@benoit-vignal.fr>
  */
 final class OAuth2Authenticator implements AuthenticatorInterface
 {
     private $httpMessageFactory;
     private $resourceServer;
     private $oauth2TokenFactory;
+    /** @var HttpMessageFactoryInterface */
     private $psr7Request;
 
-    public function __construct(HttpMessageFactoryInterface $httpMessageFactory, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory)
+    /**
+     * @var ExceptionEventFactory
+     */
+    private $exceptionEventFactory;
+
+    public function __construct(HttpMessageFactoryInterface $httpMessageFactory, ResourceServer $resourceServer, OAuth2TokenFactory $oauth2TokenFactory, ExceptionEventFactory $exceptionEventFactory)
     {
         $this->httpMessageFactory = $httpMessageFactory;
         $this->resourceServer = $resourceServer;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
+        $this->exceptionEventFactory = $exceptionEventFactory;
     }
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
-        $exception = new UnauthorizedHttpException('Bearer');
-
-        return new Response('', $exception->getStatusCode(), $exception->getHeaders());
+        $request = $this->httpMessageFactory->createRequest($request);
+        $missingAuthHeaderEvent = $this->exceptionEventFactory->invalidClient($request);
+        $httpFoundationFactory = new HttpFoundationFactory();
+        return $httpFoundationFactory->createResponse($missingAuthHeaderEvent->getResponse());
     }
 
     public function supports(Request $request): bool
@@ -54,11 +64,8 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     {
         $psr7Request = $this->httpMessageFactory->createRequest($request);
 
-        try {
-            $this->psr7Request = $this->resourceServer->validateAuthenticatedRequest($psr7Request);
-        } catch (OAuthServerException $e) {
-            throw new AuthenticationException('The resource server rejected the request.', 0, $e);
-        }
+        // Error will be automatically catch and converted in ExceptionToOauthResponseListener
+        $this->psr7Request = $this->resourceServer->validateAuthenticatedRequest($psr7Request);
 
         return $this->psr7Request->getAttribute('oauth_user_id');
     }
@@ -80,7 +87,8 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         $oauth2Token = $this->oauth2TokenFactory->createOAuth2Token($this->psr7Request, $tokenUser, $providerKey);
 
         if (!$this->isAccessToRouteGranted($oauth2Token)) {
-            throw InsufficientScopesException::create($oauth2Token);
+            // In the hint the route scope will be showed
+            throw OAuthServerException::invalidScope($this->getRouteScopes());
         }
 
         $oauth2Token->setAuthenticated(true);
@@ -92,7 +100,14 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     {
         $this->psr7Request = null;
 
-        throw $exception;
+        if ($exception instanceof OAuthServerException) {
+            $event = $this->exceptionEventFactory->handleLeagueException($exception);
+        } else {
+            $event = $this->exceptionEventFactory->accessDenied($exception);
+        }
+
+        $httpFoundationFactory = new HttpFoundationFactory();
+        return $httpFoundationFactory->createResponse($event->getResponse());
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
@@ -105,9 +120,14 @@ final class OAuth2Authenticator implements AuthenticatorInterface
         return false;
     }
 
+    private function getRouteScopes(): array
+    {
+        return $this->psr7Request->getAttribute('oauth2_scopes', []);
+    }
+
     private function isAccessToRouteGranted(OAuth2Token $token): bool
     {
-        $routeScopes = $this->psr7Request->getAttribute('oauth2_scopes', []);
+        $routeScopes = $this->getRouteScopes();
 
         if ([] === $routeScopes) {
             return true;

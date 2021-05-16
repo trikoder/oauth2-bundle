@@ -99,7 +99,6 @@ final class OAuth2Authenticator implements AuthenticatorInterface
     {
         $this->psr7Request = null;
 
-        dump($exception);
         if ($exception instanceof OAuthServerException) {
             $event = $this->exceptionEventFactory->handleLeagueException($exception);
         } else {

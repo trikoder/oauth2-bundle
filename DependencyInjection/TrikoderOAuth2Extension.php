@@ -29,9 +29,11 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Grant as GrantType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\RedirectUri as RedirectUriType;
 use Trikoder\Bundle\OAuth2Bundle\DBAL\Type\Scope as ScopeType;
+use Trikoder\Bundle\OAuth2Bundle\EventListener\ExceptionToOauthResponseListener;
 use Trikoder\Bundle\OAuth2Bundle\League\AuthorizationServer\GrantTypeInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager;
@@ -66,6 +68,13 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         $container->registerForAutoconfiguration(GrantTypeInterface::class)
             ->addTag('trikoder.oauth2.authorization_server.grant');
+
+        $container->getDefinition(ExceptionToOauthResponseListener::class)
+            ->addTag('kernel.event_listener', [
+                'event' => KernelEvents::EXCEPTION,
+                'method' => 'onKernelException',
+                'priority' => 10
+            ]);
     }
 
     /**

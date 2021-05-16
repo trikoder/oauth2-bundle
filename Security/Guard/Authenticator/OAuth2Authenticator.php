@@ -10,23 +10,15 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AuthenticatorInterface;
-use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\AuthenticationFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\AuthenticationScopeFailureEvent;
-use Trikoder\Bundle\OAuth2Bundle\Event\OauthEvent\MissingAuthorizationHeaderEvent;
-use Trikoder\Bundle\OAuth2Bundle\OAuth2Events;
 use Trikoder\Bundle\OAuth2Bundle\Response\ErrorJsonResponse;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\MissingAuthorizationHeaderException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\OAuth2AuthenticationFailedException;
 use Trikoder\Bundle\OAuth2Bundle\Security\User\NullUser;
 
 /**

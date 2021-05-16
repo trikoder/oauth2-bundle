@@ -49,9 +49,10 @@ final class OAuth2Authenticator implements AuthenticatorInterface
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
+        $request = $this->httpMessageFactory->createRequest($request);
         $missingAuthHeaderEvent = $this->exceptionEventFactory->invalidClient($request);
-
-        return $missingAuthHeaderEvent->getResponse();
+        $httpFoundationFactory = new HttpFoundationFactory();
+        return $httpFoundationFactory->createResponse($missingAuthHeaderEvent->getResponse());
     }
 
     public function supports(Request $request): bool

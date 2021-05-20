@@ -27,11 +27,11 @@ final class ScopeResolveEvent extends Event
     private $client;
 
     /**
-     * @var string|null
+     * @var mixed|null
      */
     private $userIdentifier;
 
-    public function __construct(array $scopes, Grant $grant, Client $client, ?string $userIdentifier)
+    public function __construct(array $scopes, Grant $grant, Client $client, $userIdentifier)
     {
         $this->scopes = $scopes;
         $this->grant = $grant;
@@ -64,7 +64,7 @@ final class ScopeResolveEvent extends Event
         return $this->client;
     }
 
-    public function getUserIdentifier(): ?string
+    public function getUserIdentifier()
     {
         return $this->userIdentifier;
     }

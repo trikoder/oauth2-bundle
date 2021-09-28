@@ -5,12 +5,13 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
     <entity name="Trikoder\Bundle\OAuth2Bundle\Model\Client" table="oauth2_client">
-        <id name="identifier" type="string" length="32" />
+        <id name="identifier" type="string" length="36" />
         <field name="secret" type="string" length="128" nullable="true" />
         <field name="redirectUris" type="oauth2_redirect_uri" nullable="true" />
         <field name="grants" type="oauth2_grant" nullable="true" />
         <field name="scopes" type="oauth2_scope" nullable="true" />
         <field name="active" type="boolean" />
+        <field name="name" type="string" nullable="true" />
         <field name="allowPlainTextPkce" column="allow_plain_text_pkce" type="boolean">
             <options>
                 <option name="default">0</option>

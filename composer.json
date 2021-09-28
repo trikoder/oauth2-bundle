@@ -28,7 +28,8 @@
         "psr/http-factory": "^1.0",
         "symfony/framework-bundle": "^4.4|^5.0",
         "symfony/psr-http-message-bridge": "^2.0",
-        "symfony/security-bundle": "^4.4|^5.0"
+        "symfony/security-bundle": "^4.4|^5.0",
+        "ramsey/uuid": "^4.2.3"
     },
     "require-dev": {
         "ext-timecop": "*",

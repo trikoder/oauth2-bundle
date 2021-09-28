@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Command;
 
 use InvalidArgumentException;
+use Ramsey\Uuid\FeatureSet;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -107,9 +110,13 @@ final class CreateClientCommand extends Command
 
         $headers = ['Identifier', 'Secret', 'Name', 'Grants', 'Scopes'];
         $rows = [
-            [$client->getIdentifier(), $client->getSecret(),
-             $client->getName(), implode(' ', $client->getGrants()),
-             implode(' ', $client->getScopes())],
+            [
+                $client->getIdentifier(),
+                $client->getSecret(),
+                $client->getName(),
+                implode(' ', $client->getGrants()),
+                implode(' ', $client->getScopes()),
+            ],
         ];
         $io->table($headers, $rows);
 
@@ -118,7 +125,12 @@ final class CreateClientCommand extends Command
 
     private function buildClientFromInput(InputInterface $input): Client
     {
-        $identifier = $input->getArgument('identifier') ?? hash('md5', random_bytes(16));
+        $identifier = $input->getArgument('identifier');
+        if (null === $identifier) {
+            $uuidFactory = new UuidFactory(new FeatureSet(false, false, false, true));
+            Uuid::setFactory($uuidFactory);
+            $identifier = Uuid::uuid4();
+        }
 
         $isPublic = $input->getOption('public');
 
@@ -126,7 +138,7 @@ final class CreateClientCommand extends Command
             throw new InvalidArgumentException('The client cannot have a secret and be public.');
         }
 
-        $secret = $isPublic ? null : $input->getArgument('secret') ?? hash('sha512', random_bytes(32));
+        $secret = $isPublic ? null : $input->getArgument('secret') ?? bin2hex(random_bytes(20));
 
         $client = new Client($identifier, $secret);
         $client->setActive(true);

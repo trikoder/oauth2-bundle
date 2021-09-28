@@ -41,6 +41,11 @@ class Client implements ClientInterface
      */
     private $allowPlainTextPkce = false;
 
+    /**
+     * @var string|null
+     */
+    private $name;
+
     public function __construct(string $identifier, ?string $secret)
     {
         $this->identifier = $identifier;
@@ -139,6 +144,18 @@ class Client implements ClientInterface
     public function setAllowPlainTextPkce(bool $allowPlainTextPkce): ClientInterface
     {
         $this->allowPlainTextPkce = $allowPlainTextPkce;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }

@@ -9,13 +9,13 @@ Symfony bundle which provides OAuth 2.0 authorization/resource server capabiliti
 
 ## Important notes
 
+Applications based on Symfony 5.3 or higher should move to the replacement of this bundle: [thephpleague/oauth2-server-bundle](https://github.com/thephpleague/oauth2-server-bundle). Since Symfony 5.3 the new authenticator manager will [replace the old guard authenticator](https://symfony.com/blog/new-in-symfony-5-3-guard-component-deprecation) system. The bundle [thephpleague/oauth2-server-bundle](https://github.com/thephpleague/oauth2-server-bundle) was made in coordination with Trikoder and Symfony core team members in order to improve its maintenance, keep it in sync with Symfony developments and reduce the friction that vendor-overdiversification causes to end users.
+
+## Description
+
 This bundle provides the "glue" between  [thephpleague/oauth2-server](https://github.com/thephpleague/oauth2-server) library and Symfony.
 It implements [thephpleague/oauth2-server](https://github.com/thephpleague/oauth2-server) library in a way specified by its official documentation.
 For implementation into Symfony project, please see [bundle documentation](docs/basic-setup.md) and official [Symfony security documentation](https://symfony.com/doc/current/security.html).
-
-## Status
-
-This package is currently in the active development.
 
 ## Features
 

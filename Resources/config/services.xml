@@ -84,6 +84,7 @@
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory" />
             <argument key="$oauth2TokenFactory" type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
         </service>
         <service id="trikoder.oauth2.security.firewall.oauth2_listener" alias="Trikoder\Bundle\OAuth2Bundle\Security\Firewall\OAuth2Listener">
@@ -99,6 +100,7 @@
             <argument type="service" id="Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface" />
             <argument type="service" id="League\OAuth2\Server\ResourceServer" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory" />
         </service>
 
         <!-- The league authorization server -->
@@ -153,6 +155,7 @@
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory" />
             <tag name="controller.service_arguments" />
         </service>
         <service id="trikoder.oauth2.controller.authorization_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\AuthorizationController">
@@ -168,14 +171,14 @@
             <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
         </service>
 
-        <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener" />
-        <service id="trikoder.oauth2.event_listener.authorization.convert_to_response" alias="Trikoder\Bundle\OAuth2Bundle\EventListener\ConvertExceptionToResponseListener">
-            <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
+        <service id="Trikoder\Bundle\OAuth2Bundle\EventListener\ExceptionToOauthResponseListener">
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory" />
         </service>
 
         <!-- Token controller -->
         <service id="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory" />
             <tag name="controller.service_arguments" />
         </service>
         <service id="trikoder.oauth2.controller.token_controller" alias="Trikoder\Bundle\OAuth2Bundle\Controller\TokenController">
@@ -245,6 +248,10 @@
         </service>
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface" alias="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
 
+        <service id="Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory">
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+            <argument type="service" id="Psr\Http\Message\ResponseFactoryInterface" />
+        </service>
         <service id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />

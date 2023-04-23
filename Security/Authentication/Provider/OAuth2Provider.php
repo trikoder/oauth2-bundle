@@ -58,13 +58,9 @@ final class OAuth2Provider implements AuthenticationProviderInterface
             throw new RuntimeException(sprintf('This authentication provider can only handle tokes of type \'%s\'.', OAuth2Token::class));
         }
 
-        try {
-            $request = $this->resourceServer->validateAuthenticatedRequest(
-                $token->getAttribute('server_request')
-            );
-        } catch (OAuthServerException $e) {
-            throw new AuthenticationException('The resource server rejected the request.', 0, $e);
-        }
+        $request = $this->resourceServer->validateAuthenticatedRequest(
+            $token->getAttribute('server_request')
+        );
 
         $user = $this->getAuthenticatedUser(
             $request->getAttribute('oauth_user_id')

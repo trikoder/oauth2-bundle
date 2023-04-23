@@ -27,10 +27,6 @@ final class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('exception_event_listener_priority')
-                    ->info('The priority of the event listener that converts an Exception to a Response.')
-                    ->defaultValue(10)
-                ->end()
                 ->scalarNode('role_prefix')
                     ->info('Set a custom prefix that replaces the default "ROLE_OAUTH2_" role prefix.')
                     ->defaultValue('ROLE_OAUTH2_')

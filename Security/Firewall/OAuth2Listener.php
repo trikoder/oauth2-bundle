@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Security\Firewall;
 
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -12,8 +13,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\ExceptionEventFactory;
 
 final class OAuth2Listener
 {
@@ -38,6 +38,11 @@ final class OAuth2Listener
     private $oauth2TokenFactory;
 
     /**
+     * @var ExceptionEventFactory
+     */
+    private $exceptionEventFactory;
+
+    /**
      * @var string
      */
     private $providerKey;
@@ -46,12 +51,14 @@ final class OAuth2Listener
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
         HttpMessageFactoryInterface $httpMessageFactory,
+        ExceptionEventFactory $exceptionEventFactory,
         OAuth2TokenFactory $oauth2TokenFactory,
         string $providerKey
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->httpMessageFactory = $httpMessageFactory;
+        $this->exceptionEventFactory = $exceptionEventFactory;
         $this->oauth2TokenFactory = $oauth2TokenFactory;
         $this->providerKey = $providerKey;
     }
@@ -59,8 +66,11 @@ final class OAuth2Listener
     public function __invoke(RequestEvent $event)
     {
         $request = $this->httpMessageFactory->createRequest($event->getRequest());
+        $responseFactory = new HttpFoundationFactory();
 
         if (!$request->hasHeader('Authorization')) {
+            $missingAuthHeaderEvent = $this->exceptionEventFactory->invalidClient($request);
+            $event->setResponse($responseFactory->createResponse($missingAuthHeaderEvent->getResponse()));
             return;
         }
 
@@ -68,11 +78,15 @@ final class OAuth2Listener
             /** @var OAuth2Token $authenticatedToken */
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
-            throw new Oauth2AuthenticationFailedException($e->getMessage(), 401, $e);
+            $authenticationFailureEvent = $this->exceptionEventFactory->accessDenied($e);
+            $event->setResponse($responseFactory->createResponse($authenticationFailureEvent->getResponse()));
+            return;
         }
 
         if (!$this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {
-            throw InsufficientScopesException::create($authenticatedToken);
+            $authenticationFailureScopeEvent = $this->exceptionEventFactory->invalidScope($authenticatedToken);
+            $event->setResponse($responseFactory->createResponse($authenticationFailureScopeEvent->getResponse()));
+            return;
         }
 
         $this->tokenStorage->setToken($authenticatedToken);

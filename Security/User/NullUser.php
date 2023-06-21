@@ -16,9 +16,14 @@ final class NullUser implements UserInterface
         return '';
     }
 
-    public function getPassword(): string
+    public function getUserIdentifier(): string
     {
         return '';
+    }
+
+    public function getPassword(): ?string
+    {
+        return null;
     }
 
     public function getSalt(): ?string

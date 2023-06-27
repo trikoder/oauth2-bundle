@@ -3,11 +3,11 @@ ARG PHP_VERSION=7.2
 FROM php:${PHP_VERSION}-cli-alpine3.10
 LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"
 
-ARG COMPOSER_VERSION=1.9.3
-ARG FLEX_VERSION=1.6.2
-ARG PHP_CS_FIXER_VERSION=2.16.2
+ARG COMPOSER_VERSION=2.5.8
+ARG FLEX_VERSION=1.20.0
+ARG PHP_CS_FIXER_VERSION=2.19.3
 ARG TIMECOP_VERSION=1.2.10
-ARG XDEBUG_VERSION=2.9.2
+ARG XDEBUG_VERSION=2.9.8
 
 ENV XDEBUG_REMOTE_AUTOSTART 0
 ENV TIMECOP_FUNC_OVERRIDE 0
@@ -65,6 +65,9 @@ RUN curl --location --output /app/bin/php-cs-fixer --show-error \
 
 # Create the user that's going to run our application
 RUN useradd -ms /bin/sh app
+
+# Composer bin plugin
+RUN su-exec app composer global config --no-interaction allow-plugins.symfony/flex true
 
 # Enable parallel package installation for Composer
 RUN su-exec app composer global require symfony/flex:${FLEX_VERSION}

@@ -13,9 +13,12 @@ This bundle provides the "glue" between  [thephpleague/oauth2-server](https://gi
 It implements [thephpleague/oauth2-server](https://github.com/thephpleague/oauth2-server) library in a way specified by its official documentation.
 For implementation into Symfony project, please see [bundle documentation](docs/basic-setup.md) and official [Symfony security documentation](https://symfony.com/doc/current/security.html).
 
-## Status
+## Status ⚠️
 
-This package is currently in the active development.
+Active development is currently on hold, as this repository is in progress of migrating to the [thephpleague/oauth2-server-bundle](https://github.com/thephpleague/oauth2-server-bundle) project.
+
+*The current repository will be **discontinued** whenever the `v1.0` release is ready in [oauth2-server-bundle](https://github.com/thephpleague/oauth2-server-bundle/releases).*
+*See [this comment](https://github.com/trikoder/oauth2-bundle/pull/292#issuecomment-990943939) for more information.*
 
 ## Features
 

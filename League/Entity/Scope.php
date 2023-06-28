@@ -13,8 +13,6 @@ final class Scope implements ScopeEntityInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return mixed
      */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()

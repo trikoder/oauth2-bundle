@@ -9,7 +9,7 @@ $finder = PhpCsFixer\Finder::create()
     ->append([__FILE__])
 ;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setUsingCache(true)
     ->setRules([
         '@DoctrineAnnotation' => true,
@@ -26,6 +26,7 @@ return PhpCsFixer\Config::create()
         'no_null_property_initialization' => true,
         'no_superfluous_phpdoc_tags' => true,
         'nullable_type_declaration_for_default_null_value' => true,
+        'no_trailing_whitespace_in_string' => false,
         'ordered_imports' => [
             'imports_order' => [
                 OrderedImportsFixer::IMPORT_TYPE_CONST,

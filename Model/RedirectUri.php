@@ -22,7 +22,7 @@ class RedirectUri implements RedirectUriInterface
 
     private function assertValidRedirectUri(string $redirectUri): void
     {
-        if (filter_var($redirectUri, FILTER_VALIDATE_URL)) {
+        if (filter_var($redirectUri, \FILTER_VALIDATE_URL)) {
             return;
         }
 

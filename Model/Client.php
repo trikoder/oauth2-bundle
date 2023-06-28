@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
-class Client
+class Client implements ClientInterface
 {
     /**
      * @var string
@@ -17,17 +17,17 @@ class Client
     private $secret;
 
     /**
-     * @var RedirectUri[]
+     * @var RedirectUriInterface[]
      */
     private $redirectUris = [];
 
     /**
-     * @var Grant[]
+     * @var GrantInterface[]
      */
     private $grants = [];
 
     /**
-     * @var Scope[]
+     * @var ScopeInterface[]
      */
     private $scopes = [];
 
@@ -62,7 +62,7 @@ class Client
         return $this->secret;
     }
 
-    public function setSecret(?string $secret): self
+    public function setSecret(?string $secret): ClientInterface
     {
         $this->secret = $secret;
 
@@ -70,14 +70,14 @@ class Client
     }
 
     /**
-     * @return RedirectUri[]
+     * @return RedirectUriInterface[]
      */
     public function getRedirectUris(): array
     {
         return $this->redirectUris;
     }
 
-    public function setRedirectUris(RedirectUri ...$redirectUris): self
+    public function setRedirectUris(RedirectUriInterface ...$redirectUris): ClientInterface
     {
         $this->redirectUris = $redirectUris;
 
@@ -85,14 +85,14 @@ class Client
     }
 
     /**
-     * @return Grant[]
+     * @return GrantInterface[]
      */
     public function getGrants(): array
     {
         return $this->grants;
     }
 
-    public function setGrants(Grant ...$grants): self
+    public function setGrants(GrantInterface ...$grants): ClientInterface
     {
         $this->grants = $grants;
 
@@ -100,14 +100,14 @@ class Client
     }
 
     /**
-     * @return Scope[]
+     * @return ScopeInterface[]
      */
     public function getScopes(): array
     {
         return $this->scopes;
     }
 
-    public function setScopes(Scope ...$scopes): self
+    public function setScopes(ScopeInterface ...$scopes): ClientInterface
     {
         $this->scopes = $scopes;
 
@@ -119,7 +119,7 @@ class Client
         return $this->active;
     }
 
-    public function setActive(bool $active): self
+    public function setActive(bool $active): ClientInterface
     {
         $this->active = $active;
 
@@ -136,7 +136,7 @@ class Client
         return $this->allowPlainTextPkce;
     }
 
-    public function setAllowPlainTextPkce(bool $allowPlainTextPkce): self
+    public function setAllowPlainTextPkce(bool $allowPlainTextPkce): ClientInterface
     {
         $this->allowPlainTextPkce = $allowPlainTextPkce;
 

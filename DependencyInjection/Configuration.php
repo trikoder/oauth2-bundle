@@ -79,47 +79,8 @@ final class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->defaultValue('P1M')
                 ->end()
-
-        // @TODO Remove in v4 start
-
-                ->scalarNode('auth_code_ttl')
-                    ->info("How long the issued authorization code should be valid for.\nThe value should be a valid interval: http://php.net/manual/en/dateinterval.construct.php#refsect1-dateinterval.construct-parameters")
-                    ->cannotBeEmpty()
-                    ->setDeprecated('"%path%.%node%" is deprecated, use "%path%.grant_types.authorization_code.auth_code_ttl" instead.')
-                    ->beforeNormalization()
-                        ->ifNull()
-                        ->thenUnset()
-                    ->end()
-                ->end()
-                ->booleanNode('require_code_challenge_for_public_clients')
-                    ->info('Whether to require code challenge for public clients for the authorization code grant.')
-                    ->setDeprecated('"%path%.%node%" is deprecated, use "%path%.grant_types.authorization_code.require_code_challenge_for_public_clients" instead.')
-                    ->beforeNormalization()
-                        ->ifNull()
-                        ->thenUnset()
-                    ->end()
-                ->end()
             ->end()
         ;
-
-        foreach (OAuth2Grants::ALL as $grantType => $grantTypeName) {
-            $oldGrantType = 'authorization_code' === $grantType ? 'auth_code' : $grantType;
-
-            $node
-                ->children()
-                    ->booleanNode(sprintf('enable_%s_grant', $oldGrantType))
-                        ->info(sprintf('Whether to enable the %s grant.', $grantTypeName))
-                        ->setDeprecated(sprintf('"%%path%%.%%node%%" is deprecated, use "%%path%%.grant_types.%s.enable" instead.', $grantType))
-                        ->beforeNormalization()
-                            ->ifNull()
-                            ->thenUnset()
-                        ->end()
-                    ->end()
-                ->end()
-            ;
-        }
-
-        // @TODO Remove in v4 end
 
         $node->append($this->createAuthorizationServerGrantTypesNode());
 
@@ -134,33 +95,9 @@ final class Configuration implements ConfigurationInterface
                         if (isset($grantTypesWithRefreshToken[$grantType])) {
                             $grantTypeConfig['refresh_token_ttl'] = $grantTypeConfig['refresh_token_ttl'] ?? $v['refresh_token_ttl'];
                         }
-
-                        // @TODO Remove in v4 start
-                        $oldGrantType = 'authorization_code' === $grantType ? 'auth_code' : $grantType;
-
-                        $grantTypeConfig['enable'] = $v[sprintf('enable_%s_grant', $oldGrantType)] ?? $grantTypeConfig['enable'];
-
-                        if ('authorization_code' === $grantType) {
-                            $grantTypeConfig['auth_code_ttl'] = $v['auth_code_ttl'] ?? $grantTypeConfig['auth_code_ttl'];
-                            $grantTypeConfig['require_code_challenge_for_public_clients'] = $v['require_code_challenge_for_public_clients']
-                                ?? $grantTypeConfig['require_code_challenge_for_public_clients'];
-                        }
-                        // @TODO Remove in v4 end
                     }
 
-                    unset(
-                        $v['access_token_ttl'],
-                        $v['refresh_token_ttl'],
-                        // @TODO Remove in v4 start
-                        $v['enable_auth_code_grant'],
-                        $v['enable_client_credentials_grant'],
-                        $v['enable_implicit_grant'],
-                        $v['enable_password_grant'],
-                        $v['enable_refresh_token_grant'],
-                        $v['auth_code_ttl'],
-                        $v['require_code_challenge_for_public_clients']
-                        // @TODO Remove in v4 end
-                    );
+                    unset($v['access_token_ttl'], $v['refresh_token_ttl']);
 
                     return $v;
                 })

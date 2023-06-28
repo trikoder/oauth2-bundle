@@ -6,19 +6,19 @@ namespace Trikoder\Bundle\OAuth2Bundle\Manager\InMemory;
 
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientFilter;
 use Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface;
-use Trikoder\Bundle\OAuth2Bundle\Model\Client;
+use Trikoder\Bundle\OAuth2Bundle\Model\ClientInterface;
 
 final class ClientManager implements ClientManagerInterface
 {
     /**
-     * @var Client[]
+     * @var ClientInterface[]
      */
     private $clients = [];
 
     /**
      * {@inheritdoc}
      */
-    public function find(string $identifier): ?Client
+    public function find(string $identifier): ?ClientInterface
     {
         return $this->clients[$identifier] ?? null;
     }
@@ -26,7 +26,7 @@ final class ClientManager implements ClientManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function save(Client $client): void
+    public function save(ClientInterface $client): void
     {
         $this->clients[$client->getIdentifier()] = $client;
     }
@@ -34,7 +34,7 @@ final class ClientManager implements ClientManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function remove(Client $client): void
+    public function remove(ClientInterface $client): void
     {
         unset($this->clients[$client->getIdentifier()]);
     }
@@ -48,7 +48,7 @@ final class ClientManager implements ClientManagerInterface
             return $this->clients;
         }
 
-        return array_filter($this->clients, static function (Client $client) use ($clientFilter): bool {
+        return array_filter($this->clients, static function (ClientInterface $client) use ($clientFilter): bool {
             $grantsPassed = self::passesFilter($client->getGrants(), $clientFilter->getGrants());
             $scopesPassed = self::passesFilter($client->getScopes(), $clientFilter->getScopes());
             $redirectUrisPassed = self::passesFilter($client->getRedirectUris(), $clientFilter->getRedirectUris());

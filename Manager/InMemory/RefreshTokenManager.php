@@ -6,19 +6,19 @@ namespace Trikoder\Bundle\OAuth2Bundle\Manager\InMemory;
 
 use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
-use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
+use Trikoder\Bundle\OAuth2Bundle\Model\RefreshTokenInterface;
 
 final class RefreshTokenManager implements RefreshTokenManagerInterface
 {
     /**
-     * @var RefreshToken[]
+     * @var RefreshTokenInterface[]
      */
     private $refreshTokens = [];
 
     /**
      * {@inheritdoc}
      */
-    public function find(string $identifier): ?RefreshToken
+    public function find(string $identifier): ?RefreshTokenInterface
     {
         return $this->refreshTokens[$identifier] ?? null;
     }
@@ -26,7 +26,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function save(RefreshToken $refreshToken): void
+    public function save(RefreshTokenInterface $refreshToken): void
     {
         $this->refreshTokens[$refreshToken->getIdentifier()] = $refreshToken;
     }
@@ -36,7 +36,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
         $count = \count($this->refreshTokens);
 
         $now = new DateTimeImmutable();
-        $this->refreshTokens = array_filter($this->refreshTokens, static function (RefreshToken $refreshToken) use ($now): bool {
+        $this->refreshTokens = array_filter($this->refreshTokens, static function (RefreshTokenInterface $refreshToken) use ($now): bool {
             return $refreshToken->getExpiry() >= $now;
         });
 
@@ -47,7 +47,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     {
         $count = \count($this->refreshTokens);
 
-        $this->refreshTokens = array_filter($this->refreshTokens, static function (RefreshToken $refreshToken): bool {
+        $this->refreshTokens = array_filter($this->refreshTokens, static function (RefreshTokenInterface $refreshToken): bool {
             return !$refreshToken->isRevoked();
         });
 

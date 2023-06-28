@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
 use Trikoder\Bundle\OAuth2Bundle\Security\Exception\InsufficientScopesException;
-use Trikoder\Bundle\OAuth2Bundle\Security\Exception\Oauth2AuthenticationFailedException;
+use Trikoder\Bundle\OAuth2Bundle\Security\Exception\OAuth2AuthenticationFailedException;
 
 final class OAuth2Listener
 {
@@ -68,7 +68,7 @@ final class OAuth2Listener
             /** @var OAuth2Token $authenticatedToken */
             $authenticatedToken = $this->authenticationManager->authenticate($this->oauth2TokenFactory->createOAuth2Token($request, null, $this->providerKey));
         } catch (AuthenticationException $e) {
-            throw new Oauth2AuthenticationFailedException($e->getMessage(), 401, $e);
+            throw OAuth2AuthenticationFailedException::create($e->getMessage(), $e);
         }
 
         if (!$this->isAccessToRouteGranted($event->getRequest(), $authenticatedToken)) {

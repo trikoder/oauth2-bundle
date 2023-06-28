@@ -6,7 +6,7 @@ namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
 use RuntimeException;
 
-class RedirectUri
+class RedirectUri implements RedirectUriInterface
 {
     /**
      * @var string

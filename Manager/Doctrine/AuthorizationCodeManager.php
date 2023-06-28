@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCodeInterface;
 
 final class AuthorizationCodeManager implements AuthorizationCodeManagerInterface
 {
@@ -24,7 +25,7 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
     /**
      * {@inheritdoc}
      */
-    public function find(string $identifier): ?AuthorizationCode
+    public function find(string $identifier): ?AuthorizationCodeInterface
     {
         return $this->entityManager->find(AuthorizationCode::class, $identifier);
     }
@@ -32,7 +33,7 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
     /**
      * {@inheritdoc}
      */
-    public function save(AuthorizationCode $authorizationCode): void
+    public function save(AuthorizationCodeInterface $authorizationCode): void
     {
         $this->entityManager->persist($authorizationCode);
         $this->entityManager->flush();

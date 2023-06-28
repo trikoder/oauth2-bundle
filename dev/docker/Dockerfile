@@ -67,8 +67,7 @@ RUN curl --location --output /app/bin/php-cs-fixer --show-error \
 RUN useradd -ms /bin/sh app
 
 # Composer bin plugin
-RUN su-exec app composer global config --no-interaction allow-plugins.ocramius/package-versions true \
-    && su-exec app composer global config --no-interaction allow-plugins.symfony/flex true
+RUN su-exec app composer global config --no-interaction allow-plugins.symfony/flex true
 
 # Enable parallel package installation for Composer
 RUN su-exec app composer global require symfony/flex:${FLEX_VERSION}

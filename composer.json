@@ -57,7 +57,10 @@
         "defuse/php-encryption": "For better performance when doing encryption"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "ocramius/package-versions": true
+        }
     },
     "extra": {
         "branch-alias": {

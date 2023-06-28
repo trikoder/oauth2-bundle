@@ -24,7 +24,7 @@
         "ajgarlag/psr-http-message-bundle": "^1.1",
         "doctrine/doctrine-bundle": "^1.8|^2.0",
         "doctrine/orm": "^2.7",
-        "doctrine/persistence": "^2.0",
+        "doctrine/persistence": "^2.4",
         "league/oauth2-server": "^8.4.1",
         "psr/http-factory": "^1.0",
         "symfony/framework-bundle": "^4.4|^5.0",

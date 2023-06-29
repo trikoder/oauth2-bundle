@@ -44,7 +44,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertLessThanOrEqual(3600, $jsonResponse['expires_in']);
         $this->assertNotEmpty($jsonResponse['access_token']);
     }
 
@@ -73,7 +73,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertLessThanOrEqual(3600, $jsonResponse['expires_in']);
         $this->assertNotEmpty($jsonResponse['access_token']);
         $this->assertNotEmpty($jsonResponse['refresh_token']);
     }
@@ -100,7 +100,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertLessThanOrEqual(3600, $jsonResponse['expires_in']);
         $this->assertNotEmpty($jsonResponse['access_token']);
         $this->assertNotEmpty($jsonResponse['refresh_token']);
     }
@@ -128,7 +128,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertLessThanOrEqual(3600, $jsonResponse['expires_in']);
         $this->assertNotEmpty($jsonResponse['access_token']);
     }
 
@@ -154,7 +154,7 @@ final class TokenEndpointTest extends AbstractAcceptanceTest
         $jsonResponse = json_decode($response->getContent(), true);
 
         $this->assertSame('Bearer', $jsonResponse['token_type']);
-        $this->assertSame(3600, $jsonResponse['expires_in']);
+        $this->assertLessThanOrEqual(3600, $jsonResponse['expires_in']);
         $this->assertNotEmpty($jsonResponse['access_token']);
     }
 

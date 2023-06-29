@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures;
 
-use ArrayObject;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User extends ArrayObject implements UserInterface
+class User extends \ArrayObject implements UserInterface
 {
     /**
      * {@inheritdoc}

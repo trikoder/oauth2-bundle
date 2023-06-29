@@ -4,33 +4,28 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AccessTokenManager as InMemoryAccessTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
+/**
+ * @group time-sensitive
+ */
 final class InMemoryAccessTokenManagerTest extends TestCase
 {
     public function testClearExpired(): void
     {
         $inMemoryAccessTokenManager = new InMemoryAccessTokenManager();
 
-        timecop_freeze(new DateTimeImmutable());
+        $testData = $this->buildClearExpiredTestData();
 
-        try {
-            $testData = $this->buildClearExpiredTestData();
-
-            foreach ($testData['input'] as $token) {
-                $inMemoryAccessTokenManager->save($token);
-            }
-
-            $this->assertSame(3, $inMemoryAccessTokenManager->clearExpired());
-            $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAccessTokenManager);
-        } finally {
-            timecop_return();
+        foreach ($testData['input'] as $token) {
+            $inMemoryAccessTokenManager->save($token);
         }
+
+        $this->assertSame(3, $inMemoryAccessTokenManager->clearExpired());
+        $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAccessTokenManager);
     }
 
     private function buildClearExpiredTestData(): array
@@ -38,8 +33,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
         $validAccessTokens = [
             '1111' => $this->buildAccessToken('1111', '+1 day'),
             '2222' => $this->buildAccessToken('2222', '+1 hour'),
-            '3333' => $this->buildAccessToken('3333', '+1 second'),
-            '4444' => $this->buildAccessToken('4444', 'now'),
+            '3333' => $this->buildAccessToken('3333', '+5 seconds'),
         ];
 
         $expiredAccessTokens = [
@@ -73,7 +67,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
         $validAccessTokens = [
             '1111' => $this->buildAccessToken('1111', '+1 day'),
             '2222' => $this->buildAccessToken('2222', '-1 hour'),
-            '3333' => $this->buildAccessToken('3333', '+1 second'),
+            '3333' => $this->buildAccessToken('3333', '+5 second'),
         ];
 
         $revokedAccessTokens = [
@@ -91,7 +85,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
     {
         $accessToken = new AccessToken(
             $identifier,
-            new DateTimeImmutable($modify),
+            new \DateTimeImmutable($modify),
             new Client('client', 'secret'),
             null,
             []
@@ -106,7 +100,7 @@ final class InMemoryAccessTokenManagerTest extends TestCase
 
     private function assertManagerContainsExpectedData(array $output, InMemoryAccessTokenManager $inMemoryAccessTokenManager): void
     {
-        $reflectionProperty = new ReflectionProperty(InMemoryAccessTokenManager::class, 'accessTokens');
+        $reflectionProperty = new \ReflectionProperty(InMemoryAccessTokenManager::class, 'accessTokens');
         $reflectionProperty->setAccessible(true);
 
         $this->assertSame($output, $reflectionProperty->getValue($inMemoryAccessTokenManager));

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Integration;
 
-use DateInterval;
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
 use League\OAuth2\Server\AuthorizationServer;
@@ -282,7 +281,7 @@ abstract class AbstractIntegrationTest extends TestCase
             TestHelper::ENCRYPTION_KEY
         );
 
-        $authCodeGrant = new AuthCodeGrant($authCodeRepository, $refreshTokenRepository, new DateInterval('PT10M'));
+        $authCodeGrant = new AuthCodeGrant($authCodeRepository, $refreshTokenRepository, new \DateInterval('PT10M'));
 
         if (!$this->requireCodeChallengeForPublicClients) {
             $authCodeGrant->disableRequireCodeChallengeForPublicClients();
@@ -292,7 +291,7 @@ abstract class AbstractIntegrationTest extends TestCase
         $authorizationServer->enableGrantType(new RefreshTokenGrant($refreshTokenRepository));
         $authorizationServer->enableGrantType(new PasswordGrant($userRepository, $refreshTokenRepository));
         $authorizationServer->enableGrantType($authCodeGrant);
-        $authorizationServer->enableGrantType(new ImplicitGrant(new DateInterval('PT10M')));
+        $authorizationServer->enableGrantType(new ImplicitGrant(new \DateInterval('PT10M')));
 
         return $authorizationServer;
     }

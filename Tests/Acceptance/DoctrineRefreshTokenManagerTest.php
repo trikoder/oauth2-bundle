@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager as DoctrineRefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
@@ -13,6 +12,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
 /**
  * @TODO   This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ *
  * @covers \Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\RefreshTokenManager
  */
 final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
@@ -28,23 +28,17 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        timecop_freeze(new DateTimeImmutable());
+        $testData = $this->buildClearExpiredTestData($client);
 
-        try {
-            $testData = $this->buildClearExpiredTestData($client);
-
-            /** @var RefreshToken $token */
-            foreach ($testData['input'] as $token) {
-                $em->persist($token->getAccessToken());
-                $doctrineRefreshTokenManager->save($token);
-            }
-
-            $em->flush();
-
-            $this->assertSame(3, $doctrineRefreshTokenManager->clearExpired());
-        } finally {
-            timecop_return();
+        /** @var RefreshToken $token */
+        foreach ($testData['input'] as $token) {
+            $em->persist($token->getAccessToken());
+            $doctrineRefreshTokenManager->save($token);
         }
+
+        $em->flush();
+
+        $this->assertSame(3, $doctrineRefreshTokenManager->clearExpired());
 
         $this->assertSame(
             $testData['output'],
@@ -57,8 +51,7 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
         $validRefreshTokens = [
             $this->buildRefreshToken('1111', '+1 day', $client),
             $this->buildRefreshToken('2222', '+1 hour', $client),
-            $this->buildRefreshToken('3333', '+1 second', $client),
-            $this->buildRefreshToken('4444', 'now', $client),
+            $this->buildRefreshToken('3333', '+5 second', $client),
         ];
 
         $expiredRefreshTokens = [
@@ -107,7 +100,7 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
         $validRefreshTokens = [
             $this->buildRefreshToken('1111', '+1 day', $client),
             $this->buildRefreshToken('2222', '-1 hour', $client),
-            $this->buildRefreshToken('3333', '+1 second', $client),
+            $this->buildRefreshToken('3333', '+5 second', $client),
         ];
 
         $revokedRefreshTokens = [
@@ -125,10 +118,10 @@ final class DoctrineRefreshTokenManagerTest extends AbstractAcceptanceTest
     {
         $refreshToken = new RefreshToken(
             $identifier,
-            new DateTimeImmutable($modify),
+            new \DateTimeImmutable($modify),
             new AccessToken(
                 $identifier,
-                new DateTimeImmutable('+1 day'),
+                new \DateTimeImmutable('+1 day'),
                 $client,
                 null,
                 []

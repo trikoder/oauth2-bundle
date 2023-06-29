@@ -1,16 +1,14 @@
-ARG PHP_VERSION=7.2
+ARG PHP_VERSION=8.1
 
-FROM php:${PHP_VERSION}-cli-alpine3.10
+FROM php:${PHP_VERSION}-cli-alpine
 LABEL maintainer="Petar Obradović <petar.obradovic@trikoder.net>"
 
 ARG COMPOSER_VERSION=2.5.8
-ARG FLEX_VERSION=1.20.0
-ARG PHP_CS_FIXER_VERSION=2.19.3
-ARG TIMECOP_VERSION=1.2.10
-ARG XDEBUG_VERSION=2.9.8
+ARG FLEX_VERSION=2.3.1
+ARG PHP_CS_FIXER_VERSION=3.20.0
+ARG XDEBUG_VERSION=3.2.1
 
-ENV XDEBUG_REMOTE_AUTOSTART 0
-ENV TIMECOP_FUNC_OVERRIDE 0
+ENV XDEBUG_START_WITH_REQUEST 0
 
 # This is where we're going to store all of our non-project specific binaries
 RUN mkdir -p /app/bin
@@ -21,28 +19,24 @@ RUN apk add --update --no-cache --virtual .build-deps \
         ${PHPIZE_DEPS} \
         libxml2-dev \
         libzip-dev \
+        linux-headers \
         zlib-dev \
     && docker-php-ext-install -j $(getconf _NPROCESSORS_ONLN) \
         xml \
         zip \
     && pecl install \
         xdebug-${XDEBUG_VERSION} \
-        timecop-${TIMECOP_VERSION} \
     && docker-php-ext-enable \
         xdebug \
-        timecop \
     && apk del --purge .build-deps
 
 RUN mv ${PHP_INI_DIR}/php.ini-development ${PHP_INI_DIR}/php.ini
 
 RUN echo '[xdebug]' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
-    && echo 'xdebug.remote_autostart = ${XDEBUG_REMOTE_AUTOSTART}' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
-    && echo 'xdebug.remote_enable = 1' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
-    && echo 'xdebug.remote_connect_back = 0' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
-    && echo 'xdebug.remote_host = %XDEBUG_REMOTE_HOST%' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini
-
-RUN echo '[timecop]' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-timecop.ini \
-    && echo 'timecop.func_override = ${TIMECOP_FUNC_OVERRIDE}' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-timecop.ini
+    && echo 'xdebug.start_with_request = ${XDEBUG_START_WITH_REQUEST}' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
+    && echo 'xdebug.mode = debug' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
+    && echo 'xdebug.discover_client_host = 0' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini \
+    && echo 'xdebug.client_host = %XDEBUG_CLIENT_HOST%' >> ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini
 
 # Utilities needed to run this image
 RUN apk add --update --no-cache \
@@ -67,7 +61,9 @@ RUN curl --location --output /app/bin/php-cs-fixer --show-error \
 RUN useradd -ms /bin/sh app
 
 # Composer bin plugin
-RUN su-exec app composer global config --no-interaction allow-plugins.symfony/flex true
+RUN su-exec app composer global config --no-interaction allow-plugins.bamarni/composer-bin-plugin true \
+    && su-exec app composer global config --no-interaction allow-plugins.symfony/flex true \
+    && su-exec app composer global require --dev bamarni/composer-bin-plugin
 
 # Enable parallel package installation for Composer
 RUN su-exec app composer global require symfony/flex:${FLEX_VERSION}

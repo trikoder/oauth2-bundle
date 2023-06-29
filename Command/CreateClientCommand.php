@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Command;
 
-use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -89,7 +88,7 @@ final class CreateClientCommand extends Command
 
         try {
             $client = $this->buildClientFromInput($input);
-        } catch (InvalidArgumentException $exception) {
+        } catch (\InvalidArgumentException $exception) {
             $io->error($exception->getMessage());
 
             return 1;
@@ -114,7 +113,7 @@ final class CreateClientCommand extends Command
         $isPublic = $input->getOption('public');
 
         if (null !== $input->getArgument('secret') && $isPublic) {
-            throw new InvalidArgumentException('The client cannot have a secret and be public.');
+            throw new \InvalidArgumentException('The client cannot have a secret and be public.');
         }
 
         $secret = $isPublic ? null : $input->getArgument('secret') ?? hash('sha512', random_bytes(32));

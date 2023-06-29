@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\InMemory;
 
-use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Manager\RefreshTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshTokenInterface;
 
@@ -35,7 +34,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     {
         $count = \count($this->refreshTokens);
 
-        $now = new DateTimeImmutable();
+        $now = new \DateTimeImmutable();
         $this->refreshTokens = array_filter($this->refreshTokens, static function (RefreshTokenInterface $refreshToken) use ($now): bool {
             return $refreshToken->getExpiry() >= $now;
         });

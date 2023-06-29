@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=8.1",
         "ajgarlag/psr-http-message-bundle": "^1.1",
         "doctrine/doctrine-bundle": "^2.0.8",
         "doctrine/orm": "^2.7",
@@ -32,12 +32,11 @@
         "symfony/security-bundle": "^4.4|^5.4"
     },
     "require-dev": {
-        "ext-timecop": "*",
         "ext-xdebug": "*",
         "doctrine/dbal": "^2.13.9",
-        "laminas/laminas-diactoros": "^2.2",
-        "nyholm/psr7": "^1.2",
-        "phpunit/phpunit": "^8.5|^9.4",
+        "laminas/laminas-diactoros": "^2.25|^3.0",
+        "nyholm/psr7": "^1.8",
+        "phpunit/phpunit": "^9.6.9",
         "symfony/browser-kit": "^4.4|^5.4",
         "symfony/phpunit-bridge": "^6.3"
     },
@@ -57,10 +56,7 @@
         "defuse/php-encryption": "For better performance when doing encryption"
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "ocramius/package-versions": true
-        }
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {

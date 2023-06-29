@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
-use RuntimeException;
-
 class RedirectUri implements RedirectUriInterface
 {
     /**
@@ -30,7 +28,7 @@ class RedirectUri implements RedirectUriInterface
             return;
         }
 
-        throw new RuntimeException(sprintf('The \'%s\' string is not a valid URI.', $redirectUri));
+        throw new \RuntimeException(sprintf('The \'%s\' string is not a valid URI.', $redirectUri));
     }
 
     /**
@@ -46,13 +44,13 @@ class RedirectUri implements RedirectUriInterface
             return false;
         }
 
-        //Deny if scheme start or end by "."
+        // Deny if scheme start or end by "."
         if ('.' === substr($parts['scheme'], 0, 1) || '.' === substr($parts['scheme'], -1, 1)) {
             return false;
         }
 
-        //Deny if scheme doesn't have "." domain separator
-        if (false === strpos(substr($parts['scheme'], 1, -1), '.')) {
+        // Deny if scheme doesn't have "." domain separator
+        if (!str_contains(substr($parts['scheme'], 1, -1), '.')) {
             return false;
         }
 

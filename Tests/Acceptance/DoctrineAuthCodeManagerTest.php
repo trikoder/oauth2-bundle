@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager as DoctrineAuthCodeManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
@@ -12,6 +11,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
 /**
  * @TODO   This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ *
  * @covers \Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\AuthorizationCodeManager
  */
 final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
@@ -26,22 +26,16 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         $client = new Client('client', 'secret');
         $em->persist($client);
 
-        timecop_freeze(new DateTimeImmutable());
+        $testData = $this->buildClearExpiredTestData($client);
 
-        try {
-            $testData = $this->buildClearExpiredTestData($client);
-
-            /** @var AuthorizationCode $authCode */
-            foreach ($testData['input'] as $authCode) {
-                $doctrineAuthCodeManager->save($authCode);
-            }
-
-            $em->flush();
-
-            $this->assertSame(3, $doctrineAuthCodeManager->clearExpired());
-        } finally {
-            timecop_return();
+        /** @var AuthorizationCode $authCode */
+        foreach ($testData['input'] as $authCode) {
+            $doctrineAuthCodeManager->save($authCode);
         }
+
+        $em->flush();
+
+        $this->assertSame(3, $doctrineAuthCodeManager->clearExpired());
 
         $this->assertSame(
             $testData['output'],
@@ -54,8 +48,7 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         $validAuthCodes = [
             $this->buildAuthCode('1111', '+1 day', $client),
             $this->buildAuthCode('2222', '+1 hour', $client),
-            $this->buildAuthCode('3333', '+1 second', $client),
-            $this->buildAuthCode('4444', 'now', $client),
+            $this->buildAuthCode('3333', '+5 second', $client),
         ];
 
         $expiredAuthCodes = [
@@ -102,7 +95,7 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
         $validAuthCodes = [
             $this->buildAuthCode('1111', '+1 day', $client),
             $this->buildAuthCode('2222', '-1 hour', $client),
-            $this->buildAuthCode('3333', '+1 second', $client),
+            $this->buildAuthCode('3333', '+5 second', $client),
         ];
 
         $revokedAuthCodes = [
@@ -120,7 +113,7 @@ final class DoctrineAuthCodeManagerTest extends AbstractAcceptanceTest
     {
         $authorizationCode = new AuthorizationCode(
             $identifier,
-            new DateTimeImmutable($modify),
+            new \DateTimeImmutable($modify),
             $client,
             null,
             []

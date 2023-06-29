@@ -122,7 +122,7 @@ final class ClearRevokedTokensCommand extends Command
             $output->writeln(
                 sprintf(
                     '<comment>Method "%s:%s()" will be required in the next major release. Skipping for now...</comment>',
-                    \get_class($manager),
+                    $manager::class,
                     $methodName
                 )
             );

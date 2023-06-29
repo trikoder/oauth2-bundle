@@ -23,13 +23,13 @@ Active development is currently on hold, as this repository is in progress of mi
 ## Features
 
 * API endpoint for client authorization and token issuing
-* Configurable client and token persistance (includes [Doctrine](https://www.doctrine-project.org/) support)
+* Configurable client and token persistence (includes [Doctrine](https://www.doctrine-project.org/) support)
 * Integration with Symfony's [Security](https://symfony.com/doc/current/security.html) layer
 
 ## Requirements
 
-* [PHP 7.2](http://php.net/releases/7_2_0.php) or greater
-* [Symfony 4.4](https://symfony.com/roadmap/4.4) or [Symfony 5.x](https://symfony.com/roadmap/5.0)
+* [PHP 8.1](http://php.net/releases/8_1_0.php) or greater
+* [Symfony 4.4](https://symfony.com/roadmap/4.4) or [Symfony 5.4](https://symfony.com/roadmap/5.4)
 
 ## Installation
 

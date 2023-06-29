@@ -6,6 +6,5 @@ readonly BASE_DIR=$(cd "$(dirname "$0")"; pwd)
 
 "${BASE_DIR}"/docker-compose run --rm --no-deps \
     -e PHP_IDE_CONFIG=serverName="${PHP_IDE_CONFIG:-oauth}" \
-    -e XDEBUG_REMOTE_AUTOSTART=1 \
-    -e TIMECOP_FUNC_OVERRIDE=1 \
+    -e XDEBUG_START_WITH_REQUEST=1 \
     php "$@"

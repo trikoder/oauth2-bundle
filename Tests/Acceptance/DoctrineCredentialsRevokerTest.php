@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
@@ -15,6 +14,7 @@ use Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\FixtureFactory;
 
 /**
  * @TODO   This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ *
  * @covers \Trikoder\Bundle\OAuth2Bundle\Service\CredentialsRevoker\DoctrineCredentialsRevoker
  */
 final class DoctrineCredentialsRevokerTest extends AbstractAcceptanceTest
@@ -83,7 +83,7 @@ final class DoctrineCredentialsRevokerTest extends AbstractAcceptanceTest
     {
         return new RefreshToken(
             $identifier,
-            new DateTimeImmutable($modify),
+            new \DateTimeImmutable($modify),
             $accessToken
         );
     }
@@ -92,7 +92,7 @@ final class DoctrineCredentialsRevokerTest extends AbstractAcceptanceTest
     {
         return new AccessToken(
             $identifier,
-            new DateTimeImmutable($modify),
+            new \DateTimeImmutable($modify),
             $client,
             $userIdentifier,
             []
@@ -103,7 +103,7 @@ final class DoctrineCredentialsRevokerTest extends AbstractAcceptanceTest
     {
         return new AuthorizationCode(
             $identifier,
-            new DateTimeImmutable($modify),
+            new \DateTimeImmutable($modify),
             $client,
             $userIdentifier,
             []

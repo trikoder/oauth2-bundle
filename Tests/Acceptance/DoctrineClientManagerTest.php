@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager as DoctrineClientManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
@@ -13,6 +12,7 @@ use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
 /**
  * @TODO   This should be in the Integration tests folder but the current tests infrastructure would need improvements first.
+ *
  * @covers \Trikoder\Bundle\OAuth2Bundle\Manager\Doctrine\ClientManager
  */
 final class DoctrineClientManagerTest extends AbstractAcceptanceTest
@@ -46,7 +46,7 @@ final class DoctrineClientManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        $accessToken = new AccessToken('access token', new DateTimeImmutable('+1 day'), $client, $client->getIdentifier(), []);
+        $accessToken = new AccessToken('access token', new \DateTimeImmutable('+1 day'), $client, $client->getIdentifier(), []);
         $em->persist($accessToken);
         $em->flush();
 
@@ -79,11 +79,11 @@ final class DoctrineClientManagerTest extends AbstractAcceptanceTest
         $em->persist($client);
         $em->flush();
 
-        $accessToken = new AccessToken('access token', new DateTimeImmutable('+1 day'), $client, $client->getIdentifier(), []);
+        $accessToken = new AccessToken('access token', new \DateTimeImmutable('+1 day'), $client, $client->getIdentifier(), []);
         $em->persist($accessToken);
         $em->flush();
 
-        $refreshToken = new RefreshToken('refresh token', new DateTimeImmutable('+1 day'), $accessToken);
+        $refreshToken = new RefreshToken('refresh token', new \DateTimeImmutable('+1 day'), $accessToken);
         $em->persist($refreshToken);
         $em->flush();
 

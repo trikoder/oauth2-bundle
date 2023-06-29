@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Model;
 
-use DateTimeInterface;
-
 class AccessToken implements AccessTokenInterface
 {
     /**
@@ -14,7 +12,7 @@ class AccessToken implements AccessTokenInterface
     private $identifier;
 
     /**
-     * @var DateTimeInterface
+     * @var \DateTimeInterface
      */
     private $expiry;
 
@@ -40,7 +38,7 @@ class AccessToken implements AccessTokenInterface
 
     public function __construct(
         string $identifier,
-        DateTimeInterface $expiry,
+        \DateTimeInterface $expiry,
         ClientInterface $client,
         ?string $userIdentifier,
         array $scopes
@@ -62,7 +60,7 @@ class AccessToken implements AccessTokenInterface
         return $this->identifier;
     }
 
-    public function getExpiry(): DateTimeInterface
+    public function getExpiry(): \DateTimeInterface
     {
         return $this->expiry;
     }

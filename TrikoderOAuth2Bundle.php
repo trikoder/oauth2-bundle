@@ -50,9 +50,6 @@ final class TrikoderOAuth2Bundle extends Bundle
                     'trikoder.oauth2.persistence.doctrine.manager',
                 ],
                 'trikoder.oauth2.persistence.doctrine.enabled',
-                [
-                    'TrikoderOAuth2Bundle' => 'Trikoder\Bundle\OAuth2Bundle\Model',
-                ]
             )
         );
     }

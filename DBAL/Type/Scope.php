@@ -16,7 +16,7 @@ final class Scope extends ImplodedArray
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return self::NAME;
     }

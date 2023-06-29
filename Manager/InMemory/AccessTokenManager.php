@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Manager\InMemory;
 
-use DateTimeImmutable;
 use Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessTokenInterface;
 
@@ -35,7 +34,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
     {
         $count = \count($this->accessTokens);
 
-        $now = new DateTimeImmutable();
+        $now = new \DateTimeImmutable();
         $this->accessTokens = array_filter($this->accessTokens, static function (AccessTokenInterface $accessToken) use ($now): bool {
             return $accessToken->getExpiry() >= $now;
         });

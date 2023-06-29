@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures;
 
-use ArrayObject;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User extends ArrayObject implements UserInterface
+class User extends \ArrayObject implements UserInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function getRoles()
+    public function getRoles(): array
     {
         return $this['roles'] ?? [];
     }
@@ -20,7 +19,7 @@ class User extends ArrayObject implements UserInterface
     /**
      * {@inheritdoc}
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return FixtureFactory::FIXTURE_PASSWORD;
     }
@@ -28,7 +27,7 @@ class User extends ArrayObject implements UserInterface
     /**
      * {@inheritdoc}
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return null;
     }
@@ -36,7 +35,12 @@ class User extends ArrayObject implements UserInterface
     /**
      * {@inheritdoc}
      */
-    public function getUsername()
+    public function getUsername(): string
+    {
+        return FixtureFactory::FIXTURE_USER;
+    }
+
+    public function getUserIdentifier(): string
     {
         return FixtureFactory::FIXTURE_USER;
     }
@@ -44,7 +48,7 @@ class User extends ArrayObject implements UserInterface
     /**
      * {@inheritdoc}
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         return;
     }

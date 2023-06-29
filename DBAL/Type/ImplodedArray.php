@@ -6,8 +6,6 @@ namespace Trikoder\Bundle\OAuth2Bundle\DBAL\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\TextType;
-use InvalidArgumentException;
-use LogicException;
 
 abstract class ImplodedArray extends TextType
 {
@@ -19,10 +17,10 @@ abstract class ImplodedArray extends TextType
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if (!\is_array($value)) {
-            throw new LogicException('This type can only be used in combination with arrays.');
+            throw new \LogicException('This type can only be used in combination with arrays.');
         }
 
         if (0 === \count($value)) {
@@ -39,7 +37,7 @@ abstract class ImplodedArray extends TextType
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): array
     {
         if (null === $value) {
             return [];
@@ -53,17 +51,17 @@ abstract class ImplodedArray extends TextType
     /**
      * {@inheritdoc}
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        $fieldDeclaration['length'] = 65535;
+        $column['length'] = 65535;
 
-        return parent::getSQLDeclaration($fieldDeclaration, $platform);
+        return parent::getSQLDeclaration($column, $platform);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
     {
         return true;
     }
@@ -74,7 +72,7 @@ abstract class ImplodedArray extends TextType
             return;
         }
 
-        if (is_scalar($value)) {
+        if (\is_scalar($value)) {
             return;
         }
 
@@ -82,7 +80,7 @@ abstract class ImplodedArray extends TextType
             return;
         }
 
-        throw new InvalidArgumentException(sprintf('The value of \'%s\' type cannot be imploded.', \gettype($value)));
+        throw new \InvalidArgumentException(sprintf('The value of \'%s\' type cannot be imploded.', \gettype($value)));
     }
 
     abstract protected function convertDatabaseValues(array $values): array;

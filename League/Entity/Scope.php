@@ -14,8 +14,7 @@ final class Scope implements ScopeEntityInterface
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->getIdentifier();
     }

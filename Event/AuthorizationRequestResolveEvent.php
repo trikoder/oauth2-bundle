@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Event;
 
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
-use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -79,7 +78,7 @@ final class AuthorizationRequestResolveEvent extends Event
     public function getResponse(): ResponseInterface
     {
         if (!$this->hasResponse()) {
-            throw new LogicException('There is no response. You should call "hasResponse" to check if the response exists.');
+            throw new \LogicException('There is no response. You should call "hasResponse" to check if the response exists.');
         }
 
         return $this->response;

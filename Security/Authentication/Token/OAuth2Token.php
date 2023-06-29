@@ -42,7 +42,7 @@ final class OAuth2Token extends AbstractToken implements GuardTokenInterface
     /**
      * {@inheritdoc}
      */
-    public function getCredentials()
+    public function getCredentials(): mixed
     {
         return $this->getAttribute('server_request')->getAttribute('oauth_access_token_id');
     }

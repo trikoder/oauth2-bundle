@@ -47,10 +47,10 @@ final class OAuth2Authenticator implements AuthenticatorInterface
 
     public function supports(Request $request): bool
     {
-        return 0 === strpos($request->headers->get('Authorization', ''), 'Bearer ');
+        return str_starts_with($request->headers->get('Authorization', ''), 'Bearer ');
     }
 
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): mixed
     {
         $psr7Request = $this->httpMessageFactory->createRequest($request);
 
@@ -65,19 +65,25 @@ final class OAuth2Authenticator implements AuthenticatorInterface
 
     public function getUser($userIdentifier, UserProviderInterface $userProvider): UserInterface
     {
-        return '' === $userIdentifier ? new NullUser() : $userProvider->loadUserByUsername($userIdentifier);
+        if ('' === $userIdentifier) {
+            return new NullUser();
+        }
+
+        if (!method_exists($userProvider, 'loadUserByIdentifier')) {
+            return $userProvider->loadUserByUsername($userIdentifier);
+        }
+
+        return $userProvider->loadUserByIdentifier($userIdentifier);
     }
 
-    public function checkCredentials($token, UserInterface $user): bool
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
         return true;
     }
 
     public function createAuthenticatedToken(UserInterface $user, $providerKey): OAuth2Token
     {
-        $tokenUser = $user instanceof NullUser ? null : $user;
-
-        $oauth2Token = $this->oauth2TokenFactory->createOAuth2Token($this->psr7Request, $tokenUser, $providerKey);
+        $oauth2Token = $this->oauth2TokenFactory->createOAuth2Token($this->psr7Request, $user, $providerKey);
 
         if (!$this->isAccessToRouteGranted($oauth2Token)) {
             throw InsufficientScopesException::create($oauth2Token);

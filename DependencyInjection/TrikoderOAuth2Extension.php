@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\DependencyInjection;
 
 use Ajgarlag\Bundle\PsrHttpMessageBundle\AjgarlagPsrHttpMessageBundle;
-use DateInterval;
 use Defuse\Crypto\Key;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Exception;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -17,8 +15,6 @@ use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
-use LogicException;
-use RuntimeException;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -49,7 +45,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     /**
      * {@inheritdoc}
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -80,7 +76,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     /**
      * {@inheritdoc}
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'trikoder_oauth2';
     }
@@ -120,7 +116,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         foreach ($requiredBundles as $bundleAlias => $requiredBundle) {
             if (!$container->hasExtension($bundleAlias)) {
-                throw new LogicException(sprintf('Bundle \'%s\' needs to be enabled in your application kernel.', $requiredBundle));
+                throw new \LogicException(sprintf('Bundle \'%s\' needs to be enabled in your application kernel.', $requiredBundle));
             }
         }
     }
@@ -139,7 +135,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
             $authorizationServer->replaceArgument('$encryptionKey', $config['encryption_key']);
         } elseif ('defuse' === $config['encryption_key_type']) {
             if (!class_exists(Key::class)) {
-                throw new RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
+                throw new \RuntimeException('You must install the "defuse/php-encryption" package to use "encryption_key_type: defuse".');
             }
 
             $keyDefinition = (new Definition(Key::class))
@@ -155,35 +151,35 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         if ($grantTypes['client_credentials']['enable']) {
             $authorizationServer->addMethodCall('enableGrantType', [
                 new Reference(ClientCredentialsGrant::class),
-                new Definition(DateInterval::class, [$grantTypes['client_credentials']['access_token_ttl']]),
+                new Definition(\DateInterval::class, [$grantTypes['client_credentials']['access_token_ttl']]),
             ]);
         }
 
         if ($grantTypes['password']['enable']) {
             $authorizationServer->addMethodCall('enableGrantType', [
                 new Reference(PasswordGrant::class),
-                new Definition(DateInterval::class, [$grantTypes['password']['access_token_ttl']]),
+                new Definition(\DateInterval::class, [$grantTypes['password']['access_token_ttl']]),
             ]);
         }
 
         if ($grantTypes['refresh_token']['enable']) {
             $authorizationServer->addMethodCall('enableGrantType', [
                 new Reference(RefreshTokenGrant::class),
-                new Definition(DateInterval::class, [$grantTypes['refresh_token']['access_token_ttl']]),
+                new Definition(\DateInterval::class, [$grantTypes['refresh_token']['access_token_ttl']]),
             ]);
         }
 
         if ($grantTypes['authorization_code']['enable']) {
             $authorizationServer->addMethodCall('enableGrantType', [
                 new Reference(AuthCodeGrant::class),
-                new Definition(DateInterval::class, [$grantTypes['authorization_code']['access_token_ttl']]),
+                new Definition(\DateInterval::class, [$grantTypes['authorization_code']['access_token_ttl']]),
             ]);
         }
 
         if ($grantTypes['implicit']['enable']) {
             $authorizationServer->addMethodCall('enableGrantType', [
                 new Reference(ImplicitGrant::class),
-                new Definition(DateInterval::class, [$grantTypes['implicit']['access_token_ttl']]),
+                new Definition(\DateInterval::class, [$grantTypes['implicit']['access_token_ttl']]),
             ]);
         }
 
@@ -197,22 +193,22 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
         $container
             ->getDefinition(PasswordGrant::class)
             ->addMethodCall('setRefreshTokenTTL', [
-                new Definition(DateInterval::class, [$grantTypes['password']['refresh_token_ttl']]),
+                new Definition(\DateInterval::class, [$grantTypes['password']['refresh_token_ttl']]),
             ])
         ;
 
         $container
             ->getDefinition(RefreshTokenGrant::class)
             ->addMethodCall('setRefreshTokenTTL', [
-                new Definition(DateInterval::class, [$grantTypes['refresh_token']['refresh_token_ttl']]),
+                new Definition(\DateInterval::class, [$grantTypes['refresh_token']['refresh_token_ttl']]),
             ])
         ;
 
         $authCodeGrantDefinition = $container->getDefinition(AuthCodeGrant::class);
         $authCodeGrantDefinition
-            ->replaceArgument('$authCodeTTL', new Definition(DateInterval::class, [$grantTypes['authorization_code']['auth_code_ttl']]))
+            ->replaceArgument('$authCodeTTL', new Definition(\DateInterval::class, [$grantTypes['authorization_code']['auth_code_ttl']]))
             ->addMethodCall('setRefreshTokenTTL', [
-                new Definition(DateInterval::class, [$grantTypes['authorization_code']['refresh_token_ttl']]),
+                new Definition(\DateInterval::class, [$grantTypes['authorization_code']['refresh_token_ttl']]),
             ])
         ;
 
@@ -222,17 +218,17 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
 
         $container
             ->getDefinition(ImplicitGrant::class)
-            ->replaceArgument('$accessTokenTTL', new Definition(DateInterval::class, [$grantTypes['implicit']['access_token_ttl']]))
+            ->replaceArgument('$accessTokenTTL', new Definition(\DateInterval::class, [$grantTypes['implicit']['access_token_ttl']]))
         ;
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function configurePersistence(LoaderInterface $loader, ContainerBuilder $container, array $config): void
     {
         if (\count($config) > 1) {
-            throw new LogicException('Only one persistence method can be configured at a time.');
+            throw new \LogicException('Only one persistence method can be configured at a time.');
         }
 
         $persistenceConfiguration = current($config);

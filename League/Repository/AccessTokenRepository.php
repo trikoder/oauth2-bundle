@@ -44,7 +44,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
+    public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null): AccessTokenEntityInterface
     {
         $accessToken = new AccessTokenEntity();
         $accessToken->setClient($clientEntity);
@@ -92,7 +92,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function isAccessTokenRevoked($tokenId)
+    public function isAccessTokenRevoked($tokenId): bool
     {
         $accessToken = $this->accessTokenManager->find($tokenId);
 

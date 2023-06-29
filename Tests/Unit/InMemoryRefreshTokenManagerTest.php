@@ -4,34 +4,29 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\RefreshTokenManager as InMemoryRefreshTokenManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken;
 
+/**
+ * @group time-sensitive
+ */
 final class InMemoryRefreshTokenManagerTest extends TestCase
 {
     public function testClearExpired(): void
     {
         $inMemoryRefreshTokenManager = new InMemoryRefreshTokenManager();
 
-        timecop_freeze(new DateTimeImmutable());
+        $testData = $this->buildClearExpiredTestData();
 
-        try {
-            $testData = $this->buildClearExpiredTestData();
-
-            foreach ($testData['input'] as $token) {
-                $inMemoryRefreshTokenManager->save($token);
-            }
-
-            $this->assertSame(3, $inMemoryRefreshTokenManager->clearExpired());
-            $this->assertManagerContainsExpectedData($testData['output'], $inMemoryRefreshTokenManager);
-        } finally {
-            timecop_return();
+        foreach ($testData['input'] as $token) {
+            $inMemoryRefreshTokenManager->save($token);
         }
+
+        $this->assertSame(3, $inMemoryRefreshTokenManager->clearExpired());
+        $this->assertManagerContainsExpectedData($testData['output'], $inMemoryRefreshTokenManager);
     }
 
     private function buildClearExpiredTestData(): array
@@ -39,8 +34,7 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
         $validRefreshTokens = [
             '1111' => $this->buildRefreshToken('1111', '+1 day'),
             '2222' => $this->buildRefreshToken('2222', '+1 hour'),
-            '3333' => $this->buildRefreshToken('3333', '+1 second'),
-            '4444' => $this->buildRefreshToken('4444', 'now'),
+            '3333' => $this->buildRefreshToken('3333', '+5 seconds'),
         ];
 
         $expiredRefreshTokens = [
@@ -74,7 +68,7 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
         $validRefreshTokens = [
             '1111' => $this->buildRefreshToken('1111', '+1 day'),
             '2222' => $this->buildRefreshToken('2222', '+1 hour'),
-            '3333' => $this->buildRefreshToken('3333', '+1 second'),
+            '3333' => $this->buildRefreshToken('3333', '+5 second'),
         ];
 
         $revokedRefreshTokens = [
@@ -92,10 +86,10 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
     {
         $refreshToken = new RefreshToken(
             $identifier,
-            new DateTimeImmutable($modify),
+            new \DateTimeImmutable($modify),
             new AccessToken(
                 $identifier,
-                new DateTimeImmutable('+1 day'),
+                new \DateTimeImmutable('+1 day'),
                 new Client('client', 'secret'),
                 null,
                 []
@@ -111,7 +105,7 @@ final class InMemoryRefreshTokenManagerTest extends TestCase
 
     private function assertManagerContainsExpectedData(array $output, InMemoryRefreshTokenManager $inMemoryRefreshTokenManager): void
     {
-        $reflectionProperty = new ReflectionProperty(InMemoryRefreshTokenManager::class, 'refreshTokens');
+        $reflectionProperty = new \ReflectionProperty(InMemoryRefreshTokenManager::class, 'refreshTokens');
         $reflectionProperty->setAccessible(true);
 
         $this->assertSame($output, $reflectionProperty->getValue($inMemoryRefreshTokenManager));

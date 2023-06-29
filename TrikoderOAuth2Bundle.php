@@ -27,7 +27,7 @@ final class TrikoderOAuth2Bundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function getContainerExtension()
+    public function getContainerExtension(): TrikoderOAuth2Extension
     {
         return new TrikoderOAuth2Extension();
     }
@@ -50,9 +50,6 @@ final class TrikoderOAuth2Bundle extends Bundle
                     'trikoder.oauth2.persistence.doctrine.manager',
                 ],
                 'trikoder.oauth2.persistence.doctrine.enabled',
-                [
-                    'TrikoderOAuth2Bundle' => 'Trikoder\Bundle\OAuth2Bundle\Model',
-                ]
             )
         );
     }

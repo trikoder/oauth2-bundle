@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Acceptance;
 
 use Doctrine\ORM\EntityManagerInterface;
-use stdClass;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Trikoder\Bundle\OAuth2Bundle\Command\ClearRevokedTokensCommand;
@@ -185,7 +184,7 @@ final class ClearRevokedTokensCommandTest extends AbstractAcceptanceTest
             ),
             [
                 $output,
-                new stdClass(),
+                new \stdClass(),
             ]
         );
         $this->assertFalse($success);

@@ -6,7 +6,6 @@ namespace Trikoder\Bundle\OAuth2Bundle\Tests;
 
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
-use Exception;
 use League\OAuth2\Server\CryptKey;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -15,9 +14,9 @@ use Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\AccessToken as AccessTokenEntity;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Client as ClientEntity;
 use Trikoder\Bundle\OAuth2Bundle\League\Entity\Scope as ScopeEntity;
-use Trikoder\Bundle\OAuth2Bundle\Model\AccessToken as AccessTokenModel;
-use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode as AuthorizationCodeModel;
-use Trikoder\Bundle\OAuth2Bundle\Model\RefreshToken as RefreshTokenModel;
+use Trikoder\Bundle\OAuth2Bundle\Model\AccessTokenInterface as AccessTokenModel;
+use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCodeInterface as AuthorizationCodeModel;
+use Trikoder\Bundle\OAuth2Bundle\Model\RefreshTokenInterface as RefreshTokenModel;
 
 final class TestHelper
 {
@@ -96,7 +95,7 @@ final class TestHelper
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public static function initializeDoctrineSchema(Application $application, array $arguments = []): bool
     {

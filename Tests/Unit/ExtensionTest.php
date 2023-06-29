@@ -388,8 +388,8 @@ final class ExtensionTest extends TestCase
                 'resource_server' => [
                     'public_key' => 'foo',
                 ],
-                //Pick one for valid config:
-                //'persistence' => ['doctrine' => []]
+                // Pick one for valid config:
+                // 'persistence' => ['doctrine' => []]
                 'persistence' => ['in_memory' => 1],
             ],
         ];

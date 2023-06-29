@@ -3,8 +3,8 @@ composer.lock
 vendor/
 
 # PHP Coding Standards Fixer
-.php_cs
-.php_cs.cache
+.php-cs-fixer.php
+.php-cs-fixer.cache
 
 # PHPUnit
 phpunit.xml

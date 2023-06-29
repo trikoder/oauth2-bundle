@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Trikoder\Bundle\OAuth2Bundle\League\Repository;
 
 use League\OAuth2\Server\Entities\ClientEntityInterface;
+use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface;
@@ -48,7 +49,7 @@ final class UserRepository implements UserRepositoryInterface
         $password,
         $grantType,
         ClientEntityInterface $clientEntity
-    ) {
+    ): ?UserEntityInterface {
         $client = $this->clientManager->find($clientEntity->getIdentifier());
 
         $event = $this->eventDispatcher->dispatch(

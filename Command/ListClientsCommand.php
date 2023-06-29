@@ -81,8 +81,7 @@ final class ListClientsCommand extends Command
     private function getFindByCriteria(InputInterface $input): ClientFilter
     {
         return
-            ClientFilter
-                ::create()
+            ClientFilter::create()
                 ->addGrantCriteria(...array_map(static function (string $grant): Grant {
                     return new Grant($grant);
                 }, $input->getOption('grant-type')))
@@ -92,7 +91,7 @@ final class ListClientsCommand extends Command
                 ->addScopeCriteria(...array_map(static function (string $scope): Scope {
                     return new Scope($scope);
                 }, $input->getOption('scope')))
-            ;
+        ;
     }
 
     private function drawTable(InputInterface $input, OutputInterface $output, array $clients): void

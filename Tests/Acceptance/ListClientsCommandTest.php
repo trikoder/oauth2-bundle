@@ -155,7 +155,7 @@ TABLE;
                 ->client
                 ->getContainer()
                 ->get(ClientManagerInterface::class)
-            ;
+        ;
     }
 
     private function command(): Command

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.1/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          backupGlobals="false"
          colors="true"
          bootstrap="vendor/autoload.php"
@@ -11,7 +11,7 @@
     <php>
         <env name="KERNEL_CLASS" value="Trikoder\Bundle\OAuth2Bundle\Tests\TestKernel" />
         <env name="SHELL_VERBOSITY" value="-1" />
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=82" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=40" />
     </php>
 
     <testsuites>
@@ -26,16 +26,16 @@
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist>
-            <directory>.</directory>
-            <exclude>
-                <directory>./Resources</directory>
-                <directory>./Tests</directory>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+    <coverage>
+      <include>
+        <directory>.</directory>
+      </include>
+      <exclude>
+        <directory>./Resources</directory>
+        <directory>./Tests</directory>
+        <directory>./vendor</directory>
+      </exclude>
+    </coverage>
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />

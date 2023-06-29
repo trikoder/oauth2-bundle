@@ -4,33 +4,29 @@ declare(strict_types=1);
 
 namespace Trikoder\Bundle\OAuth2Bundle\Tests\Unit;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
 use Trikoder\Bundle\OAuth2Bundle\Manager\InMemory\AuthorizationCodeManager as InMemoryAuthCodeManager;
 use Trikoder\Bundle\OAuth2Bundle\Model\AuthorizationCode;
 use Trikoder\Bundle\OAuth2Bundle\Model\Client;
 
+/**
+ * @group time-sensitive
+ */
 final class InMemoryAuthCodeManagerTest extends TestCase
 {
     public function testClearExpired(): void
     {
         $inMemoryAuthCodeManager = new InMemoryAuthCodeManager();
 
-        timecop_freeze(new DateTimeImmutable());
+        $testData = $this->buildClearExpiredTestData();
 
-        try {
-            $testData = $this->buildClearExpiredTestData();
-
-            foreach ($testData['input'] as $token) {
-                $inMemoryAuthCodeManager->save($token);
-            }
-
-            $this->assertSame(3, $inMemoryAuthCodeManager->clearExpired());
-            $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAuthCodeManager);
-        } finally {
-            timecop_return();
+        /** @var AuthorizationCode $authCode */
+        foreach ($testData['input'] as $authCode) {
+            $inMemoryAuthCodeManager->save($authCode);
         }
+
+        $this->assertSame(3, $inMemoryAuthCodeManager->clearExpired());
+        $this->assertManagerContainsExpectedData($testData['output'], $inMemoryAuthCodeManager);
     }
 
     private function buildClearExpiredTestData(): array
@@ -38,8 +34,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
         $validAuthCodes = [
             '1111' => $this->buildAuthCode('1111', '+1 day'),
             '2222' => $this->buildAuthCode('2222', '+1 hour'),
-            '3333' => $this->buildAuthCode('3333', '+1 second'),
-            '4444' => $this->buildAuthCode('4444', 'now'),
+            '3333' => $this->buildAuthCode('3333', '+5 second'),
         ];
 
         $expiredAuthCodes = [
@@ -73,7 +68,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
         $validAuthCodes = [
             '1111' => $this->buildAuthCode('1111', '+1 day'),
             '2222' => $this->buildAuthCode('2222', '+1 hour'),
-            '3333' => $this->buildAuthCode('3333', '+1 second'),
+            '3333' => $this->buildAuthCode('3333', '+5 second'),
         ];
 
         $revokedAuthCodes = [
@@ -91,7 +86,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
     {
         $authorizationCode = new AuthorizationCode(
             $identifier,
-            new DateTimeImmutable($modify),
+            new \DateTimeImmutable($modify),
             new Client('client', 'secret'),
             null,
             []
@@ -106,7 +101,7 @@ final class InMemoryAuthCodeManagerTest extends TestCase
 
     private function assertManagerContainsExpectedData(array $output, InMemoryAuthCodeManager $inMemoryAuthCodeManager): void
     {
-        $reflectionProperty = new ReflectionProperty(InMemoryAuthCodeManager::class, 'authorizationCodes');
+        $reflectionProperty = new \ReflectionProperty(InMemoryAuthCodeManager::class, 'authorizationCodes');
         $reflectionProperty->setAccessible(true);
 
         $this->assertSame($output, $reflectionProperty->getValue($inMemoryAuthCodeManager));

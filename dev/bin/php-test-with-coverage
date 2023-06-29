@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+readonly BASE_DIR=$(cd "$(dirname "$0")"; pwd)
+
+"${BASE_DIR}"/docker-compose run --rm --no-deps \
+    -e XDEBUG_MODE=coverage \
+    php "$@"

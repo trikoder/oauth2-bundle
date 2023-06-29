@@ -36,7 +36,7 @@ jobs:
                 run: dev/bin/php composer update --ansi --prefer-dist ${{ matrix.composer-flags }}
 
             -   name: Run the tests
-                run: dev/bin/php-test composer test -- --colors=always --coverage-clover=coverage.xml --debug
+                run: dev/bin/php-test-with-coverage composer test -- --colors=always --coverage-clover=coverage.xml --debug
 
             -   name: Check coding standards
                 run: dev/bin/php composer lint -- --ansi --diff --dry-run --using-cache=no --verbose

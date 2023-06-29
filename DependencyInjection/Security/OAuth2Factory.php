@@ -18,7 +18,7 @@ final class OAuth2Factory implements SecurityFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
+    public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint): array
     {
         $providerId = 'security.authentication.provider.oauth2.' . $id;
         $container
@@ -37,7 +37,7 @@ final class OAuth2Factory implements SecurityFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getPosition()
+    public function getPosition(): string
     {
         return 'pre_auth';
     }
@@ -45,7 +45,7 @@ final class OAuth2Factory implements SecurityFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKey(): string
     {
         return 'oauth2';
     }

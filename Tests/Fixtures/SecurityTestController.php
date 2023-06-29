@@ -8,26 +8,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Trikoder\Bundle\OAuth2Bundle\Security\User\NullUser;
 
 final class SecurityTestController extends AbstractController
 {
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct(private readonly TokenStorageInterface $tokenStorage)
     {
-        $this->tokenStorage = $tokenStorage;
     }
 
     public function helloAction(): Response
     {
-        /** @var UserInterface $user */
+        /** @var UserInterface|null $user */
         $user = $this->getUser();
 
         return new Response(
-            sprintf('Hello, %s', (null !== $user) ? $user->getUsername() : 'guest')
+            sprintf('Hello, %s', (null === $user || $user instanceof NullUser) ? 'guest' : $user->getUsername())
         );
     }
 

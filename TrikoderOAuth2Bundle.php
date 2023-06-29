@@ -27,7 +27,7 @@ final class TrikoderOAuth2Bundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function getContainerExtension()
+    public function getContainerExtension(): TrikoderOAuth2Extension
     {
         return new TrikoderOAuth2Extension();
     }

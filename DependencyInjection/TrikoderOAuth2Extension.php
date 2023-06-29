@@ -76,7 +76,7 @@ final class TrikoderOAuth2Extension extends Extension implements PrependExtensio
     /**
      * {@inheritdoc}
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'trikoder_oauth2';
     }

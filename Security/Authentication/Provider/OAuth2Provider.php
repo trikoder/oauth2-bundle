@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2Token;
 use Trikoder\Bundle\OAuth2Bundle\Security\Authentication\Token\OAuth2TokenFactory;
+use Trikoder\Bundle\OAuth2Bundle\Security\User\NullUser;
 
 final class OAuth2Provider implements AuthenticationProviderInterface
 {
@@ -51,7 +52,7 @@ final class OAuth2Provider implements AuthenticationProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function authenticate(TokenInterface $token)
+    public function authenticate(TokenInterface $token): TokenInterface
     {
         if (!$this->supports($token)) {
             throw new \RuntimeException(sprintf('This authentication provider can only handle tokes of type \'%s\'.', OAuth2Token::class));
@@ -78,21 +79,25 @@ final class OAuth2Provider implements AuthenticationProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(TokenInterface $token)
+    public function supports(TokenInterface $token): bool
     {
         return $token instanceof OAuth2Token && $this->providerKey === $token->getProviderKey();
     }
 
-    private function getAuthenticatedUser(string $userIdentifier): ?UserInterface
+    private function getAuthenticatedUser(string $userIdentifier): UserInterface
     {
         if ('' === $userIdentifier) {
             /*
              * If the identifier is an empty string, that means that the
              * access token isn't bound to a user defined in the system.
              */
-            return null;
+            return new NullUser();
         }
 
-        return $this->userProvider->loadUserByUsername($userIdentifier);
+        if (!method_exists($this->userProvider, 'loadUserByIdentifier')) {
+            return $this->userProvider->loadUserByUsername($userIdentifier);
+        }
+
+        return $this->userProvider->loadUserByIdentifier($userIdentifier);
     }
 }

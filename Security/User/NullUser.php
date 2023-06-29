@@ -11,14 +11,19 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class NullUser implements UserInterface
 {
+    public function getUserIdentifier(): string
+    {
+        return '';
+    }
+
     public function getUsername(): string
     {
         return '';
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
-        return '';
+        return null;
     }
 
     public function getSalt(): ?string

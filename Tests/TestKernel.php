@@ -58,7 +58,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         return [
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
@@ -72,7 +72,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         return sprintf('%s/Tests/.kernel/cache', $this->getProjectDir());
     }
@@ -80,7 +80,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function getLogDir()
+    public function getLogDir(): string
     {
         return sprintf('%s/Tests/.kernel/logs', $this->getProjectDir());
     }
@@ -96,7 +96,7 @@ final class TestKernel extends Kernel implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    protected function getContainerClass()
+    protected function getContainerClass(): string
     {
         return parent::getContainerClass() . ucfirst($this->psrHttpProvider);
     }
@@ -111,27 +111,27 @@ final class TestKernel extends Kernel implements CompilerPassInterface
         $routes->import('@TrikoderOAuth2Bundle/Resources/config/routes.xml');
 
         $routes
-            ->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:helloAction')
+            ->add('/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::helloAction')
         ;
         $routes
-            ->add('/guard/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:helloAction')
-        ;
-
-        $routes
-            ->add('/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:scopeAction')
-            ->setDefault('oauth2_scopes', ['fancy'])
-        ;
-        $routes
-            ->add('/guard/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:scopeAction')
-            ->setDefault('oauth2_scopes', ['fancy'])
+            ->add('/guard/security-test', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::helloAction')
         ;
 
         $routes
-            ->add('/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:rolesAction')
+            ->add('/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::scopeAction')
             ->setDefault('oauth2_scopes', ['fancy'])
         ;
         $routes
-            ->add('/guard/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController:rolesAction')
+            ->add('/guard/security-test-scopes', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::scopeAction')
+            ->setDefault('oauth2_scopes', ['fancy'])
+        ;
+
+        $routes
+            ->add('/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::rolesAction')
+            ->setDefault('oauth2_scopes', ['fancy'])
+        ;
+        $routes
+            ->add('/guard/security-test-roles', 'Trikoder\Bundle\OAuth2Bundle\Tests\Fixtures\SecurityTestController::rolesAction')
             ->setDefault('oauth2_scopes', ['fancy'])
         ;
     }
@@ -158,6 +158,9 @@ final class TestKernel extends Kernel implements CompilerPassInterface
         $container->loadFromExtension('framework', [
             'secret' => 'nope',
             'test' => null,
+            'router' => [
+                'utf8' => true,
+            ],
         ]);
 
         $container->loadFromExtension('security', [

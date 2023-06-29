@@ -15,7 +15,7 @@ final class SqlitePlatform extends DoctrineSqlitePlatform
     /**
      * {@inheritdoc}
      */
-    public function supportsForeignKeyConstraints()
+    public function supportsForeignKeyConstraints(): bool
     {
         return true;
     }
@@ -23,7 +23,7 @@ final class SqlitePlatform extends DoctrineSqlitePlatform
     /**
      * {@inheritdoc}
      */
-    public function getCreateForeignKeySQL(ForeignKeyConstraint $foreignKey, $table)
+    public function getCreateForeignKeySQL(ForeignKeyConstraint $foreignKey, $table): string
     {
         return 'SELECT 1';
     }
@@ -31,7 +31,7 @@ final class SqlitePlatform extends DoctrineSqlitePlatform
     /**
      * {@inheritdoc}
      */
-    public function getDropForeignKeySQL($foreignKey, $table)
+    public function getDropForeignKeySQL($foreignKey, $table): string
     {
         return 'SELECT 1';
     }

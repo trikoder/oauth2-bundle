@@ -18,7 +18,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AccessTokenManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
-            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface" />
         </service>
         <service id="trikoder.oauth2.league.repository.access_token_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\AccessTokenRepository">
             <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
@@ -37,7 +37,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
-            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
         </service>
         <service id="trikoder.oauth2.league.repository.scope_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\ScopeRepository">
@@ -48,7 +48,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
-            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface" />
         </service>
         <service id="trikoder.oauth2.league.repository.user_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\UserRepository">
             <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
@@ -58,7 +58,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository">
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\AuthorizationCodeManagerInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
-            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface" />
         </service>
         <service id="trikoder.oauth2.league.repository.auth_code_repository" alias="Trikoder\Bundle\OAuth2Bundle\League\Repository\AuthCodeRepository">
             <deprecated>The "%alias_id%" service alias is deprecated and will be removed in v4.</deprecated>
@@ -151,7 +151,7 @@
             <argument type="service" id="League\OAuth2\Server\AuthorizationServer" />
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory" />
-            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverter" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\UserConverterInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
             <tag name="controller.service_arguments" />
         </service>
@@ -246,7 +246,7 @@
         <service id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface" alias="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
 
         <service id="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory">
-            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverter" />
+            <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Converter\ScopeConverterInterface" />
             <argument type="service" id="Trikoder\Bundle\OAuth2Bundle\Manager\ClientManagerInterface" />
         </service>
         <service id="trikoder.oauth2.event.authorization_request_resolve_event_factory" alias="Trikoder\Bundle\OAuth2Bundle\Event\AuthorizationRequestResolveEventFactory">

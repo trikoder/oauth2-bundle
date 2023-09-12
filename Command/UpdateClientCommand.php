@@ -39,29 +39,30 @@ final class UpdateClientCommand extends Command
             ->addOption(
                 'redirect-uri',
                 null,
-                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs.',
-                []
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'Sets redirect uri for client. Use this option multiple times to set multiple redirect URIs. Use it without value to remove existing values.',
+                [0]
             )
             ->addOption(
                 'grant-type',
                 null,
-                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Sets allowed grant type for client. Use this option multiple times to set multiple grant types.',
-                []
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'Sets allowed grant type for client. Use this option multiple times to set multiple grant types. Use it without value to remove existing values.',
+                [0]
             )
             ->addOption(
                 'scope',
                 null,
-                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Sets allowed scope for client. Use this option multiple times to set multiple scopes.',
-                []
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'Sets allowed scope for client. Use this option multiple times to set multiple scopes. Use it without value to remove existing values.',
+                [0]
             )
             ->addOption(
-                'deactivated',
+                'active',
                 null,
-                InputOption::VALUE_NONE,
-                'If provided, it will deactivate the given client.'
+                InputOption::VALUE_REQUIRED,
+                'Client active state, 1 for active, 0 for inactive',
+                null
             )
             ->addArgument(
                 'identifier',
@@ -90,26 +91,69 @@ final class UpdateClientCommand extends Command
 
     private function updateClientFromInput(Client $client, InputInterface $input): Client
     {
-        $client->setActive(!$input->getOption('deactivated'));
+        $active = $input->getOption('active');
 
-        $redirectUris = array_map(
-            static function (string $redirectUri): RedirectUri { return new RedirectUri($redirectUri); },
-            $input->getOption('redirect-uri')
-        );
-        $client->setRedirectUris(...$redirectUris);
+        if (null !== $active) {
+            $client->setActive((bool) $active);
+        }
 
-        $grants = array_map(
-            static function (string $grant): Grant { return new Grant($grant); },
-            $input->getOption('grant-type')
-        );
-        $client->setGrants(...$grants);
+        $redirectUrisArray = $this->getNullableOption($input, 'redirect-uri');
 
-        $scopes = array_map(
-            static function (string $scope): Scope { return new Scope($scope); },
-            $input->getOption('scope')
-        );
-        $client->setScopes(...$scopes);
+        if (null !== $redirectUrisArray) {
+            $redirectUris = array_map(
+                static function (string $redirectUri): RedirectUri {
+                    return new RedirectUri($redirectUri);
+                },
+                $redirectUrisArray
+            );
+            $client->setRedirectUris(...$redirectUris);
+        }
+
+        $grantsArray = $this->getNullableOption($input, 'grant-type');
+
+        if (null !== $grantsArray) {
+            $grants = array_map(
+                static function (string $grant): Grant {
+                    return new Grant($grant);
+                },
+                $grantsArray
+            );
+            $client->setGrants(...$grants);
+        }
+
+        $scopesArray = $this->getNullableOption($input, 'scope');
+
+        if (null !== $scopesArray) {
+            $scopes = array_map(
+                static function (string $scope): Scope {
+                    return new Scope($scope);
+                },
+                $scopesArray
+            );
+            $client->setScopes(...$scopes);
+        }
 
         return $client;
+    }
+
+    private function getNullableOption(InputInterface $input, string $name): ?array
+    {
+        $value = $input->getOption($name);
+
+        if (
+            \array_key_exists(0, $value)
+            && 0 === $value[0] //if user has entered some value it will always be string so it is fine to rely on 0
+        ) {
+            return null;
+        }
+
+        if (
+            \array_key_exists(0, $value)
+            && null === $value[0] //when option has mode InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY and no value is sent, option will have value [null]
+        ) {
+            return [];
+        }
+
+        return $value;
     }
 }

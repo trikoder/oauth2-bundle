@@ -35,7 +35,7 @@ App\EventListener\ScopeResolveListener:
 ```
 
 ## Work with refresh token
-The scopes created in this way will not be recognized by the library.  
+The scopes created in this way will not be recognized by the library when trying to login using the `refresh_token` grant method.  
 In order to append new scopes, you need to override the service `Trikoder\Bundle\OAuth2Bundle\Manager\ScopeManagerInterface`.  
 Here is an example:
 ```yaml
